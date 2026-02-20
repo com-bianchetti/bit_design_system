@@ -4,6 +4,7 @@ import 'package:example/button/vit_button.dart';
 import 'package:example/button/vit_social_button.dart';
 import 'package:example/badge/vit_badge.dart';
 import 'package:example/card/vit_card.dart';
+import 'package:example/card/vit_item_card.dart';
 import 'package:example/card/vit_list_card.dart';
 import 'package:example/checkbox/vit_checkbox.dart';
 import 'package:example/chip/vit_chip.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         VitAvatarStory,
         VitBadgeStory,
         VitCardStory,
+        VitItemCardStory,
         VitListCardStory,
         VitProgressStory,
         VitAccordionStory,

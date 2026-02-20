@@ -72,6 +72,7 @@ class VitApp extends StatefulWidget {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
+    this.useDarkTheme = true,
     @Deprecated(
       'Remove this parameter as it is now ignored. '
       'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
@@ -131,6 +132,7 @@ class VitApp extends StatefulWidget {
     )
     this.useInheritedMediaQuery = false,
     this.themeAnimationStyle,
+    this.useDarkTheme = true,
   }) : assert(routerDelegate != null || routerConfig != null),
        navigatorObservers = null,
        navigatorKey = null,
@@ -570,6 +572,11 @@ class VitApp extends StatefulWidget {
   /// {@end-tool}
   final AnimationStyle? themeAnimationStyle;
 
+  /// Whether to use the dark theme or not.
+  /// Defaults to true, meaning that the dark theme will be different from the light theme.
+  /// If set to false, the dark theme will be the same as the light theme.
+  final bool useDarkTheme;
+
   @override
   State<VitApp> createState() => _VitAppState();
 }
@@ -660,7 +667,7 @@ class _VitAppState extends State<VitApp> {
           return widget.routerConfig != null
               ? MaterialApp.router(
                   theme: bitLightTheme,
-                  darkTheme: bitDarkTheme,
+                  darkTheme: widget.useDarkTheme ? bitDarkTheme : bitLightTheme,
                   themeMode: themeMode,
                   themeAnimationDuration: widget.themeAnimationDuration,
                   themeAnimationCurve: widget.themeAnimationCurve,

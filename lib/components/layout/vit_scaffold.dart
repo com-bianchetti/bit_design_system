@@ -74,8 +74,11 @@ class VitScaffold extends StatelessWidget {
     this.navigationUnselectedColor,
     this.navigationBackgroundColor,
     this.preserveNavigationState = true,
+    this.showAppBarBorder = true,
   }) : assert(
-         body != null || children != null || (navigationItems != null && navigationPages != null),
+         body != null ||
+             children != null ||
+             (navigationItems != null && navigationPages != null),
          'Either body, children, or navigation (navigationItems and navigationPages) must be provided',
        );
 
@@ -548,29 +551,32 @@ class VitScaffold extends StatelessWidget {
   /// Defaults to true.
   final bool preserveNavigationState;
 
+  final bool showAppBarBorder;
+
   @override
   Widget build(BuildContext context) {
-    final shouldShowAppBar = showAppBar &&
+    final shouldShowAppBar =
+        showAppBar &&
         (appBar != null ||
             title != null ||
             titleWidget != null ||
             leading != null);
 
-    final hasNavigation =
-        navigationItems != null && navigationPages != null;
+    final hasNavigation = navigationItems != null && navigationPages != null;
 
     if (hasNavigation) {
       final effectiveAppBar = shouldShowAppBar
           ? (appBar ??
-              VitAppBar(
-                title: title,
-                titleWidget: titleWidget,
-                leading: leading,
-                onLeadingPressed: onLeadingPressed,
-                leadingIcon: leadingIcon,
-                trailing: trailing,
-                centerTitle: centerTitle,
-              ))
+                VitAppBar(
+                  title: title,
+                  titleWidget: titleWidget,
+                  leading: leading,
+                  onLeadingPressed: onLeadingPressed,
+                  leadingIcon: leadingIcon,
+                  trailing: trailing,
+                  centerTitle: centerTitle,
+                  showBorder: showAppBarBorder,
+                ))
           : null;
 
       return VitNavigationScaffold(
@@ -642,6 +648,7 @@ class VitScaffold extends StatelessWidget {
                   leadingIcon: leadingIcon,
                   trailing: trailing,
                   centerTitle: centerTitle,
+                  showBorder: showAppBarBorder,
                 ))
           : null,
       body: body ?? defaultBody,

@@ -52,6 +52,7 @@ export 'components/fields/vit_terms_field.dart';
 export 'components/fields/vit_newsletter_field.dart';
 export 'components/toast/vit_toast.dart';
 export 'components/card/vit_card.dart';
+export 'components/card/vit_item_card.dart';
 export 'components/card/vit_list_card.dart';
 export 'components/skeleton/vit_loading_scope.dart';
 export 'components/skeleton/vit_skeleton_shimmer.dart';

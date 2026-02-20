@@ -57,6 +57,9 @@ enum VitBottomBarVariant {
 
   /// Transparent background.
   transparent,
+
+  /// Displays the items with a dot instead of an icon.
+  dot,
 }
 
 /// Defines the label behavior for the bottom navigation bar.
@@ -525,6 +528,7 @@ class VitBottomBarState extends State<VitBottomBar>
       VitBottomBarVariant.elevated => theme.elevatedCardColor,
       VitBottomBarVariant.primary => theme.primaryColor,
       VitBottomBarVariant.transparent => Colors.transparent,
+      VitBottomBarVariant.dot => theme.cardColor,
     };
   }
 
@@ -684,25 +688,52 @@ class VitBottomBarState extends State<VitBottomBar>
     Widget itemWidget = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildAnimatedIcon(
-          context,
-          item,
-          isSelected,
-          effectiveColor,
-        ),
-        if (showLabel) ...[
-          const SizedBox(height: 4),
-          VitText(
-            item.label,
-            style: theme.bodySmall.copyWith(
-              color: effectiveColor,
-              fontSize: widget.labelFontSize ?? 12,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
-      ],
+      children: widget.variant == VitBottomBarVariant.dot
+          ? [
+              if (showLabel) ...[
+                VitText(
+                  item.label,
+                  style: theme.bodySmall.copyWith(
+                    color: effectiveColor,
+                    fontSize: widget.labelFontSize ?? 14,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 6),
+              ],
+              AnimatedContainer(
+                duration: widget.animationDuration,
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: isSelected ? effectiveColor : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ]
+          : [
+              _buildAnimatedIcon(
+                context,
+                item,
+                isSelected,
+                effectiveColor,
+              ),
+              if (showLabel) ...[
+                const SizedBox(height: 4),
+                VitText(
+                  item.label,
+                  style: theme.bodySmall.copyWith(
+                    color: effectiveColor,
+                    fontSize: widget.labelFontSize ?? 12,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ],
     );
 
     if (item.badge != null) {
@@ -946,7 +977,19 @@ class VitBottomBarState extends State<VitBottomBar>
 
     Widget itemContent = Row(
       children: [
-        _buildAnimatedIcon(context, item, isSelected, effectiveColor),
+        if (widget.variant == VitBottomBarVariant.dot)
+          AnimatedContainer(
+            duration: widget.animationDuration,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: isSelected ? effectiveColor : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+          )
+        else
+          _buildAnimatedIcon(context, item, isSelected, effectiveColor),
         if (_isExpanded) ...[
           const SizedBox(width: 16),
           Expanded(
