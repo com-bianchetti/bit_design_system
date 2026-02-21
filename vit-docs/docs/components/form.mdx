@@ -289,6 +289,91 @@ VitForm(
 )
 ```
 
+## Building Custom Fields
+
+You can create your own custom input widgets that integrate seamlessly with `VitForm`. By wrapping your widget's built-in state in a standard Flutter `FormField` and using the `VitFormProvider`, your field can take advantage of the same validation and data collection behaviors as native Vit components.
+
+Here is an example inspired by the internal `VitCheckbox` component logic:
+
+```dart
+class MyCustomField extends StatefulWidget {
+  final String? id;
+  final bool initialValue;
+  final String? Function(bool?)? validator;
+
+  const MyCustomField({
+    super.key,
+    this.id,
+    this.initialValue = false,
+    this.validator,
+  });
+
+  @override
+  State<MyCustomField> createState() => _MyCustomFieldState();
+}
+
+class _MyCustomFieldState extends State<MyCustomField> {
+  late bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.initialValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Wrap your custom component in a FormField
+    return FormField<bool>(
+      initialValue: _value,
+      validator: widget.validator,
+      // 2. Access VitFormProvider to save the value to the form state
+      onSaved: (value) {
+        if (widget.id != null) {
+          final form = VitFormProvider.maybeOf(context);
+          form?.save(widget.id!, _value);
+        }
+      },
+      // 3. Access field state (like validation errors) inside the builder
+      builder: (field) {
+        final hasError = field.errorText != null && field.errorText!.isNotEmpty;
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Your custom interactive UI
+            CheckboxListTile(
+              value: _value,
+              title: const Text('Custom Checkbox'),
+              onChanged: (newValue) {
+                setState(() => _value = newValue ?? false);
+                field.didChange(_value); // Trigger re-validation
+              },
+            ),
+            // 4. Display validation errors if necessary
+            if (hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  field.errorText!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+```
+
+**Key Integration Steps:**
+1. **`FormField<T>` Wrapper**: Use a standard `FormField` so the internal `Form` can trigger validation.
+2. **Access `VitFormProvider`**: Inside the `onSaved` callback, access the provider with `VitFormProvider.maybeOf(context)`.
+3. **Save Data**: Call `form?.save(id, value)` to register the final value with `VitForm` when the form completes.
+4. **Error State**: Check `field.errorText` inside the `builder` to visually update your component if it fails validation.
+
 ## Form Controller
 
 Access and control form state programmatically using the VitFormProvider. The provider gives you access to form data, navigation methods, and validation functions.

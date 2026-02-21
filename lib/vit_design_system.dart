@@ -32,6 +32,7 @@ export 'components/select/vit_select.dart';
 export 'components/date/vit_date.dart';
 export 'components/date/vit_time.dart';
 export 'components/form/vit_form.dart';
+export 'components/form/vit_form_provider.dart';
 export 'components/fields/vit_email_field.dart';
 export 'components/fields/vit_password_field.dart';
 export 'components/fields/vit_confirm_password_field.dart';
