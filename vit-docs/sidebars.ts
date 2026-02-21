@@ -57,6 +57,7 @@ const sidebars: SidebarsConfig = {
         'components/status',
         'components/switch',
         'components/text',
+        'components/time',
         'components/toast',
       ],
     },
