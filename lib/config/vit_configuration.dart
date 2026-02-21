@@ -15,6 +15,7 @@ class VitConfiguration {
   final bool showCardBorder;
   final VitInputMode inputMode;
   final TextStyle? inputLabelStyle;
+  final Widget? formBackArrowIcon;
 
   const VitConfiguration({
     this.showSwitchItemBorder = true,
@@ -30,5 +31,6 @@ class VitConfiguration {
     this.showCardBorder = true,
     this.inputMode = VitInputMode.floatingLabel,
     this.inputLabelStyle,
+    this.formBackArrowIcon,
   });
 }

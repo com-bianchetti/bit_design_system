@@ -186,6 +186,12 @@ class VitChipGroup<T> extends StatefulWidget {
   /// Defaults to true.
   final bool solidBackground;
 
+  /// Whether the chip group is required.
+  ///
+  /// When true, the chip group must have at least one option selected.
+  /// Defaults to false.
+  final bool required;
+
   /// Creates a [VitChipGroup].
   ///
   /// The [options] parameter is required and must contain at least one option.
@@ -214,6 +220,7 @@ class VitChipGroup<T> extends StatefulWidget {
     this.id,
     this.validator,
     this.solidBackground = true,
+    this.required = false,
   });
 
   @override
@@ -321,10 +328,18 @@ class _VitChipGroupState<T> extends State<VitChipGroup<T>> {
       return FormField<dynamic>(
         initialValue: widget.multiSelect ? _selectedValues : _selectedValue,
         validator: (value) {
-          if (widget.validator == null) return null;
-          return widget.validator!(
-            widget.multiSelect ? _selectedValues : _selectedValue,
-          );
+          if (widget.validator != null) {
+            return widget.validator!(
+              widget.multiSelect ? _selectedValues : _selectedValue,
+            );
+          }
+          if (widget.required &&
+              (widget.multiSelect
+                  ? _selectedValues.isEmpty
+                  : _selectedValue == null)) {
+            return context.theme.bitStrings.selectAtLeastOneOption;
+          }
+          return null;
         },
         onSaved: (value) {
           final form = VitFormProvider.maybeOf(context);

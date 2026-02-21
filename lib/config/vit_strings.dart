@@ -84,6 +84,7 @@ class VitStrings {
   final String day;
   final String month;
   final String year;
+  final String selectAtLeastOneOption;
 
   const VitStrings({
     this.confirm = 'Confirm',
@@ -169,5 +170,6 @@ class VitStrings {
     this.day = 'DAY',
     this.month = 'MONTH',
     this.year = 'YEAR',
+    this.selectAtLeastOneOption = 'Please select at least one option',
   });
 }

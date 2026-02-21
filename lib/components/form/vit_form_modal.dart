@@ -110,9 +110,12 @@ class _VitFormModalHeader extends StatelessWidget {
                     Row(
                       children: [
                         Material(
+                          color: context.theme.backgroundColor,
                           child: IconButton(
                             onPressed: () => _handleBackButton(context),
-                            icon: const Icon(Icons.arrow_back),
+                            icon:
+                                context.theme.configuration.formBackArrowIcon ??
+                                const Icon(Icons.arrow_back),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                           ),
