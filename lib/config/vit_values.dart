@@ -47,6 +47,10 @@ class VitValues {
   final double loadingComfortableStrokeWidth;
   final double loadingStandardStrokeWidth;
   final double loadingCompactStrokeWidth;
+  final double iconButtonComfortableSize;
+  final double iconButtonStandardSize;
+  final double iconButtonCompactSize;
+  final BorderRadius? iconButtonGlobalRadius;
 
   const VitValues({
     this.buttonComfortableHeight = 65,
@@ -65,6 +69,7 @@ class VitValues {
     this.rawInputStandardFontSize = 24,
     this.rawInputCompactFontSize = 21,
     this.popoverBorderRadius = 25,
+    this.iconButtonGlobalRadius,
     this.inputComfortablePadding = const EdgeInsets.symmetric(
       horizontal: 16,
       vertical: 26,
@@ -149,5 +154,8 @@ class VitValues {
     this.loadingComfortableStrokeWidth = 5,
     this.loadingStandardStrokeWidth = 4,
     this.loadingCompactStrokeWidth = 3,
+    this.iconButtonComfortableSize = 65,
+    this.iconButtonStandardSize = 50,
+    this.iconButtonCompactSize = 40,
   });
 }

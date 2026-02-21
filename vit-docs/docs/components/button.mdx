@@ -20,7 +20,7 @@ import 'package:vit_design_system/vit_design_system.dart';
 
 ## Button Variants
 
-The Vit Design System provides five distinct button variants, each designed for specific use cases. Understanding when to use each variant helps create a clear visual hierarchy and improves user experience.
+The Vit Design System provides six distinct button variants, each designed for specific use cases. Understanding when to use each variant helps create a clear visual hierarchy and improves user experience.
 
 ### VitButton (Primary)
 
@@ -112,6 +112,21 @@ VitSocialButton.facebook(
 VitSocialButton.apple(
   text: 'Sign in with Apple',
   onPressed: () {},
+)
+```
+
+### VitIconButton
+
+The icon button is designed for actions represented solely by an icon, without text labels. It handles press animations, sizing, and accessibility features automatically while adapting to your theme. It's ideal for actions in constrained spaces like app bars, cards, or list tiles where a full text button would be overwhelming.
+
+The icon button automatically manages its size based on visual density, similar to other buttons, but maintains a perfectly square aspect ratio, and responds to loading states with a specific shimmer.
+
+```dart
+VitIconButton(
+  icon: Icon(Icons.add),
+  onPressed: () {
+    print('Icon button pressed');
+  },
 )
 ```
 
@@ -212,6 +227,21 @@ Additional properties available only on the primary VitButton variant:
 |----------|------|---------|-------------|
 | `backgroundColor` | `Color?` | theme primary | Button fill color (automatically darkens on press) |
 | `foregroundColor` | `Color?` | theme onPrimary | Text and icon color (ensures contrast with background) |
+| `darkenFactor` | `double` | `0.2` | Press animation intensity (0.0 = no change, 1.0 = black) |
+
+### VitIconButton Specific
+
+Properties available specifically for the icon button variant:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `Widget` | required | The primay visual element shown to the user |
+| `size` | `double?` | `null` | Explicit size for the button (both width and height) |
+| `iconColor` | `Color?` | theme | Foreground color of the icon |
+| `backgroundColor` | `Color?` | theme | Button fill color |
+| `disabledIconColor` | `Color?` | theme | Icon color when button is disabled |
+| `padding` | `EdgeInsetsGeometry`| `zero` | Internal padding for the icon content |
+| `tooltip` | `String?` | `null` | Tooltip text to show on long press or hover |
 | `darkenFactor` | `double` | `0.2` | Press animation intensity (0.0 = no change, 1.0 = black) |
 
 ### VitOutlinedButton Specific

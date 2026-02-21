@@ -1,6 +1,7 @@
 import 'package:example/accordion/vit_accordion.dart';
 import 'package:example/avatar/vit_avatar.dart';
 import 'package:example/button/vit_button.dart';
+import 'package:example/button/vit_icon_button.dart';
 import 'package:example/button/vit_social_button.dart';
 import 'package:example/badge/vit_badge.dart';
 import 'package:example/card/vit_card.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
         VitTextStory,
         VitTextRichStory,
         VitButtonStory,
+        VitIconButtonStory,
         VitSocialButtonStory,
         VitAvatarStory,
         VitBadgeStory,
