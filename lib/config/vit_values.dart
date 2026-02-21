@@ -47,9 +47,9 @@ class VitValues {
   final double loadingComfortableStrokeWidth;
   final double loadingStandardStrokeWidth;
   final double loadingCompactStrokeWidth;
-  final double iconButtonComfortableSize;
-  final double iconButtonStandardSize;
-  final double iconButtonCompactSize;
+  final EdgeInsetsGeometry iconButtonComfortablePadding;
+  final EdgeInsetsGeometry iconButtonStandardPadding;
+  final EdgeInsetsGeometry iconButtonCompactPadding;
   final BorderRadius? iconButtonGlobalRadius;
 
   const VitValues({
@@ -154,8 +154,8 @@ class VitValues {
     this.loadingComfortableStrokeWidth = 5,
     this.loadingStandardStrokeWidth = 4,
     this.loadingCompactStrokeWidth = 3,
-    this.iconButtonComfortableSize = 65,
-    this.iconButtonStandardSize = 50,
-    this.iconButtonCompactSize = 40,
+    this.iconButtonComfortablePadding = const EdgeInsets.all(12),
+    this.iconButtonStandardPadding = const EdgeInsets.all(8),
+    this.iconButtonCompactPadding = const EdgeInsets.all(4),
   });
 }

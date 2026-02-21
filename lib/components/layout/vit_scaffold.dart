@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:vit_design_system/components/layout/vit_appbar.dart';
 import 'package:vit_design_system/vit_design_system.dart';
 
 class VitScaffold extends StatelessWidget {

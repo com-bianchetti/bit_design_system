@@ -74,11 +74,6 @@ class VitIconButton extends StatefulWidget {
   /// If null, uses the theme's on-primary color or on-background.
   final Color? iconColor;
 
-  /// Explicit size for the button (both width and height).
-  ///
-  /// If null, the size is determined by [visualDensity].
-  final double? size;
-
   /// Internal padding for the icon content.
   ///
   /// Defaults to EdgeInsets.zero.
@@ -137,7 +132,6 @@ class VitIconButton extends StatefulWidget {
     this.darkenFactor = 0.2,
     this.backgroundColor,
     this.iconColor,
-    this.size,
     this.padding = EdgeInsets.zero,
     this.visualDensity,
     this.borderRadius,
@@ -204,17 +198,17 @@ class _VitIconButtonState extends State<VitIconButton> {
     }
   }
 
-  double _getSize(VisualDensity density, BuildContext context) {
-    if (widget.size != null) {
-      return widget.size!;
+  EdgeInsetsGeometry _getPadding(VisualDensity density, BuildContext context) {
+    if (widget.padding != EdgeInsets.zero) {
+      return widget.padding;
     }
 
     final values = context.theme.values;
     return switch (density) {
-      VisualDensity.comfortable => values.iconButtonComfortableSize,
-      VisualDensity.standard => values.iconButtonStandardSize,
-      VisualDensity.compact => values.iconButtonCompactSize,
-      _ => values.iconButtonStandardSize,
+      VisualDensity.comfortable => values.iconButtonComfortablePadding,
+      VisualDensity.standard => values.iconButtonStandardPadding,
+      VisualDensity.compact => values.iconButtonCompactPadding,
+      _ => values.iconButtonStandardPadding,
     };
   }
 
@@ -226,14 +220,12 @@ class _VitIconButtonState extends State<VitIconButton> {
 
     if (effectiveLoading) {
       final visualDensity = widget.visualDensity ?? theme.visualDensity;
-      final size = _getSize(visualDensity, context);
+      final effectivePadding = _getPadding(visualDensity, context);
       final borderRadius = widget.borderRadius ?? theme.borderRadius;
 
       return VitSkeletonShimmer(
         child: Container(
-          width: size,
-          height: size,
-          padding: widget.padding,
+          padding: effectivePadding,
           decoration: BoxDecoration(
             color: theme.skeletonBaseColor,
             borderRadius: borderRadius,
@@ -244,24 +236,22 @@ class _VitIconButtonState extends State<VitIconButton> {
                   )
                 : null,
           ),
-          child: Center(
-            child: Opacity(
-              opacity: 0,
-              child: widget.icon,
-            ),
+          child: Opacity(
+            opacity: 0,
+            child: widget.icon,
           ),
         ),
       );
     }
 
-    final baseColor = widget.backgroundColor ?? theme.primaryColor;
+    final baseColor = widget.backgroundColor ?? theme.cardColor;
     final currentColor = widget.isDisabled
         ? widget.disabledColor ?? theme.disabledColor
         : _isPressed
         ? _getDarkerColor(baseColor, widget.darkenFactor)
         : baseColor;
     final visualDensity = widget.visualDensity ?? theme.visualDensity;
-    final size = _getSize(visualDensity, context);
+    final effectivePadding = _getPadding(visualDensity, context);
     final borderRadius =
         widget.borderRadius ??
         (context.theme.values.iconButtonGlobalRadius ?? theme.borderRadius);
@@ -278,9 +268,7 @@ class _VitIconButtonState extends State<VitIconButton> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
-          width: size,
-          height: size,
-          padding: widget.padding,
+          padding: effectivePadding,
           decoration: BoxDecoration(
             color: currentColor,
             borderRadius: borderRadius,
@@ -291,15 +279,13 @@ class _VitIconButtonState extends State<VitIconButton> {
                   )
                 : null,
           ),
-          child: Center(
-            child: IconTheme(
-              data: IconThemeData(
-                color: widget.isDisabled
-                    ? widget.disabledIconColor ?? theme.cardVariantColor
-                    : widget.iconColor ?? theme.onPrimaryColor,
-              ),
-              child: widget.icon,
+          child: IconTheme(
+            data: IconThemeData(
+              color: widget.isDisabled
+                  ? widget.disabledIconColor ?? theme.cardVariantColor
+                  : widget.iconColor ?? theme.onBackrgroundColor,
             ),
+            child: widget.icon,
           ),
         ),
       ),

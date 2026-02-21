@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:vit_design_system/vit_design_system.dart';
-import 'package:vit_design_system/components/layout/vit_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 

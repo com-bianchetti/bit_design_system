@@ -133,31 +133,6 @@ void main() {
       expect(iconTheme.data.color, customColor);
     });
 
-    testWidgets('applies custom size', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: VitAppTheme(
-              theme: VitTheme(),
-              darkTheme: null,
-              changeThemeMode: (_) {},
-              child: VitIconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {},
-                size: 80,
-              ),
-            ),
-          ),
-        ),
-      );
-
-      final container = tester.widget<AnimatedContainer>(
-        find.byType(AnimatedContainer).first,
-      );
-      expect(container.constraints?.maxWidth, 80);
-      expect(container.constraints?.maxHeight, 80);
-    });
-
     testWidgets('applies custom padding', (tester) async {
       const customPadding = EdgeInsets.all(20);
       await tester.pumpWidget(
@@ -230,7 +205,7 @@ void main() {
       final container = tester.widget<AnimatedContainer>(
         find.byType(AnimatedContainer).first,
       );
-      expect(container.constraints?.maxHeight, 65);
+      expect(container.padding, const EdgeInsets.all(20));
     });
 
     testWidgets('applies semantic label for accessibility', (tester) async {
