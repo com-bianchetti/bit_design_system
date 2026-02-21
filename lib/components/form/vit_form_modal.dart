@@ -123,7 +123,7 @@ class _VitFormModalHeader extends StatelessWidget {
                         const SizedBox(width: 16),
                         if (currentPage.title != null)
                           Expanded(
-                            child: VitTitle(
+                            child: VitTitleSmall(
                               currentPage.title!,
                               bold: true,
                             ),
@@ -219,7 +219,8 @@ class _VitFormModalContentState extends State<_VitFormModalContent>
                       pageIndex: index,
                       child: Form(
                         key: widget.controller.formKeys[index],
-                        child: Padding(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
                           padding: widget.contentPadding,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
