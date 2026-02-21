@@ -3,3 +3,8 @@ enum VitInputMode {
   fixedLabel,
   noLabel,
 }
+
+enum VitPickerVariant {
+  input,
+  card,
+}

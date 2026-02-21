@@ -56,6 +56,17 @@ class _VitDateStoryWidgetState extends State<_VitDateStoryWidget> {
                 VitText('Selected: ${_formatDate(selectedBirthDate!)}'),
               ],
               const SizedBox(height: 30),
+              const VitTitle('Card Variant Date Picker'),
+              const SizedBox(height: 10),
+              VitDate(
+                label: 'Event Date',
+                hintText: 'Select event date',
+                variant: VitPickerVariant.card,
+                onChanged: (date) {
+                  // Internal state updates the UI
+                },
+              ),
+              const SizedBox(height: 30),
               const VitTitle('Date Picker with Initial Value'),
               const SizedBox(height: 10),
               VitDate(
@@ -150,6 +161,18 @@ class _VitDateStoryWidgetState extends State<_VitDateStoryWidget> {
                   'Selected range: ${_formatDate(travelStartDate!)} - ${_formatDate(travelEndDate!)}',
                 ),
               ],
+              const SizedBox(height: 30),
+              const VitTitle('Card Variant Date Range Picker'),
+              const SizedBox(height: 10),
+              VitDate(
+                label: 'Project Duration',
+                hintText: 'Select duration',
+                rangeSelection: true,
+                variant: VitPickerVariant.card,
+                onRangeChanged: (start, end) {
+                  // Internal state updates the UI
+                },
+              ),
               const SizedBox(height: 30),
               const VitTitle('Date Range with Initial Values'),
               const SizedBox(height: 10),

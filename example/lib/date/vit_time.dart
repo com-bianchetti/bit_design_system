@@ -53,6 +53,18 @@ class _VitTimeStoryWidgetState extends State<_VitTimeStoryWidget> {
                 VitText('Selected: ${basicTime!.format(context)}'),
               ],
               const SizedBox(height: 30),
+              const VitTitle('Card Variant Time Picker (12-hour AM/PM)'),
+              const SizedBox(height: 10),
+              VitTime(
+                label: 'Event Time',
+                hintText: 'Select your event time',
+                mode: VitTimeMode.twentyFourHour,
+                variant: VitPickerVariant.card,
+                onChanged: (time) {
+                  // The card variant updates state internally and behaves the same
+                },
+              ),
+              const SizedBox(height: 30),
               const VitTitle('Basic Time Picker (24-hour)'),
               const SizedBox(height: 10),
               VitTime(

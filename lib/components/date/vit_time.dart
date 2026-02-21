@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:vit_design_system/components/button/vit_button.dart';
+import 'package:vit_design_system/components/card/vit_card.dart';
 import 'package:vit_design_system/components/form/vit_form.dart';
 import 'package:vit_design_system/components/input/vit_input.dart';
 import 'package:vit_design_system/components/popover/vit_popover.dart';
 import 'package:vit_design_system/components/skeleton/vit_loading_scope.dart';
+import 'package:vit_design_system/components/skeleton/vit_skeleton_shimmer.dart';
 import 'package:vit_design_system/components/text/vit_text.dart';
 import 'package:vit_design_system/config/vit_types.dart';
 import 'package:vit_design_system/utils/extensions.dart';
@@ -140,6 +142,9 @@ class VitTime extends StatefulWidget {
   /// VitTimeMode.twentyFourHour: 24-hour format.
   final VitTimeMode mode;
 
+  /// The presentation variant of the picker, `input` or `card`.
+  final VitPickerVariant variant;
+
   /// Unique identifier for form data collection.
   ///
   /// When used within a [VitForm], this id will be used as the key
@@ -190,6 +195,7 @@ class VitTime extends StatefulWidget {
     this.confirmButtonText,
     this.selectedColor,
     this.mode = VitTimeMode.twentyFourHour,
+    this.variant = VitPickerVariant.input,
     this.id,
     this.isLoading = false,
   });
@@ -331,18 +337,175 @@ class _VitTimeState extends State<VitTime> {
       isLoading: effectiveLoading,
     );
 
-    if (widget.id != null) {
-      return FormField<TimeOfDay>(
-        initialValue: _selectedTime,
-        onSaved: (value) {
-          final form = VitFormProvider.maybeOf(context);
-          form?.save(widget.id!, _selectedTime);
-        },
-        builder: (field) => input,
-      );
+    Widget content;
+    if (widget.variant == VitPickerVariant.card) {
+      if (effectiveLoading) {
+        content = const VitSkeletonShimmer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              VitCard(
+                height: 120,
+                child: SizedBox.shrink(),
+              ),
+            ],
+          ),
+        );
+      } else {
+        final strings = context.theme.bitStrings;
+        final isAmPm = widget.mode == VitTimeMode.amPm;
+
+        String displayHour = '--';
+        String displayMinute = '--';
+        String amPmText = '';
+
+        if (_selectedTime != null) {
+          if (isAmPm) {
+            int h = _selectedTime!.hour % 12;
+            if (h == 0) h = 12;
+            displayHour = h.toString().padLeft(2, '0');
+            amPmText = _selectedTime!.hour < 12 ? 'AM' : 'PM';
+          } else {
+            displayHour = _selectedTime!.hour.toString().padLeft(2, '0');
+          }
+          displayMinute = _selectedTime!.minute.toString().padLeft(2, '0');
+        }
+
+        content = FormField<TimeOfDay>(
+          initialValue: _selectedTime,
+          validator: (value) => _validateTime(null),
+          onSaved: (value) {
+            if (widget.id != null) {
+              final form = VitFormProvider.maybeOf(context);
+              form?.save(widget.id!, _selectedTime);
+            }
+          },
+          builder: (field) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                VitCard(
+                  onTap: _showTimePicker,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 32,
+                    horizontal: 16,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          VitText(
+                            displayHour,
+                            style: context.theme.titleBig.copyWith(
+                              fontSize: 56,
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          VitText(
+                            strings.hours,
+                            style: context.theme.label.copyWith(
+                              color: context.theme.onBackgroundVariantColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: VitText(
+                          ':',
+                          style: context.theme.titleBig.copyWith(
+                            fontSize: 32,
+                            color: context.theme.disabledColor,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          VitText(
+                            displayMinute,
+                            style: context.theme.titleBig.copyWith(
+                              fontSize: 56,
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          VitText(
+                            strings.minutes,
+                            style: context.theme.label.copyWith(
+                              color: context.theme.onBackgroundVariantColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (isAmPm) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: VitText(
+                            ':',
+                            style: context.theme.titleBig.copyWith(
+                              fontSize: 32,
+                              color: Colors.transparent,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            VitText(
+                              amPmText.isEmpty ? '--' : amPmText,
+                              style: context.theme.titleBig.copyWith(
+                                fontSize: 56,
+                                height: 1,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            VitText(
+                              strings.period,
+                              style: context.theme.label.copyWith(
+                                color: context.theme.onBackgroundVariantColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                if (field.hasError) ...[
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: VitText(
+                      field.errorText ?? '',
+                      style: context.theme.bodySmall.copyWith(
+                        color: context.theme.errorColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      if (widget.id != null) {
+        content = FormField<TimeOfDay>(
+          initialValue: _selectedTime,
+          onSaved: (value) {
+            final form = VitFormProvider.maybeOf(context);
+            form?.save(widget.id!, _selectedTime);
+          },
+          builder: (field) => input,
+        );
+      } else {
+        content = input;
+      }
     }
 
-    return input;
+    return content;
   }
 }
 

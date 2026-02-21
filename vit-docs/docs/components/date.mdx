@@ -77,6 +77,21 @@ VitDate(
 )
 ```
 
+### Card Variant
+
+Display the selected date (or date range) in a large visually appealing card instead of an input field.
+
+```dart
+VitDate(
+  id: 'eventDateCard',
+  label: 'Event Date',
+  variant: VitPickerVariant.card, // Set layout as card
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
 ### Controlled Date Picker
 
 Use controlled state for dynamic date management and complex validation scenarios.
@@ -189,6 +204,7 @@ VitDate(
 | `rangeSelection` | `bool` | Enable range mode |
 | `firstDate` | `DateTime?` | Minimum date |
 | `lastDate` | `DateTime?` | Maximum date |
+| `variant` | `VitPickerVariant` | Visual variant (`input` / `card`) |
 | `validator` | `FormFieldValidator?` | Validation |
 
 ## Advanced Usage

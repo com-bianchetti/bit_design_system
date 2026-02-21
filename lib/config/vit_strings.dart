@@ -78,6 +78,12 @@ class VitStrings {
   final String languageTurkish;
   final String languageGreek;
   final String languageOther;
+  final String hours;
+  final String minutes;
+  final String period;
+  final String day;
+  final String month;
+  final String year;
 
   const VitStrings({
     this.confirm = 'Confirm',
@@ -157,5 +163,11 @@ class VitStrings {
     this.languageTurkish = 'Turkish',
     this.languageGreek = 'Greek',
     this.languageOther = 'Other',
+    this.hours = 'HOURS',
+    this.minutes = 'MINUTES',
+    this.period = 'PERIOD',
+    this.day = 'DAY',
+    this.month = 'MONTH',
+    this.year = 'YEAR',
   });
 }

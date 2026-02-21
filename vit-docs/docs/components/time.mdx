@@ -73,6 +73,22 @@ VitTime(
 )
 ```
 
+### Card Variant
+
+Display the selected time in a large, visually appealing card format rather than an input field.
+
+```dart
+VitTime(
+  id: 'eventTimeCard',
+  label: 'Event Time',
+  variant: VitPickerVariant.card,
+  mode: VitTimeMode.amPm,
+  onChanged: (time) {
+    print('Selected: $time');
+  },
+)
+```
+
 ### Controlled Time Picker
 
 Use controlled state for dynamic time management and complex validation scenarios.
@@ -102,6 +118,7 @@ VitTime(
 | `value` | `TimeOfDay?` | Controlled time |
 | `initialValue` | `TimeOfDay?` | Uncontrolled initial time |
 | `mode` | `VitTimeMode` | Enable 12-hour or 24-hour mode (`amPm` / `twentyFourHour`) |
+| `variant` | `VitPickerVariant` | Visual variant (`input` / `card`) |
 | `validator` | `FormFieldValidator?` | Validation |
 | `enabled` | `bool` | Whether picker is interactive |
 
