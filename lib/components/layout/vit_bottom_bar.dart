@@ -1262,6 +1262,11 @@ class VitNavigationScaffold extends StatefulWidget {
   /// Whether to extend body behind bottom bar.
   final bool extendBody;
 
+  /// Controls the inner [VitLoadingScope].
+  ///
+  /// Defaults to false.
+  final bool loading;
+
   /// Creates a [VitNavigationScaffold].
   const VitNavigationScaffold({
     super.key,
@@ -1308,6 +1313,7 @@ class VitNavigationScaffold extends StatefulWidget {
     this.scaffoldBackgroundColor,
     this.extendBodyBehindAppBar = false,
     this.extendBody = false,
+    this.loading = false,
   }) : assert(
          items.length == pages.length,
          'items and pages must have the same length',
@@ -1442,12 +1448,15 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
         extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
         floatingActionButton: widget.floatingActionButton,
         floatingActionButtonLocation: widget.floatingActionButtonLocation,
-        body: Row(
-          children: [
-            if (widget.sideBarPosition == VitSideBarPosition.left) bottomBar,
-            Expanded(child: body),
-            if (widget.sideBarPosition == VitSideBarPosition.right) bottomBar,
-          ],
+        body: VitLoadingScope(
+          loading: widget.loading,
+          child: Row(
+            children: [
+              if (widget.sideBarPosition == VitSideBarPosition.left) bottomBar,
+              Expanded(child: body),
+              if (widget.sideBarPosition == VitSideBarPosition.right) bottomBar,
+            ],
+          ),
         ),
       );
     }
@@ -1460,7 +1469,10 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
       extendBody: widget.extendBody,
       floatingActionButton: widget.floatingActionButton,
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
-      body: body,
+      body: VitLoadingScope(
+        loading: widget.loading,
+        child: body,
+      ),
       bottomNavigationBar: bottomBar,
     );
   }

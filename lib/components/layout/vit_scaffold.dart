@@ -74,6 +74,7 @@ class VitScaffold extends StatelessWidget {
     this.navigationBackgroundColor,
     this.preserveNavigationState = true,
     this.showAppBarBorder = true,
+    this.loading = false,
   }) : assert(
          body != null ||
              children != null ||
@@ -550,7 +551,15 @@ class VitScaffold extends StatelessWidget {
   /// Defaults to true.
   final bool preserveNavigationState;
 
+  /// Whether to show the app bar border.
+  ///
+  /// Defaults to true.
   final bool showAppBarBorder;
+
+  /// Controls the inner [VitLoadingScope].
+  ///
+  /// Defaults to false.
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -607,6 +616,7 @@ class VitScaffold extends StatelessWidget {
         scaffoldBackgroundColor: backgroundColor,
         extendBodyBehindAppBar: extendBodyBehindAppBar,
         extendBody: extendBody,
+        loading: loading,
       );
     }
 
@@ -650,7 +660,10 @@ class VitScaffold extends StatelessWidget {
                   showBorder: showAppBarBorder,
                 ))
           : null,
-      body: body ?? defaultBody,
+      body: VitLoadingScope(
+        loading: loading,
+        child: body ?? defaultBody ?? const SizedBox.shrink(),
+      ),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
       floatingActionButtonAnimator: floatingActionButtonAnimator,
