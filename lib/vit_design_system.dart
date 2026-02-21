@@ -66,3 +66,4 @@ export 'components/layout/vit_scaffold.dart';
 export 'components/layout/vit_list_view.dart';
 export 'components/layout/vit_bottom_bar.dart';
 export 'components/layout/vit_appbar.dart';
+export 'components/layout/vit_status.dart';

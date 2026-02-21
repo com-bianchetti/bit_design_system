@@ -33,6 +33,7 @@ import 'package:example/switch/vit_switch.dart';
 import 'package:example/text/vit_text.dart';
 import 'package:example/text/vit_text_rich.dart';
 import 'package:example/toast/vit_toast.dart';
+import 'package:example/layout/vit_status.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
         VitListViewStory,
         VitScaffoldStory,
         VitBottomBarStory,
+        VitStatusStory,
       ],
     );
   }

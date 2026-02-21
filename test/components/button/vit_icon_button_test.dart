@@ -205,7 +205,7 @@ void main() {
       final container = tester.widget<AnimatedContainer>(
         find.byType(AnimatedContainer).first,
       );
-      expect(container.padding, const EdgeInsets.all(20));
+      expect(container.padding, const EdgeInsets.all(12));
     });
 
     testWidgets('applies semantic label for accessibility', (tester) async {
