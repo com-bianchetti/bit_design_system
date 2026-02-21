@@ -608,17 +608,21 @@ class _VitAppState extends State<VitApp> {
         surfaceContainerHighest: theme.elevatedCardColor,
         surfaceVariant: theme.cardVariantColor,
       ),
-      textTheme: TextTheme(
-        titleLarge: theme.titleBig,
-        titleMedium: theme.title,
-        titleSmall: theme.titleSmall,
-        bodyLarge: theme.bodyBig,
-        bodyMedium: theme.body,
-        bodySmall: theme.bodySmall,
-        labelLarge: theme.labelBig,
-        labelMedium: theme.label,
-        labelSmall: theme.labelSmall,
-      ),
+      textTheme:
+          TextTheme(
+            titleLarge: theme.titleBig,
+            titleMedium: theme.title,
+            titleSmall: theme.titleSmall,
+            bodyLarge: theme.bodyBig,
+            bodyMedium: theme.body,
+            bodySmall: theme.bodySmall,
+            labelLarge: theme.labelBig,
+            labelMedium: theme.label,
+            labelSmall: theme.labelSmall,
+          )..apply(
+            bodyColor: theme.onBackrgroundColor,
+            displayColor: theme.onBackrgroundColor,
+          ),
     );
 
     final bitDarkTheme = darkTheme == null
@@ -642,17 +646,21 @@ class _VitAppState extends State<VitApp> {
               surfaceContainerHighest: darkTheme.elevatedCardColor,
               surfaceVariant: darkTheme.cardVariantColor,
             ),
-            textTheme: TextTheme(
-              titleLarge: darkTheme.titleBig,
-              titleMedium: darkTheme.title,
-              titleSmall: darkTheme.titleSmall,
-              bodyLarge: darkTheme.bodyBig,
-              bodyMedium: darkTheme.body,
-              bodySmall: darkTheme.bodySmall,
-              labelLarge: darkTheme.labelBig,
-              labelMedium: darkTheme.label,
-              labelSmall: darkTheme.labelSmall,
-            ),
+            textTheme:
+                TextTheme(
+                  titleLarge: darkTheme.titleBig,
+                  titleMedium: darkTheme.title,
+                  titleSmall: darkTheme.titleSmall,
+                  bodyLarge: darkTheme.bodyBig,
+                  bodyMedium: darkTheme.body,
+                  bodySmall: darkTheme.bodySmall,
+                  labelLarge: darkTheme.labelBig,
+                  labelMedium: darkTheme.label,
+                  labelSmall: darkTheme.labelSmall,
+                )..apply(
+                  bodyColor: theme.onBackrgroundColor,
+                  displayColor: theme.onBackrgroundColor,
+                ),
           );
 
     return VitAppTheme(

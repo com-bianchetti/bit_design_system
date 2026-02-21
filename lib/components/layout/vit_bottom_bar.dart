@@ -624,7 +624,6 @@ class VitBottomBarState extends State<VitBottomBar>
     return Material(
       elevation: widget.elevation,
       color: backgroundColor,
-      borderRadius: effectiveBorderRadius,
       child: Container(
         height: bottomBarHeight,
         padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 8),
@@ -767,6 +766,7 @@ class VitBottomBarState extends State<VitBottomBar>
     Widget button = InkWell(
       onTap: item.enabled ? () => _onItemTap(index) : null,
       borderRadius: BorderRadius.circular(12),
+      splashFactory: NoSplash.splashFactory,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: itemWidget,
@@ -780,7 +780,13 @@ class VitBottomBarState extends State<VitBottomBar>
       );
     }
 
-    return Expanded(child: button);
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+      ),
+      child: Expanded(child: button),
+    );
   }
 
   Widget _buildAnimatedIcon(
@@ -1431,7 +1437,8 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
     if (isTablet) {
       return Scaffold(
         appBar: widget.appBar,
-        backgroundColor: widget.scaffoldBackgroundColor,
+        backgroundColor:
+            widget.scaffoldBackgroundColor ?? context.theme.backgroundColor,
         extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
         floatingActionButton: widget.floatingActionButton,
         floatingActionButtonLocation: widget.floatingActionButtonLocation,
@@ -1447,7 +1454,8 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
 
     return Scaffold(
       appBar: widget.appBar,
-      backgroundColor: widget.scaffoldBackgroundColor,
+      backgroundColor:
+          widget.scaffoldBackgroundColor ?? context.theme.backgroundColor,
       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
       extendBody: widget.extendBody,
       floatingActionButton: widget.floatingActionButton,

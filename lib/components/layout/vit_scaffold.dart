@@ -1,8 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vit_design_system/components/layout/vit_appbar.dart';
-import 'package:vit_design_system/components/layout/vit_bottom_bar.dart';
-import 'package:vit_design_system/components/layout/vit_list_view.dart';
+import 'package:vit_design_system/vit_design_system.dart';
 
 class VitScaffold extends StatelessWidget {
   const VitScaffold({
@@ -663,7 +662,7 @@ class VitScaffold extends StatelessWidget {
       endDrawer: endDrawer,
       onEndDrawerChanged: onEndDrawerChanged,
       drawerScrimColor: drawerScrimColor,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? context.theme.backgroundColor,
       bottomNavigationBar: bottomNavigationBar,
       bottomSheet: bottomSheet,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
