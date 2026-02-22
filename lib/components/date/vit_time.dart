@@ -15,9 +15,11 @@ import 'package:vit_design_system/utils/extensions.dart';
 ///
 /// [amPm] displays a 12-hour format with AM/PM selection.
 /// [twentyFourHour] displays a 24-hour format.
+/// [duration] displays a duration format (hours and minutes).
 enum VitTimeMode {
   amPm,
   twentyFourHour,
+  duration,
 }
 
 /// Data class representing the selected time for form validation and data collection.
@@ -140,6 +142,7 @@ class VitTime extends StatefulWidget {
   /// The mode of the time picker.
   /// VitTimeMode.amPm: 12-hour format with AM/PM selection.
   /// VitTimeMode.twentyFourHour: 24-hour format.
+  /// VitTimeMode.duration: infinite hour format for selecting durations.
   final VitTimeMode mode;
 
   /// The presentation variant of the picker, `input` or `card`.
@@ -237,7 +240,11 @@ class _VitTimeState extends State<VitTime> {
 
   void _updateDisplayText() {
     if (_selectedTime != null) {
-      if (widget.mode == VitTimeMode.amPm) {
+      if (widget.mode == VitTimeMode.duration) {
+        final hour = _selectedTime!.hour;
+        final minute = _selectedTime!.minute.toString().padLeft(2, '0');
+        _displayController.text = '${hour}h ${minute}m';
+      } else if (widget.mode == VitTimeMode.amPm) {
         final loc = MaterialLocalizations.of(context);
         _displayController.text = loc.formatTimeOfDay(
           _selectedTime!,
@@ -354,13 +361,16 @@ class _VitTimeState extends State<VitTime> {
       } else {
         final strings = context.theme.bitStrings;
         final isAmPm = widget.mode == VitTimeMode.amPm;
+        final isDuration = widget.mode == VitTimeMode.duration;
 
         String displayHour = '--';
         String displayMinute = '--';
         String amPmText = '';
 
         if (_selectedTime != null) {
-          if (isAmPm) {
+          if (isDuration) {
+            displayHour = _selectedTime!.hour.toString();
+          } else if (isAmPm) {
             int h = _selectedTime!.hour % 12;
             if (h == 0) h = 12;
             displayHour = h.toString().padLeft(2, '0');
@@ -615,10 +625,14 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
                     Expanded(
                       child: _buildWheel(
                         controller: _hourController,
-                        itemCount: widget.mode == VitTimeMode.amPm ? 12 : 24,
+                        itemCount: widget.mode == VitTimeMode.duration
+                            ? null
+                            : (widget.mode == VitTimeMode.amPm ? 12 : 24),
                         onChanged: (index) {
                           setState(() {
-                            if (widget.mode == VitTimeMode.amPm) {
+                            if (widget.mode == VitTimeMode.duration) {
+                              _selectedHour = index;
+                            } else if (widget.mode == VitTimeMode.amPm) {
                               _selectedHour = index + 1;
                             } else {
                               _selectedHour = index;
@@ -626,9 +640,13 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
                           });
                         },
                         itemBuilder: (context, index) {
+                          if (index < 0) return null;
                           int value = widget.mode == VitTimeMode.amPm
                               ? index + 1
                               : index;
+                          if (widget.mode == VitTimeMode.duration) {
+                            return _buildWheelItem(value.toString());
+                          }
                           return _buildWheelItem(
                             value.toString().padLeft(2, '0'),
                           );
@@ -695,9 +713,9 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
 
   Widget _buildWheel({
     required FixedExtentScrollController controller,
-    required int itemCount,
+    required int? itemCount,
     required ValueChanged<int> onChanged,
-    required IndexedWidgetBuilder itemBuilder,
+    required NullableIndexedWidgetBuilder itemBuilder,
   }) {
     return ListWheelScrollView.useDelegate(
       controller: controller,

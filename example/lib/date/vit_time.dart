@@ -23,6 +23,7 @@ class _VitTimeStoryWidget extends StatefulWidget {
 class _VitTimeStoryWidgetState extends State<_VitTimeStoryWidget> {
   TimeOfDay? basicTime;
   TimeOfDay? twentyFourTime;
+  TimeOfDay? durationTime;
   TimeOfDay? controlledTime = TimeOfDay(hour: 10, minute: 30);
 
   @override
@@ -81,6 +82,25 @@ class _VitTimeStoryWidgetState extends State<_VitTimeStoryWidget> {
                 const SizedBox(height: 10),
                 VitText(
                   'Selected: ${twentyFourTime!.hour.toString().padLeft(2, '0')}:${twentyFourTime!.minute.toString().padLeft(2, '0')}',
+                ),
+              ],
+              const SizedBox(height: 30),
+              const VitTitle('Duration Time Picker (Infinite Hours)'),
+              const SizedBox(height: 10),
+              VitTime(
+                label: 'Task Duration',
+                hintText: 'Select how long the task will take',
+                mode: VitTimeMode.duration,
+                onChanged: (time) {
+                  setState(() {
+                    durationTime = time;
+                  });
+                },
+              ),
+              if (durationTime != null) ...[
+                const SizedBox(height: 10),
+                VitText(
+                  'Selected duration: ${durationTime!.hour}h ${durationTime!.minute}m',
                 ),
               ],
               const SizedBox(height: 30),

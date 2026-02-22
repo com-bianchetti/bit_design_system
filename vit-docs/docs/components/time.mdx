@@ -19,6 +19,7 @@ import 'package:vit_design_system/vit_design_system.dart';
 ## Key Features
 
 - **12-Hour & 24-Hour Formats**: Pick time using AM/PM format or 24-hour format
+- **Duration Mode**: Select durations spanning infinite hours seamlessly
 - **Interactive Wheels**: Smooth scrolling wheels for Hours, Minutes, and AM/PM selection
 - **Controlled & Uncontrolled**: Support both controlled and uncontrolled state management
 - **Form Integration**: Seamless integration with `VitForm` for data collection and validation
@@ -89,6 +90,22 @@ VitTime(
 )
 ```
 
+### Duration Picker
+
+Select a duration by using the infinite scrolling hours option without AM/PM limits.
+
+```dart
+VitTime(
+  id: 'task_duration',
+  label: 'Task Duration',
+  hintText: 'Select how long the task will take',
+  mode: VitTimeMode.duration,
+  onChanged: (time) {
+    print('Selected duration: ${time.hour}h ${time.minute}m');
+  },
+)
+```
+
 ### Controlled Time Picker
 
 Use controlled state for dynamic time management and complex validation scenarios.
@@ -117,7 +134,7 @@ VitTime(
 | `hintText` | `String?` | Placeholder |
 | `value` | `TimeOfDay?` | Controlled time |
 | `initialValue` | `TimeOfDay?` | Uncontrolled initial time |
-| `mode` | `VitTimeMode` | Enable 12-hour or 24-hour mode (`amPm` / `twentyFourHour`) |
+| `mode` | `VitTimeMode` | Enable 12-hour, 24-hour, or duration mode (`amPm` / `twentyFourHour` / `duration`) |
 | `variant` | `VitPickerVariant` | Visual variant (`input` / `card`) |
 | `validator` | `FormFieldValidator?` | Validation |
 | `enabled` | `bool` | Whether picker is interactive |
