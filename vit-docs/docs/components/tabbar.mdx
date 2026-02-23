@@ -1,0 +1,112 @@
+---
+sidebar_position: 18
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Tab Bar
+
+The `VitTabBar` component provides a customizable tab navigation interface with a modern pill-shaped indicator, commonly known as a segmented control style. It respects the design system's theme and visual density to ensure consistency across the application.
+
+<FlutterPreview story="TabBar" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+
+// ...
+
+DefaultTabController(
+  length: 2,
+  child: VitTabBar(
+    tabs: [
+      Tab(text: 'Charities'),
+      Tab(text: 'Contribution'),
+    ],
+  ),
+)
+```
+
+## Anatomy
+
+The `VitTabBar` is composed of:
+1.  **Container**: The outer background holding the tabs. It uses `theme.elevatedCardColor` by default and adapts padding based on the visual density.
+2.  **Tabs**: The internal `Tab` widgets provided to the component.
+3.  **Indicator Pill**: The active tab indicator. It uses `theme.cardColor` with a subtle shadow to create a raised, segmented control effect.
+
+## Customization
+
+You can customize the `VitTabBar`'s appearance using the following properties:
+
+| Property | Description | Default |
+| --- | --- | --- |
+| `tabs` | List of widgets to display as tabs. | Required |
+| `controller` | The `TabController` to control the selection state. | `null` (uses `DefaultTabController`) |
+| `onTap` | Callback when a tab is tapped. | `null` |
+| `isScrollable` | Whether the tabs can be scrolled horizontally. | `false` |
+| `backgroundColor` | The background color of the tab bar container. | `theme.elevatedCardColor` |
+| `indicatorColor` | The background color of the active tab pill. | `theme.cardColor` |
+| `labelColor` | The color of the active tab's label. | `theme.onBackgroundColor` |
+| `unselectedLabelColor` | The color of the inactive tabs' labels. | `theme.onBackgroundVariantColor` |
+| `padding` | The padding around all the tabs within the container. | Resolves via `visualDensity` |
+| `borderRadius` | The border radius of the tab container. | `theme.borderRadius` |
+| `indicatorRadius` | The border radius of the indicator pill. | `theme.borderRadius` |
+| `indicatorShadow` | Shadow applied to the indicator pill. | Subtle bottom shadow |
+| `visualDensity` | Overrides the default visual density used for padding. | `theme.visualDensity` |
+
+## Examples
+
+### Scrollable TabBar
+Enable scrolling when you have many tabs that don't fit the screen width:
+
+```dart
+DefaultTabController(
+  length: 5,
+  child: VitTabBar(
+    isScrollable: true,
+    tabs: [
+      Tab(text: 'Home'),
+      Tab(text: 'Profile'),
+      Tab(text: 'Settings'),
+      Tab(text: 'Help'),
+      Tab(text: 'Logout'),
+    ],
+  ),
+)
+```
+
+### Dense/Compact Mode
+To use a more compact padding, explicitly override the visual density:
+
+```dart
+VitTabBar(
+  visualDensity: VisualDensity.compact,
+  tabs: [
+    Tab(text: 'Option 1'),
+    Tab(text: 'Option 2'),
+  ],
+)
+```
+
+### Custom Colors
+You can override the colors for specific use cases:
+
+```dart
+VitTabBar(
+  backgroundColor: Colors.grey[200],
+  indicatorColor: Colors.white,
+  labelColor: Colors.black,
+  unselectedLabelColor: Colors.grey[600],
+  tabs: [
+    Tab(text: 'Free'),
+    Tab(text: 'Pro'),
+  ],
+)
+```
