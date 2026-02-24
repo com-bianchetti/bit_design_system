@@ -74,6 +74,7 @@ class VitScaffold extends StatelessWidget {
     this.preserveNavigationState = true,
     this.showAppBarBorder = true,
     this.loading = false,
+    this.bottomAppBarWidget,
   }) : assert(
          body != null ||
              children != null ||
@@ -560,6 +561,10 @@ class VitScaffold extends StatelessWidget {
   /// Defaults to false.
   final bool loading;
 
+  /// Widget to display at the bottom
+  /// of the app bar.
+  final PreferredSizeWidget? bottomAppBarWidget;
+
   @override
   Widget build(BuildContext context) {
     final shouldShowAppBar =
@@ -583,6 +588,7 @@ class VitScaffold extends StatelessWidget {
                   trailing: trailing,
                   centerTitle: centerTitle,
                   showBorder: showAppBarBorder,
+                  bottomWidget: bottomAppBarWidget,
                 ))
           : null;
 
@@ -657,6 +663,7 @@ class VitScaffold extends StatelessWidget {
                   trailing: trailing,
                   centerTitle: centerTitle,
                   showBorder: showAppBarBorder,
+                  bottomWidget: bottomAppBarWidget,
                 ))
           : null,
       body: VitLoadingScope(
