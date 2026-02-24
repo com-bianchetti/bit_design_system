@@ -26,8 +26,8 @@ DefaultTabController(
   length: 2,
   child: VitTabBar(
     tabs: [
-      Tab(text: 'Charities'),
-      Tab(text: 'Contribution'),
+      VitTabBarItem(text: 'Charities'),
+      VitTabBarItem(text: 'Contribution'),
     ],
   ),
 )
@@ -44,8 +44,8 @@ Expanded( // or Container with height, Scaffold body, etc.
   child: VitTabBarView(
     isScrollable: true,
     tabs: [
-      Tab(text: 'Content'),
-      Tab(text: 'Settings'),
+      VitTabBarItem(text: 'Content'),
+      VitTabBarItem(text: 'Settings'),
     ],
     children: [
       ListView(children: [ /* long content */ ]),
@@ -94,11 +94,11 @@ DefaultTabController(
   child: VitTabBar(
     isScrollable: true,
     tabs: [
-      Tab(text: 'Home'),
-      Tab(text: 'Profile'),
-      Tab(text: 'Settings'),
-      Tab(text: 'Help'),
-      Tab(text: 'Logout'),
+      VitTabBarItem(text: 'Home'),
+      VitTabBarItem(text: 'Profile'),
+      VitTabBarItem(text: 'Settings'),
+      VitTabBarItem(text: 'Help'),
+      VitTabBarItem(text: 'Logout'),
     ],
   ),
 )
@@ -111,8 +111,8 @@ To use a more compact padding, explicitly override the visual density:
 VitTabBar(
   visualDensity: VisualDensity.compact,
   tabs: [
-    Tab(text: 'Option 1'),
-    Tab(text: 'Option 2'),
+    VitTabBarItem(text: 'Option 1'),
+    VitTabBarItem(text: 'Option 2'),
   ],
 )
 ```
@@ -127,8 +127,8 @@ VitTabBar(
   labelColor: Colors.black,
   unselectedLabelColor: Colors.grey[600],
   tabs: [
-    Tab(text: 'Free'),
-    Tab(text: 'Pro'),
+    VitTabBarItem(text: 'Free'),
+    VitTabBarItem(text: 'Pro'),
   ],
 )
 ```

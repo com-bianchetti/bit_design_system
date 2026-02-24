@@ -21,8 +21,8 @@ void main() {
         _wrapWithApp(
           const VitTabBar(
             tabs: [
-              Tab(text: 'Charities'),
-              Tab(text: 'Contribution'),
+              VitTabBarItem(text: 'Charities'),
+              VitTabBarItem(text: 'Contribution'),
             ],
           ),
         ),
@@ -43,8 +43,8 @@ void main() {
           VitTabBar(
             onTap: (index) => tappedIndex = index,
             tabs: const [
-              Tab(text: 'Tab 1'),
-              Tab(text: 'Tab 2'),
+              VitTabBarItem(text: 'Tab 1'),
+              VitTabBarItem(text: 'Tab 2'),
             ],
           ),
         ),
@@ -66,8 +66,8 @@ void main() {
             backgroundColor: customBgColor,
             indicatorColor: customIndicatorColor,
             tabs: [
-              Tab(text: 'A'),
-              Tab(text: 'B'),
+              VitTabBarItem(text: 'A'),
+              VitTabBarItem(text: 'B'),
             ],
           ),
         ),
@@ -96,8 +96,8 @@ void main() {
           const VitTabBar(
             visualDensity: VisualDensity.compact,
             tabs: [
-              Tab(text: 'C'),
-              Tab(text: 'D'),
+              VitTabBarItem(text: 'C'),
+              VitTabBarItem(text: 'D'),
             ],
           ),
         ),
@@ -126,8 +126,8 @@ void main() {
             body: Center(
               child: VitTabBarView(
                 tabs: const [
-                  Tab(text: 'Settings'),
-                  Tab(text: 'Profile'),
+                  VitTabBarItem(text: 'Settings'),
+                  VitTabBarItem(text: 'Profile'),
                 ],
                 children: const [
                   Text('Settings View'),

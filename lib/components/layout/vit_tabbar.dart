@@ -124,8 +124,11 @@ class VitTabBar extends StatelessWidget {
       }
     }
 
-    final effectiveBorderRadius = borderRadius ?? theme.borderRadius;
-    final effectiveIndicatorRadius = indicatorRadius ?? theme.borderRadius;
+    final effectiveBorderRadius =
+        borderRadius ?? (theme.values.tabBarGlobalRadius ?? theme.borderRadius);
+    final effectiveIndicatorRadius =
+        indicatorRadius ??
+        (theme.values.tabBarGlobalRadius ?? theme.borderRadius);
 
     final effectiveShadow =
         indicatorShadow ??
@@ -298,5 +301,59 @@ class VitTabBarView extends StatelessWidget {
     }
 
     return content;
+  }
+}
+
+/// A design system equivalent for Flutter's [Tab] widget, designed to automatically
+/// utilize [VitTheme] styling provided by the parent [VitTabBar] or [VitTabBarView].
+///
+/// Use it in place of standard [Tab] widgets inside the [tabs] property.
+class VitTabBarItem extends StatelessWidget implements PreferredSizeWidget {
+  /// The standard string text to display on the tab label.
+  final String? text;
+
+  /// Custom content to display. Cannot be used simultaneously with [text].
+  final Widget? child;
+
+  /// An optional leading icon.
+  final Widget? icon;
+
+  /// Margin around the leading icon.
+  final EdgeInsetsGeometry? iconMargin;
+
+  /// Explicit height override for the tab.
+  final double? height;
+
+  /// Creates a [VitTabBarItem]. Note that [text] and [child] cannot be provided
+  /// simultaneously.
+  const VitTabBarItem({
+    super.key,
+    this.text,
+    this.child,
+    this.icon,
+    this.iconMargin = const EdgeInsets.only(bottom: 10.0),
+    this.height,
+  }) : assert(
+         text == null || child == null,
+         'Cannot provide both `text` and `child`.',
+       );
+
+  @override
+  Widget build(BuildContext context) {
+    return Tab(
+      text: text,
+      icon: icon,
+      iconMargin: iconMargin,
+      height: height,
+      child: child,
+    );
+  }
+
+  @override
+  Size get preferredSize {
+    if (height != null) {
+      return Size.fromHeight(height!);
+    }
+    return const Size.fromHeight(46.0);
   }
 }

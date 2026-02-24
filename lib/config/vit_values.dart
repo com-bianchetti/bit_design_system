@@ -54,6 +54,7 @@ class VitValues {
   final EdgeInsetsGeometry tabBarComfortablePadding;
   final EdgeInsetsGeometry tabBarStandardPadding;
   final EdgeInsetsGeometry tabBarCompactPadding;
+  final BorderRadius? tabBarGlobalRadius;
 
   const VitValues({
     this.buttonComfortableHeight = 65,
@@ -163,5 +164,6 @@ class VitValues {
     this.tabBarComfortablePadding = const EdgeInsets.all(12),
     this.tabBarStandardPadding = const EdgeInsets.all(6),
     this.tabBarCompactPadding = const EdgeInsets.all(2),
+    this.tabBarGlobalRadius,
   });
 }

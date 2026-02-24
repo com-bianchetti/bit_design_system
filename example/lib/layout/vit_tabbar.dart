@@ -39,8 +39,8 @@ final VitTabBarStory = Story(
                     VitTabBar(
                       isScrollable: isScrollable,
                       tabs: const [
-                        Tab(text: 'Charities'),
-                        Tab(text: 'Contribution'),
+                        VitTabBarItem(text: 'Charities'),
+                        VitTabBarItem(text: 'Contribution'),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -53,9 +53,9 @@ final VitTabBarStory = Story(
                       child: VitTabBarView(
                         isScrollable: isScrollable,
                         tabs: const [
-                          Tab(text: 'Charities Content'),
-                          Tab(text: 'Contribution Details'),
-                          Tab(text: 'Configuration Data'),
+                          VitTabBarItem(text: 'Charities Content'),
+                          VitTabBarItem(text: 'Contribution Details'),
+                          VitTabBarItem(text: 'Configuration Data'),
                         ],
                         children: [
                           Container(
