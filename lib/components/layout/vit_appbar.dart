@@ -177,6 +177,12 @@ class VitAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Defaults to true.
   final bool boldTitle;
 
+  /// Optional widget to display at the bottom of the app bar.
+  ///
+  /// It must implement [PreferredSizeWidget]. Typically used for tabs
+  /// or other fixed widgets right below the title layer.
+  final PreferredSizeWidget? bottomWidget;
+
   /// Creates a [VitAppBar].
   ///
   /// At least one of [title] or [titleWidget] should be provided for best UX.
@@ -201,12 +207,14 @@ class VitAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleStyle,
     this.leadingTitleSpacing = 16.0,
     this.boldTitle = true,
+    this.bottomWidget,
   });
 
   @override
   Size get preferredSize {
     final baseHeight = height ?? kToolbarHeight;
-    return Size.fromHeight(baseHeight);
+    final bottomHeight = bottomWidget?.preferredSize.height ?? 0.0;
+    return Size.fromHeight(baseHeight + bottomHeight);
   }
 
   Widget? _buildLeadingWidget(BuildContext context) {
@@ -287,6 +295,7 @@ class VitAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? leadingTitleSpacing
           : NavigationToolbar.kMiddleSpacing,
       toolbarHeight: height ?? kToolbarHeight,
+      bottom: bottomWidget,
       shape: showBorder
           ? Border(
               bottom: BorderSide(
