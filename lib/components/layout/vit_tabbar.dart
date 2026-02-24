@@ -238,6 +238,9 @@ class VitTabBarView extends StatelessWidget {
   /// Padding applied to the TabBar container.
   final EdgeInsetsGeometry? tabBarPadding;
 
+  /// Widget to display at the top of the tab bar.
+  final Widget? header;
+
   /// Creates a [VitTabBarView].
   const VitTabBarView({
     super.key,
@@ -259,6 +262,7 @@ class VitTabBarView extends StatelessWidget {
     this.indicatorShadow,
     this.visualDensity,
     this.tabBarPadding,
+    this.header,
   }) : assert(
          tabs.length == children.length,
          'The lengths of tabs and children must match.',
@@ -270,6 +274,7 @@ class VitTabBarView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (header != null) header!,
         Padding(
           padding: tabBarPadding ?? EdgeInsets.zero,
           child: VitTabBar(
