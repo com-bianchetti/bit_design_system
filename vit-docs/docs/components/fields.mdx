@@ -146,8 +146,8 @@ VitDecimalField(
 
 VitCurrencyField(
   id: 'salary',
-  label: 'Annual Salary',
-  currency: '\$',
+  subtitle: 'Annual Salary',
+  currencySymbol: '\$',
 )
 
 VitPercentageField(
@@ -157,12 +157,12 @@ VitPercentageField(
 ```
 
 Features:
-- Numeric keyboard type for easy number entry
+- Numeric keyboard type for easy number entry (or a dedicated large virtual keyboard for `VitCurrencyField`)
 - Automatic formatting for currency (with symbol) and percentage (with %)
 - Range validation for min/max values
 - Decimal precision control for decimal fields
 - Integer-only input for number fields
-- Localized thousands separators for currency
+- Localized thousands separators and currency formatting
 
 ### Personal Information
 
@@ -308,10 +308,6 @@ VitForm(
       subtitle: 'Customize your experience',
       children: [
         VitLanguageField(id: 'language'),
-        VitCurrencyField(
-          id: 'budget',
-          label: 'Monthly Budget',
-        ),
         VitTermsField(id: 'terms'),
         VitNewsletterField(id: 'newsletter'),
       ],

@@ -17,6 +17,7 @@ import 'package:example/loading/vit_loading.dart';
 import 'package:example/modal/vit_modal.dart';
 import 'package:example/form/vit_form.dart';
 import 'package:example/fields/vit_fields.dart';
+import 'package:example/fields/vit_currency_field.dart';
 import 'package:example/input/vit_input.dart';
 import 'package:example/input/vit_raw_input.dart';
 import 'package:example/input/vit_input_count.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
         VitTimeStory,
         VitFormStory,
         VitFieldsStory,
+        VitCurrencyFieldStory,
         VitSkeletonStory,
         VitAppBarStory,
         VitListViewStory,

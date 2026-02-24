@@ -214,45 +214,51 @@ class _VitFormModalContentState extends State<_VitFormModalContent>
                   final index = entry.key;
                   final page = entry.value;
 
+                  final child = Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (page.subtitle != null) ...[
+                        VitText(
+                          page.subtitle!,
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                      if (page.spacing != null)
+                        ...List.generate(
+                          page.children.length,
+                          (childIndex) {
+                            if (childIndex == page.children.length - 1) {
+                              return page.children[childIndex];
+                            }
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: page.spacing!,
+                              ),
+                              child: page.children[childIndex],
+                            );
+                          },
+                        )
+                      else
+                        ...page.children,
+                      const SizedBox(height: 24),
+                    ],
+                  );
+
                   return _VitFormPageKeepAlive(
                     child: VitFormPageScope(
                       pageIndex: index,
                       child: Form(
                         key: widget.controller.formKeys[index],
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          padding: widget.contentPadding,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              if (page.subtitle != null) ...[
-                                VitText(
-                                  page.subtitle!,
-                                ),
-                                const SizedBox(height: 24),
-                              ],
-                              if (page.spacing != null)
-                                ...List.generate(
-                                  page.children.length,
-                                  (childIndex) {
-                                    if (childIndex ==
-                                        page.children.length - 1) {
-                                      return page.children[childIndex];
-                                    }
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: page.spacing!,
-                                      ),
-                                      child: page.children[childIndex],
-                                    );
-                                  },
-                                )
-                              else
-                                ...page.children,
-                              const SizedBox(height: 24),
-                            ],
-                          ),
-                        ),
+                        child: page.scrollable
+                            ? SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                padding: widget.contentPadding,
+                                child: child,
+                              )
+                            : Padding(
+                                padding: widget.contentPadding,
+                                child: child,
+                              ),
                       ),
                     ),
                   );

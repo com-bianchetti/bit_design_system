@@ -10,6 +10,7 @@ class VitFormPage {
   final String? backButtonText;
   final bool Function()? customValidator;
   final double? spacing;
+  final bool scrollable;
 
   const VitFormPage({
     this.title,
@@ -21,5 +22,6 @@ class VitFormPage {
     this.customValidator,
     this.children = const [],
     this.spacing,
+    this.scrollable = true,
   });
 }
