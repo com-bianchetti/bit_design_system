@@ -31,6 +31,11 @@ final VitTabBarStory = Story(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text(
+                      'Standard Tab Bar with Custom Controller:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     VitTabBar(
                       isScrollable: isScrollable,
                       tabs: const [
@@ -39,19 +44,64 @@ final VitTabBarStory = Story(
                       ],
                     ),
                     const SizedBox(height: 24),
-                    Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: context.theme.cardColor,
-                        borderRadius: context.theme.borderRadius,
-                        border: Border.all(
-                          color: context.theme.borderColor,
-                        ),
-                      ),
-                      child: const TabBarView(
+                    const Text(
+                      'VitTabBarView Wrapper:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: VitTabBarView(
+                        isScrollable: isScrollable,
+                        tabs: const [
+                          Tab(text: 'Charities Content'),
+                          Tab(text: 'Contribution Details'),
+                          Tab(text: 'Configuration Data'),
+                        ],
                         children: [
-                          Center(child: Text('Charities Content')),
-                          Center(child: Text('Contribution Content')),
+                          Container(
+                            margin: const EdgeInsets.only(top: 16),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: context.theme.cardColor,
+                              borderRadius: context.theme.borderRadius,
+                              border: Border.all(
+                                color: context.theme.borderColor,
+                              ),
+                            ),
+                            child: ListView.builder(
+                              itemCount: 20,
+                              itemBuilder: (context, index) =>
+                                  ListTile(title: Text('Charity item $index')),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 16),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: context.theme.cardColor,
+                              borderRadius: context.theme.borderRadius,
+                              border: Border.all(
+                                color: context.theme.borderColor,
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text('Contribution Views Content'),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 16),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: context.theme.cardColor,
+                              borderRadius: context.theme.borderRadius,
+                              border: Border.all(
+                                color: context.theme.borderColor,
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text('Configuration Settings View'),
+                            ),
+                          ),
                         ],
                       ),
                     ),

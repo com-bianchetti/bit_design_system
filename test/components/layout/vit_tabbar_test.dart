@@ -115,5 +115,45 @@ void main() {
       // Compact padding
       expect(container.padding, const EdgeInsets.all(2));
     });
+
+    testWidgets('VitTabBarView renders tabs and children', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        VitApp(
+          theme: VitTheme(),
+          home: Scaffold(
+            body: Center(
+              child: VitTabBarView(
+                tabs: const [
+                  Tab(text: 'Settings'),
+                  Tab(text: 'Profile'),
+                ],
+                children: const [
+                  Text('Settings View'),
+                  Text('Profile View'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Finds the wrapper
+      expect(find.byType(VitTabBarView), findsOneWidget);
+      // Finds the embedded TabBar
+      expect(find.byType(VitTabBar), findsOneWidget);
+      // Finds the embedded TabBarView
+      expect(find.byType(TabBarView), findsOneWidget);
+
+      expect(find.text('Settings'), findsWidgets); // Tab Header
+      expect(find.text('Settings View'), findsOneWidget); // Body
+
+      // Tap second tab
+      await tester.tap(find.text('Profile'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Profile View'), findsOneWidget); // Body changed
+    });
   });
 }

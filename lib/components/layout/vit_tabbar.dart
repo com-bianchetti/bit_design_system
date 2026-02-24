@@ -106,8 +106,8 @@ class VitTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
 
-    final effectiveBackgroundColor = backgroundColor ?? theme.elevatedCardColor;
-    final effectiveIndicatorColor = indicatorColor ?? theme.cardColor;
+    final effectiveBackgroundColor = backgroundColor ?? theme.cardColor;
+    final effectiveIndicatorColor = indicatorColor ?? theme.elevatedCardColor;
     final effectiveLabelColor = labelColor ?? theme.onBackrgroundColor;
     final effectiveUnselectedLabelColor =
         unselectedLabelColor ?? theme.onBackgroundVariantColor;
@@ -170,5 +170,133 @@ class VitTabBar extends StatelessWidget {
         tabs: tabs,
       ),
     );
+  }
+}
+
+/// A convenience widget that integrates a [VitTabBar] with a [TabBarView].
+///
+/// This widget automatically wraps its children in an [Expanded] layout, allowing
+/// the individual views inside the [TabBarView] to dictate their independent scrolling
+/// sizes without requiring a hardcoded height on the parent.
+///
+/// It uses a [DefaultTabController] internally if [controller] is not provided.
+class VitTabBarView extends StatelessWidget {
+  /// The collection of tabs to display at the top.
+  final List<Widget> tabs;
+
+  /// The collection of views to display corresponding to each tab.
+  final List<Widget> children;
+
+  /// Optional TabController. If null, a DefaultTabController will be instantiated.
+  final TabController? controller;
+
+  /// The initial active tab index (applicable only when [controller] is null).
+  final int initialIndex;
+
+  /// Callback generated when a tab is tapped.
+  final ValueChanged<int>? onTap;
+
+  /// Whether the TabBar component itself is scrollable horizontally.
+  final bool isScrollable;
+
+  /// Same alignment configurations as [VitTabBar.tabAlignment].
+  final TabAlignment? tabAlignment;
+
+  /// Background color of the tab bar pill.
+  final Color? backgroundColor;
+
+  /// Indicator color for the active tab.
+  final Color? indicatorColor;
+
+  /// Label color for active tabs.
+  final Color? labelColor;
+
+  /// Label color for inactive tabs.
+  final Color? unselectedLabelColor;
+
+  /// Padding applied to the entire TabBar container.
+  final EdgeInsetsGeometry? padding;
+
+  /// Optional override for the padding within labels.
+  final EdgeInsetsGeometry? labelPadding;
+
+  /// Overrides the container's border radius.
+  final BorderRadius? borderRadius;
+
+  /// Overrides the active indicator's border radius.
+  final BorderRadius? indicatorRadius;
+
+  /// Overrides the active indicator's shadow.
+  final List<BoxShadow>? indicatorShadow;
+
+  /// Creates a vertical layout with a flexible visual density logic applied to the tab header padding.
+  final VisualDensity? visualDensity;
+
+  /// Creates a [VitTabBarView].
+  const VitTabBarView({
+    super.key,
+    required this.tabs,
+    required this.children,
+    this.controller,
+    this.initialIndex = 0,
+    this.onTap,
+    this.isScrollable = false,
+    this.tabAlignment,
+    this.backgroundColor,
+    this.indicatorColor,
+    this.labelColor,
+    this.unselectedLabelColor,
+    this.padding,
+    this.labelPadding,
+    this.borderRadius,
+    this.indicatorRadius,
+    this.indicatorShadow,
+    this.visualDensity,
+  }) : assert(
+         tabs.length == children.length,
+         'The lengths of tabs and children must match.',
+       );
+
+  @override
+  Widget build(BuildContext context) {
+    Widget content = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        VitTabBar(
+          tabs: tabs,
+          controller: controller,
+          onTap: onTap,
+          isScrollable: isScrollable,
+          tabAlignment: tabAlignment,
+          backgroundColor: backgroundColor,
+          indicatorColor: indicatorColor,
+          labelColor: labelColor,
+          unselectedLabelColor: unselectedLabelColor,
+          padding: padding,
+          labelPadding: labelPadding,
+          borderRadius: borderRadius,
+          indicatorRadius: indicatorRadius,
+          indicatorShadow: indicatorShadow,
+          visualDensity: visualDensity,
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: controller,
+            children: children,
+          ),
+        ),
+      ],
+    );
+
+    if (controller == null) {
+      content = DefaultTabController(
+        length: tabs.length,
+        initialIndex: initialIndex,
+        child: content,
+      );
+    }
+
+    return content;
   }
 }
