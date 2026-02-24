@@ -235,6 +235,9 @@ class VitTabBarView extends StatelessWidget {
   /// Creates a vertical layout with a flexible visual density logic applied to the tab header padding.
   final VisualDensity? visualDensity;
 
+  /// Padding applied to the TabBar container.
+  final EdgeInsetsGeometry? tabBarPadding;
+
   /// Creates a [VitTabBarView].
   const VitTabBarView({
     super.key,
@@ -255,6 +258,7 @@ class VitTabBarView extends StatelessWidget {
     this.indicatorRadius,
     this.indicatorShadow,
     this.visualDensity,
+    this.tabBarPadding,
   }) : assert(
          tabs.length == children.length,
          'The lengths of tabs and children must match.',
@@ -266,22 +270,25 @@ class VitTabBarView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        VitTabBar(
-          tabs: tabs,
-          controller: controller,
-          onTap: onTap,
-          isScrollable: isScrollable,
-          tabAlignment: tabAlignment,
-          backgroundColor: backgroundColor,
-          indicatorColor: indicatorColor,
-          labelColor: labelColor,
-          unselectedLabelColor: unselectedLabelColor,
-          padding: padding,
-          labelPadding: labelPadding,
-          borderRadius: borderRadius,
-          indicatorRadius: indicatorRadius,
-          indicatorShadow: indicatorShadow,
-          visualDensity: visualDensity,
+        Padding(
+          padding: tabBarPadding ?? EdgeInsets.zero,
+          child: VitTabBar(
+            tabs: tabs,
+            controller: controller,
+            onTap: onTap,
+            isScrollable: isScrollable,
+            tabAlignment: tabAlignment,
+            backgroundColor: backgroundColor,
+            indicatorColor: indicatorColor,
+            labelColor: labelColor,
+            unselectedLabelColor: unselectedLabelColor,
+            padding: padding,
+            labelPadding: labelPadding,
+            borderRadius: borderRadius,
+            indicatorRadius: indicatorRadius,
+            indicatorShadow: indicatorShadow,
+            visualDensity: visualDensity,
+          ),
         ),
         Expanded(
           child: TabBarView(
