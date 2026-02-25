@@ -90,9 +90,7 @@ class VitCurrencyField extends StatefulWidget {
     this.defaultUnboundedHeight = 500.0,
     this.header,
     this.expand = true,
-    this.padding = const EdgeInsets.symmetric(
-      horizontal: 16,
-    ),
+    this.padding = EdgeInsets.zero,
   });
 
   @override

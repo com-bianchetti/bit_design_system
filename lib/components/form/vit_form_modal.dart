@@ -221,7 +221,6 @@ class _VitFormModalContentState extends State<_VitFormModalContent>
                         VitText(
                           page.subtitle!,
                         ),
-                        const SizedBox(height: 24),
                       ],
                       if (page.spacing != null)
                         ...List.generate(
