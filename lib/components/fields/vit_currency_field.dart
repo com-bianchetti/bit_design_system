@@ -68,6 +68,9 @@ class VitCurrencyField extends StatefulWidget {
   /// Whether the widget should expand to fill the available space.
   final bool expand;
 
+  /// The padding to apply to the widget.
+  final EdgeInsets padding;
+
   /// Creates a [VitCurrencyField].
   const VitCurrencyField({
     super.key,
@@ -87,6 +90,9 @@ class VitCurrencyField extends StatefulWidget {
     this.defaultUnboundedHeight = 500.0,
     this.header,
     this.expand = true,
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: 16,
+    ),
   });
 
   @override
@@ -228,7 +234,7 @@ class _VitCurrencyFieldState extends State<VitCurrencyField> {
 
   Widget _buildKeyboard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: widget.padding,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
