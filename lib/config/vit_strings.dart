@@ -85,6 +85,12 @@ class VitStrings {
   final String month;
   final String year;
   final String selectAtLeastOneOption;
+  final String dialogSuccessTitle;
+  final String dialogErrorTitle;
+  final String dialogConfirmTitle;
+  final String dialogGotItButton;
+  final String dialogCancelButton;
+  final String dialogConfirmButton;
 
   const VitStrings({
     this.confirm = 'Confirm',
@@ -171,5 +177,11 @@ class VitStrings {
     this.month = 'MONTH',
     this.year = 'YEAR',
     this.selectAtLeastOneOption = 'Please select at least one option',
+    this.dialogSuccessTitle = 'Success!',
+    this.dialogErrorTitle = 'Error',
+    this.dialogConfirmTitle = 'Confirm Action',
+    this.dialogGotItButton = 'Got it',
+    this.dialogCancelButton = 'Cancel',
+    this.dialogConfirmButton = 'Confirm',
   });
 }

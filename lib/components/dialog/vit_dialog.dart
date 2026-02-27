@@ -318,6 +318,11 @@ class VitDialog extends StatefulWidget {
   /// Only used when [showDefaultFooter] is true and [onConfirm] is provided.
   final Color? buttonBackground;
 
+  /// Custom foreground (text) color for the confirm button in the default footer.
+  ///
+  /// Only used when [showDefaultFooter] is true and [onConfirm] is provided.
+  final Color? buttonForegroundColor;
+
   /// Whether to show the default footer with confirm and cancel buttons.
   ///
   /// When true, displays a footer with confirm and/or cancel buttons based
@@ -369,6 +374,7 @@ class VitDialog extends StatefulWidget {
     this.confirmText,
     this.cancelText,
     this.buttonBackground,
+    this.buttonForegroundColor,
     this.showDefaultFooter = false,
   });
 
@@ -446,6 +452,7 @@ class VitDialog extends StatefulWidget {
     String? confirmText,
     String? cancelText,
     Color? buttonBackground,
+    Color? buttonForegroundColor,
     bool showDefaultFooter = false,
   }) async {
     return showGeneralDialog<T>(
@@ -480,6 +487,7 @@ class VitDialog extends StatefulWidget {
               confirmText: confirmText,
               cancelText: cancelText,
               buttonBackground: buttonBackground,
+              buttonForegroundColor: buttonForegroundColor,
               showDefaultFooter: showDefaultFooter,
             ),
           ),
@@ -525,10 +533,11 @@ class VitDialog extends StatefulWidget {
   /// ```
   static Future<T?> success<T>(
     BuildContext context, {
-    String title = 'Success!',
+    String? title,
     required String message,
-    String buttonText = 'Got it',
+    String? buttonText,
     Color? buttonBackground,
+    Color? buttonForegroundColor,
     VoidCallback? onConfirm,
     bool isDismissible = true,
     double? maxWidth,
@@ -538,8 +547,9 @@ class VitDialog extends StatefulWidget {
       showCloseButton: false,
       showDefaultFooter: true,
       onConfirm: onConfirm,
-      confirmText: buttonText,
+      confirmText: buttonText ?? context.theme.bitStrings.dialogGotItButton,
       buttonBackground: buttonBackground,
+      buttonForegroundColor: buttonForegroundColor,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: Column(
@@ -551,7 +561,7 @@ class VitDialog extends StatefulWidget {
             color: context.theme.successColor,
           ),
           const SizedBox(height: 16),
-          VitTitle(title),
+          VitTitle(title ?? context.theme.bitStrings.dialogSuccessTitle),
           const SizedBox(height: 16),
           VitText(
             message,
@@ -588,10 +598,11 @@ class VitDialog extends StatefulWidget {
   /// ```
   static Future<T?> error<T>(
     BuildContext context, {
-    String title = 'Error',
+    String? title,
     required String message,
-    String buttonText = 'Got it',
+    String? buttonText,
     Color? buttonBackground,
+    Color? buttonForegroundColor,
     VoidCallback? onConfirm,
     bool isDismissible = true,
     double? maxWidth,
@@ -601,8 +612,9 @@ class VitDialog extends StatefulWidget {
       showCloseButton: false,
       showDefaultFooter: true,
       onConfirm: onConfirm,
-      confirmText: buttonText,
+      confirmText: buttonText ?? context.theme.bitStrings.dialogGotItButton,
       buttonBackground: buttonBackground,
+      buttonForegroundColor: buttonForegroundColor,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: Column(
@@ -614,7 +626,7 @@ class VitDialog extends StatefulWidget {
             color: context.theme.errorColor,
           ),
           const SizedBox(height: 16),
-          VitTitle(title),
+          VitTitle(title ?? context.theme.bitStrings.dialogErrorTitle),
           const SizedBox(height: 16),
           VitText(
             message,
@@ -659,11 +671,12 @@ class VitDialog extends StatefulWidget {
   /// ```
   static Future<bool?> confirm(
     BuildContext context, {
-    String title = 'Confirm Action',
+    String? title,
     required String message,
-    String confirmText = 'Confirm',
-    String cancelText = 'Cancel',
+    String? confirmText,
+    String? cancelText,
     Color? buttonBackground,
+    Color? buttonForegroundColor,
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
     bool isDismissible = true,
@@ -671,13 +684,14 @@ class VitDialog extends StatefulWidget {
   }) {
     return show<bool>(
       context,
-      title: VitTitle(title),
+      title: VitTitle(title ?? context.theme.bitStrings.dialogConfirmTitle),
       showDefaultFooter: true,
       onConfirm: onConfirm,
       onCancel: onCancel,
-      confirmText: confirmText,
-      cancelText: cancelText,
+      confirmText: confirmText ?? context.theme.bitStrings.dialogConfirmButton,
+      cancelText: cancelText ?? context.theme.bitStrings.dialogCancelButton,
       buttonBackground: buttonBackground,
+      buttonForegroundColor: buttonForegroundColor,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: VitText(message),
@@ -736,6 +750,7 @@ class _VitDialogState extends State<VitDialog> {
   }
 
   Widget _buildDefaultFooter() {
+    final strings = context.theme.bitStrings;
     return Container(
       padding: widget.footerPadding,
       decoration: BoxDecoration(
@@ -751,7 +766,7 @@ class _VitDialogState extends State<VitDialog> {
         middle: [
           if (widget.onCancel != null)
             VitOutlinedButton(
-              text: widget.cancelText ?? 'Cancel',
+              text: widget.cancelText ?? strings.dialogCancelButton,
               onPressed: () {
                 widget.onCancel?.call();
                 Navigator.pop(context, false);
@@ -759,8 +774,9 @@ class _VitDialogState extends State<VitDialog> {
             ),
           if (widget.onConfirm != null)
             VitButton(
-              text: widget.confirmText ?? 'Confirm',
+              text: widget.confirmText ?? strings.dialogConfirmButton,
               backgroundColor: widget.buttonBackground,
+              foregroundColor: widget.buttonForegroundColor,
               onPressed: () {
                 widget.onConfirm?.call();
                 Navigator.pop(context, true);
