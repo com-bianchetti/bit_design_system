@@ -313,6 +313,11 @@ class VitDialog extends StatefulWidget {
   /// like 'Dismiss', 'Close', 'Back', etc.
   final String? cancelText;
 
+  /// Custom background color for the confirm button in the default footer.
+  ///
+  /// Only used when [showDefaultFooter] is true and [onConfirm] is provided.
+  final Color? buttonBackground;
+
   /// Whether to show the default footer with confirm and cancel buttons.
   ///
   /// When true, displays a footer with confirm and/or cancel buttons based
@@ -363,6 +368,7 @@ class VitDialog extends StatefulWidget {
     this.onCancel,
     this.confirmText,
     this.cancelText,
+    this.buttonBackground,
     this.showDefaultFooter = false,
   });
 
@@ -439,6 +445,7 @@ class VitDialog extends StatefulWidget {
     VoidCallback? onCancel,
     String? confirmText,
     String? cancelText,
+    Color? buttonBackground,
     bool showDefaultFooter = false,
   }) async {
     return showGeneralDialog<T>(
@@ -472,6 +479,7 @@ class VitDialog extends StatefulWidget {
               onCancel: onCancel,
               confirmText: confirmText,
               cancelText: cancelText,
+              buttonBackground: buttonBackground,
               showDefaultFooter: showDefaultFooter,
             ),
           ),
@@ -520,6 +528,7 @@ class VitDialog extends StatefulWidget {
     String title = 'Success!',
     required String message,
     String buttonText = 'Got it',
+    Color? buttonBackground,
     VoidCallback? onConfirm,
     bool isDismissible = true,
     double? maxWidth,
@@ -530,6 +539,7 @@ class VitDialog extends StatefulWidget {
       showDefaultFooter: true,
       onConfirm: onConfirm,
       confirmText: buttonText,
+      buttonBackground: buttonBackground,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: Column(
@@ -581,6 +591,7 @@ class VitDialog extends StatefulWidget {
     String title = 'Error',
     required String message,
     String buttonText = 'Got it',
+    Color? buttonBackground,
     VoidCallback? onConfirm,
     bool isDismissible = true,
     double? maxWidth,
@@ -591,6 +602,7 @@ class VitDialog extends StatefulWidget {
       showDefaultFooter: true,
       onConfirm: onConfirm,
       confirmText: buttonText,
+      buttonBackground: buttonBackground,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: Column(
@@ -651,6 +663,7 @@ class VitDialog extends StatefulWidget {
     required String message,
     String confirmText = 'Confirm',
     String cancelText = 'Cancel',
+    Color? buttonBackground,
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
     bool isDismissible = true,
@@ -664,6 +677,7 @@ class VitDialog extends StatefulWidget {
       onCancel: onCancel,
       confirmText: confirmText,
       cancelText: cancelText,
+      buttonBackground: buttonBackground,
       isDismissible: isDismissible,
       maxWidth: maxWidth,
       content: VitText(message),
@@ -746,6 +760,7 @@ class _VitDialogState extends State<VitDialog> {
           if (widget.onConfirm != null)
             VitButton(
               text: widget.confirmText ?? 'Confirm',
+              backgroundColor: widget.buttonBackground,
               onPressed: () {
                 widget.onConfirm?.call();
                 Navigator.pop(context, true);

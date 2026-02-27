@@ -249,11 +249,23 @@ class VitLoading extends StatelessWidget {
       final result = await future;
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true).pop();
+      } else {
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
+        });
       }
       return result;
     } catch (e) {
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true).pop();
+      } else {
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
+        });
       }
       rethrow;
     }
