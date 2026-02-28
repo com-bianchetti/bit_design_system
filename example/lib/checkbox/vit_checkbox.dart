@@ -31,6 +31,9 @@ class _VitCheckboxStoryWidgetState extends State<_VitCheckboxStoryWidget> {
   bool withSubtitleCheckbox = true;
   bool disabledCheckbox = false;
   bool customColorCheckbox = true;
+  bool squareCheckbox = true;
+  bool circleCheckbox = false;
+  bool convexCheckbox = true;
   bool? tristateCheckbox;
 
   @override
@@ -76,6 +79,7 @@ class _VitCheckboxStoryWidgetState extends State<_VitCheckboxStoryWidget> {
               const SizedBox(height: 16),
               const Text(
                 'Visual Density: Standard',
+
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -193,6 +197,63 @@ class _VitCheckboxStoryWidgetState extends State<_VitCheckboxStoryWidget> {
                 title: 'Custom Theme',
                 subtitle: 'Checkbox with custom active color',
                 activeColor: Colors.green,
+              ),
+              const SizedBox(height: 32),
+              const Text(
+                'Shapes',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              VitCheckbox(
+                value: squareCheckbox,
+                onChanged: (value) {
+                  setState(() {
+                    squareCheckbox = value;
+                  });
+                },
+                title: 'Square Shape (Default)',
+                shape: VitCheckboxShape.square,
+              ),
+              const SizedBox(height: 8),
+              VitCheckbox(
+                value: circleCheckbox,
+                onChanged: (value) {
+                  setState(() {
+                    circleCheckbox = value;
+                  });
+                },
+                title: 'Circle Shape',
+                shape: VitCheckboxShape.circle,
+              ),
+              const SizedBox(height: 8),
+              VitCheckbox(
+                value: convexCheckbox,
+                onChanged: (value) {
+                  setState(() {
+                    convexCheckbox = value;
+                  });
+                },
+                title: 'Convex Shape (Pillow)',
+                shape: VitCheckboxShape.convex,
+              ),
+              const SizedBox(height: 32),
+              const Text(
+                'Sizes Override',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              VitCheckbox(
+                value: squareCheckbox,
+                onChanged: (value) {},
+                title: 'Custom Size (32px)',
+                checkboxSize: 32,
+              ),
+              const SizedBox(height: 8),
+              VitCheckbox(
+                value: circleCheckbox,
+                onChanged: (value) {},
+                title: 'Custom Size (12px)',
+                checkboxSize: 12,
               ),
               const SizedBox(height: 32),
               const Text(

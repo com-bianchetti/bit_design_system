@@ -18,11 +18,12 @@ import 'package:vit_design_system/vit_design_system.dart';
 
 ## Key Features
 
+- **Shapes Options**: Render as square, circle, or convex (pillow shape)
 - **Standalone or List Mode**: Render as a simple checkbox or as part of a styled list item with title and subtitle
 - **Tristate Support**: Optional indeterminate state for parent-child checkbox relationships
 - **Flexible Positioning**: Place checkbox on left or right side of list items
 - **Form Integration**: Seamless integration with `VitForm` for data collection and validation
-- **Visual Density Control**: Adjust spacing with compact, standard, or comfortable modes
+- **Visual Density Control**: Adjust spacing and **checkbox size** with compact, standard, or comfortable modes
 - **Skeleton Loading**: Built-in loading state with shimmer effect
 - **Accessibility**: Full semantic label and hint support for screen readers
 - **Customizable Styling**: Control colors, borders, and backgrounds through theme
@@ -83,6 +84,19 @@ class _MyCheckboxState extends State<MyCheckbox> {
 
 ## Advanced Features
 
+### Shape Variations
+
+Override the default shape (from the theme configuration) for a specific checkbox using the `shape` property.
+
+```dart
+VitCheckbox(
+  id: 'shape_circle',
+  title: 'Circle Checkbox',
+  shape: VitCheckboxShape.circle,
+  value: false,
+)
+```
+
 ### Checkbox Positioning
 
 Control whether the checkbox appears on the left or right side of list items.
@@ -125,15 +139,26 @@ VitCheckbox(
 )
 ```
 
-### Visual Density
+### Visual Density & Sizing
 
-Adjust the height and spacing of list-style checkboxes to match your design requirements.
+Adjust the height and spacing of list-style checkboxes to match your design requirements. The visual density also automatically scales the checkbox size based on `VitValues` (`checkboxComfortableSize`, `checkboxStandardSize`, `checkboxCompactSize`).
 
 ```dart
 VitCheckbox(
   id: 'compact',
   title: 'Compact Option',
   visualDensity: VisualDensity.compact,
+  value: false,
+)
+```
+
+You can also explicitly override the checkbox size using `checkboxSize` regardless of visual density.
+
+```dart
+VitCheckbox(
+  id: 'custom_size',
+  title: 'Large Checkbox',
+  checkboxSize: 32.0,
   value: false,
 )
 ```
@@ -146,6 +171,8 @@ VitCheckbox(
 | `title` | `String` | Main label |
 | `subtitle` | `String?` | Secondary description |
 | `value` | `bool` | Checked state |
+| `shape` | `VitCheckboxShape?` | Shape of the checkbox |
+| `checkboxSize` | `double?` | Explicit size override |
 | `onChanged` | `ValueChanged<bool>?` | Change callback |
 | `enabled` | `bool` | Enable/disable |
 

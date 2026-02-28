@@ -47,6 +47,9 @@ class VitValues {
   final double loadingComfortableStrokeWidth;
   final double loadingStandardStrokeWidth;
   final double loadingCompactStrokeWidth;
+  final double checkboxComfortableSize;
+  final double checkboxStandardSize;
+  final double checkboxCompactSize;
   final EdgeInsetsGeometry iconButtonComfortablePadding;
   final EdgeInsetsGeometry iconButtonStandardPadding;
   final EdgeInsetsGeometry iconButtonCompactPadding;
@@ -158,6 +161,9 @@ class VitValues {
     this.loadingComfortableStrokeWidth = 5,
     this.loadingStandardStrokeWidth = 4,
     this.loadingCompactStrokeWidth = 3,
+    this.checkboxComfortableSize = 21,
+    this.checkboxStandardSize = 18,
+    this.checkboxCompactSize = 15,
     this.iconButtonComfortablePadding = const EdgeInsets.all(12),
     this.iconButtonStandardPadding = const EdgeInsets.all(8),
     this.iconButtonCompactPadding = const EdgeInsets.all(4),

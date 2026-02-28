@@ -2,6 +2,7 @@ import 'package:vit_design_system/components/form/vit_form.dart';
 import 'package:vit_design_system/components/skeleton/vit_loading_scope.dart';
 import 'package:vit_design_system/components/skeleton/vit_skeleton_shimmer.dart';
 import 'package:vit_design_system/components/text/vit_text.dart';
+import 'package:vit_design_system/config/vit_types.dart';
 import 'package:vit_design_system/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -141,6 +142,21 @@ class VitCheckbox extends StatefulWidget {
   /// Only applies when [title] is provided.
   final BorderRadius? borderRadius;
 
+  /// The shape of the checkbox.
+  ///
+  /// If null, uses the theme configuration's checkboxShape.
+  /// Supports [VitCheckboxShape.square], [VitCheckboxShape.circle], and [VitCheckboxShape.convex].
+  final VitCheckboxShape? shape;
+
+  /// The size of the checkbox independently of the visual density.
+  ///
+  /// If provided, this value overrides the size calculated from [visualDensity].
+  /// By default, the size is calculated from the theme's values configuration:
+  /// - [VisualDensity.comfortable]: [VitValues.checkboxComfortableSize]
+  /// - [VisualDensity.standard]: [VitValues.checkboxStandardSize]
+  /// - [VisualDensity.compact]: [VitValues.checkboxCompactSize]
+  final double? checkboxSize;
+
   /// Padding around the list item content.
   ///
   /// Defaults to symmetric horizontal padding of 16 and vertical padding of 12.
@@ -209,6 +225,8 @@ class VitCheckbox extends StatefulWidget {
     this.hint,
     this.backgroundColor,
     this.borderRadius,
+    this.shape,
+    this.checkboxSize,
     this.icon,
     this.iconColor,
     this.enabled = true,
@@ -238,25 +256,52 @@ class _VitCheckboxState extends State<VitCheckbox> {
   Widget _buildCheckbox(BuildContext context) {
     final theme = context.theme;
 
+    final effectiveShape = widget.shape ?? theme.configuration.checkboxShape;
+    final OutlinedBorder checkboxShape = switch (effectiveShape) {
+      VitCheckboxShape.circle => const CircleBorder(),
+      VitCheckboxShape.convex => const ContinuousRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      VitCheckboxShape.square => RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+    };
+
+    final visualDensity = widget.visualDensity ?? theme.visualDensity;
+    final defaultSize = switch (visualDensity) {
+      VisualDensity.comfortable => theme.values.checkboxComfortableSize,
+      VisualDensity.standard => theme.values.checkboxStandardSize,
+      VisualDensity.compact => theme.values.checkboxCompactSize,
+      _ => theme.values.checkboxStandardSize,
+    };
+
+    final effectiveSize = widget.checkboxSize ?? defaultSize;
+    // Native Checkbox has a fixed size of 18.0
+    final scale = effectiveSize / 18.0;
+
     return Semantics(
       label: widget.semanticLabel ?? widget.title ?? 'Checkbox',
       checked: widget.value ?? _value,
       hint: widget.hint,
       excludeSemantics: true,
-      child: Checkbox(
-        value: widget.onChanged != null ? widget.value ?? _value : _value,
-        onChanged: widget.enabled
-            ? (widget.onChanged != null
-                  ? (value) => widget.onChanged!(value ?? false)
-                  : (value) {
-                      setState(() {
-                        _value = value ?? false;
-                      });
-                    })
-            : null,
-        activeColor: widget.activeColor ?? theme.primaryColor,
-        checkColor: widget.checkColor ?? Colors.white,
-        tristate: widget.tristate,
+      child: Transform.scale(
+        scale: scale,
+        child: Checkbox(
+          value: widget.onChanged != null ? widget.value ?? _value : _value,
+          onChanged: widget.enabled
+              ? (widget.onChanged != null
+                    ? (value) => widget.onChanged!(value ?? false)
+                    : (value) {
+                        setState(() {
+                          _value = value ?? false;
+                        });
+                      })
+              : null,
+          activeColor: widget.activeColor ?? theme.primaryColor,
+          checkColor: widget.checkColor ?? Colors.white,
+          tristate: widget.tristate,
+          shape: checkboxShape,
+        ),
       ),
     );
   }

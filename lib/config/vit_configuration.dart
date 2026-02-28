@@ -13,6 +13,7 @@ class VitConfiguration {
   final bool showInputBorder;
   final bool showInputBackground;
   final bool showCardBorder;
+  final VitCheckboxShape checkboxShape;
   final VitInputMode inputMode;
   final TextStyle? inputLabelStyle;
   final Widget? formBackArrowIcon;
@@ -29,6 +30,7 @@ class VitConfiguration {
     this.showInputBorder = true,
     this.showInputBackground = true,
     this.showCardBorder = true,
+    this.checkboxShape = VitCheckboxShape.square,
     this.inputMode = VitInputMode.floatingLabel,
     this.inputLabelStyle,
     this.formBackArrowIcon,
