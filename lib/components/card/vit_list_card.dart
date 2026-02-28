@@ -442,18 +442,21 @@ class VitListCard extends StatelessWidget {
       );
     }
 
+    final bool hasInteractions = onTap != null || onLongPress != null;
+    final bool isEnabled = enabled ?? hasInteractions;
+
     Widget listTile = ListTile(
       leading: leading,
       title: title,
       subtitle: subtitle,
       trailing: trailing,
       contentPadding: effectiveContentPadding,
-      enabled: enabled ?? (onTap != null || onLongPress != null),
+      enabled: isEnabled,
       dense: dense,
       isThreeLine: isThreeLine,
       selected: selected,
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: bottomWidget != null ? null : onTap,
+      onLongPress: bottomWidget != null ? null : onLongPress,
       focusColor: focusColor,
       hoverColor: hoverColor,
       selectedTileColor: selectedTileColor,
@@ -478,6 +481,17 @@ class VitListCard extends StatelessWidget {
           bottomWidget!,
         ],
       );
+
+      if (hasInteractions) {
+        listTile = InkWell(
+          onTap: onTap,
+          onLongPress: onLongPress,
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          borderRadius: effectiveBorderRadius,
+          child: listTile,
+        );
+      }
     }
 
     final effectiveShape =
