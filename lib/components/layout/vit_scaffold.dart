@@ -75,6 +75,7 @@ class VitScaffold extends StatelessWidget {
     this.showAppBarBorder = true,
     this.loading = false,
     this.bottomAppBarWidget,
+    this.unfocusOnTap = true,
   }) : assert(
          body != null ||
              children != null ||
@@ -565,6 +566,11 @@ class VitScaffold extends StatelessWidget {
   /// of the app bar.
   final PreferredSizeWidget? bottomAppBarWidget;
 
+  /// Whether to unfocus the keyboard when tapping on the scaffold.
+  ///
+  /// Defaults to true.
+  final bool unfocusOnTap;
+
   @override
   Widget build(BuildContext context) {
     final shouldShowAppBar =
@@ -668,7 +674,16 @@ class VitScaffold extends StatelessWidget {
           : null,
       body: VitLoadingScope(
         loading: loading,
-        child: body ?? defaultBody ?? const SizedBox.shrink(),
+        child: unfocusOnTap
+            ? GestureDetector(
+                onTap: () {
+                  if (FocusScope.of(context).hasFocus) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                child: body ?? defaultBody ?? const SizedBox.shrink(),
+              )
+            : body ?? defaultBody ?? const SizedBox.shrink(),
       ),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
