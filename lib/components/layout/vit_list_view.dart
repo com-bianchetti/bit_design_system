@@ -347,15 +347,15 @@ class VitListView extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
     this.scrollBehavior,
-  })  : children = null,
-        slivers = null,
-        crossAxisCount = 1,
-        tabletCrossAxisCount = null,
-        tabletBreakpoint = 600.0,
-        childAspectRatio = 1.0,
-        mainAxisExtent = null,
-        mainAxisSpacing = 0.0,
-        crossAxisSpacing = 0.0;
+  }) : children = null,
+       slivers = null,
+       crossAxisCount = 1,
+       tabletCrossAxisCount = null,
+       tabletBreakpoint = 600.0,
+       childAspectRatio = 1.0,
+       mainAxisExtent = null,
+       mainAxisSpacing = 0.0,
+       crossAxisSpacing = 0.0;
 
   /// Creates a [VitListView] with a grid layout.
   ///
@@ -394,9 +394,9 @@ class VitListView extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
     this.scrollBehavior,
-  })  : separatorBuilder = null,
-        children = null,
-        slivers = null;
+  }) : separatorBuilder = null,
+       children = null,
+       slivers = null;
 
   /// Creates a [VitListView] with custom slivers.
   ///
@@ -426,18 +426,18 @@ class VitListView extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
     this.scrollBehavior,
-  })  : itemCount = null,
-        itemBuilder = null,
-        separatorBuilder = null,
-        children = null,
-        contentPadding = null,
-        crossAxisCount = 1,
-        tabletCrossAxisCount = null,
-        tabletBreakpoint = 600.0,
-        childAspectRatio = 1.0,
-        mainAxisExtent = null,
-        mainAxisSpacing = 0.0,
-        crossAxisSpacing = 0.0;
+  }) : itemCount = null,
+       itemBuilder = null,
+       separatorBuilder = null,
+       children = null,
+       contentPadding = null,
+       crossAxisCount = 1,
+       tabletCrossAxisCount = null,
+       tabletBreakpoint = 600.0,
+       childAspectRatio = 1.0,
+       mainAxisExtent = null,
+       mainAxisSpacing = 0.0,
+       crossAxisSpacing = 0.0;
 
   int _getEffectiveCrossAxisCount(BuildContext context) {
     if (tabletCrossAxisCount == null) {
@@ -492,7 +492,10 @@ class VitListView extends StatelessWidget {
     return SliverToBoxAdapter(child: footer);
   }
 
-  Widget _buildContentSliver(BuildContext context, int effectiveCrossAxisCount) {
+  Widget _buildContentSliver(
+    BuildContext context,
+    int effectiveCrossAxisCount,
+  ) {
     Widget contentSliver;
 
     if (slivers != null) {

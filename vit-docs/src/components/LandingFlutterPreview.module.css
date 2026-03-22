@@ -3,13 +3,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem 0;
+  padding: 0.5rem 0 0;
 }
 
 .deviceFrame {
   position: relative;
-  width: 320px;
-  height: 640px;
+  width: min(calc(var(--preview-height, 500px) * 0.5), 100%);
+  height: var(--preview-height, 500px);
+  max-width: 100%;
   background: #1f2937;
   border-radius: 40px;
   padding: 12px;
@@ -74,8 +75,8 @@
 
 @media screen and (max-width: 996px) {
   .deviceFrame {
-    width: 280px;
-    height: 560px;
+    width: min(calc(var(--preview-height, 500px) * 0.5), 100%);
+    height: min(var(--preview-height, 500px), 560px);
     border-radius: 32px;
     padding: 10px;
   }

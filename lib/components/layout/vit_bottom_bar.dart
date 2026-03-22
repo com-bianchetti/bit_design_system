@@ -367,6 +367,14 @@ class VitBottomBar extends StatefulWidget {
   /// Whether to enable haptic feedback on selection.
   final bool enableHapticFeedback;
 
+  /// Whether the bottom bar has a notch for a floating action button.
+  ///
+  /// Only applies when used in a setup that provides a center floating action button.
+  final bool hasNotch;
+
+  /// The margin around the notch.
+  final double notchMargin;
+
   /// Creates a [VitBottomBar].
   const VitBottomBar({
     super.key,
@@ -406,6 +414,8 @@ class VitBottomBar extends StatefulWidget {
     this.isLoading = false,
     this.semanticLabel,
     this.enableHapticFeedback = true,
+    this.hasNotch = false,
+    this.notchMargin = 8.0,
   });
 
   @override
@@ -621,48 +631,65 @@ class VitBottomBarState extends State<VitBottomBar>
         widget.bottomBarHeight ??
         (widget.labelBehavior == VitBottomBarLabelBehavior.neverShow ? 64 : 80);
 
-    return Material(
-      elevation: widget.elevation,
-      color: backgroundColor,
-      child: Container(
-        height: bottomBarHeight,
-        padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          borderRadius: effectiveBorderRadius,
-          border: widget.showBorder
-              ? Border.all(
-                  color: widget.borderColor ?? theme.borderColor,
-                  width: widget.borderWidth,
-                )
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(widget.items.length, (index) {
-            final item = widget.items[index];
-            final isSelected = index == widget.currentIndex;
+    Widget bottomBarContent = Container(
+      height: bottomBarHeight,
+      padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 8),
+      decoration: widget.hasNotch
+          ? null
+          : BoxDecoration(
+              borderRadius: effectiveBorderRadius,
+              border: widget.showBorder
+                  ? Border.all(
+                      color: widget.borderColor ?? theme.borderColor,
+                      width: widget.borderWidth,
+                    )
+                  : null,
+            ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(widget.items.length, (index) {
+          final item = widget.items[index];
+          final isSelected = index == widget.currentIndex;
 
-            if (widget.bottomBarItemBuilder != null) {
-              return widget.bottomBarItemBuilder!(
-                context,
-                item,
-                index,
-                isSelected,
-                () => _onItemTap(index),
-              );
-            }
-
-            return _buildBottomBarItem(
+          if (widget.bottomBarItemBuilder != null) {
+            return widget.bottomBarItemBuilder!(
               context,
               item,
               index,
               isSelected,
-              selectedColor,
-              unselectedColor,
+              () => _onItemTap(index),
             );
-          }),
-        ),
+          }
+
+          return _buildBottomBarItem(
+            context,
+            item,
+            index,
+            isSelected,
+            selectedColor,
+            unselectedColor,
+          );
+        }),
       ),
+    );
+
+    if (widget.hasNotch) {
+      return BottomAppBar(
+        elevation: widget.elevation,
+        color: backgroundColor,
+        shape: const CircularNotchedRectangle(),
+        notchMargin: widget.notchMargin,
+        padding: EdgeInsets.zero,
+        height: bottomBarHeight,
+        clipBehavior: Clip.antiAlias,
+        child: bottomBarContent,
+      );
+    }
+
+    return Material(
+      elevation: widget.elevation,
+      color: backgroundColor,
+      child: bottomBarContent,
     );
   }
 
@@ -684,62 +711,28 @@ class VitBottomBarState extends State<VitBottomBar>
         (widget.labelBehavior == VitBottomBarLabelBehavior.showOnlySelected &&
             isSelected);
 
-    Widget itemWidget = Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: widget.variant == VitBottomBarVariant.dot
-          ? [
-              if (showLabel) ...[
-                VitText(
-                  item.label,
-                  style: theme.bodySmall.copyWith(
-                    color: effectiveColor,
-                    fontSize: widget.labelFontSize ?? 14,
-                    fontWeight: isSelected
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                  ),
-                ),
-                const SizedBox(height: 6),
-              ],
-              AnimatedContainer(
-                duration: widget.animationDuration,
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: isSelected ? effectiveColor : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ]
-          : [
-              _buildAnimatedIcon(
-                context,
-                item,
-                isSelected,
-                effectiveColor,
-              ),
-              if (showLabel) ...[
-                const SizedBox(height: 4),
-                VitText(
-                  item.label,
-                  style: theme.bodySmall.copyWith(
-                    color: effectiveColor,
-                    fontSize: widget.labelFontSize ?? 12,
-                    fontWeight: isSelected
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                  ),
-                ),
-              ],
-            ],
-    );
+    Widget iconWidget = widget.variant == VitBottomBarVariant.dot
+        ? AnimatedContainer(
+            duration: widget.animationDuration,
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: isSelected ? effectiveColor : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+          )
+        : _buildAnimatedIcon(
+            context,
+            item,
+            isSelected,
+            effectiveColor,
+          );
 
     if (item.badge != null) {
-      itemWidget = Stack(
+      iconWidget = Stack(
         clipBehavior: Clip.none,
         children: [
-          itemWidget,
+          iconWidget,
           Positioned(
             top: -4,
             right: -8,
@@ -762,6 +755,44 @@ class VitBottomBarState extends State<VitBottomBar>
         ],
       );
     }
+
+    Widget itemWidget = Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widget.variant == VitBottomBarVariant.dot
+          ? [
+              if (showLabel) ...[
+                VitText(
+                  item.label,
+                  style: theme.bodySmall.copyWith(
+                    color: effectiveColor,
+                    fontSize: widget.labelFontSize ?? 14,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 6),
+              ],
+              iconWidget,
+            ]
+          : [
+              iconWidget,
+              if (showLabel) ...[
+                const SizedBox(height: 4),
+                VitText(
+                  item.label,
+                  style: theme.bodySmall.copyWith(
+                    color: effectiveColor,
+                    fontSize: widget.labelFontSize ?? 12,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ],
+    );
 
     Widget button = InkWell(
       onTap: item.enabled ? () => _onItemTap(index) : null,
@@ -981,10 +1012,8 @@ class VitBottomBarState extends State<VitBottomBar>
         ? (isSelected ? selectedColor : unselectedColor)
         : theme.disabledColor;
 
-    Widget itemContent = Row(
-      children: [
-        if (widget.variant == VitBottomBarVariant.dot)
-          AnimatedContainer(
+    Widget iconWidget = widget.variant == VitBottomBarVariant.dot
+        ? AnimatedContainer(
             duration: widget.animationDuration,
             margin: const EdgeInsets.symmetric(horizontal: 8),
             width: 8,
@@ -994,8 +1023,39 @@ class VitBottomBarState extends State<VitBottomBar>
               shape: BoxShape.circle,
             ),
           )
-        else
-          _buildAnimatedIcon(context, item, isSelected, effectiveColor),
+        : _buildAnimatedIcon(context, item, isSelected, effectiveColor);
+
+    if (!_isExpanded && item.badge != null) {
+      iconWidget = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          iconWidget,
+          Positioned(
+            top: -4,
+            right: -8,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: item.badgeColor ?? theme.errorColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: VitText(
+                item.badge!,
+                style: theme.labelSmall.copyWith(
+                  color: theme.onPrimaryColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget itemContent = Row(
+      children: [
+        iconWidget,
         if (_isExpanded) ...[
           const SizedBox(width: 16),
           Expanded(
@@ -1267,6 +1327,12 @@ class VitNavigationScaffold extends StatefulWidget {
   /// Defaults to false.
   final bool loading;
 
+  /// Whether the bottom bar has a notch for a floating action button.
+  final bool hasNotch;
+
+  /// The margin around the notch.
+  final double notchMargin;
+
   /// Creates a [VitNavigationScaffold].
   const VitNavigationScaffold({
     super.key,
@@ -1314,6 +1380,8 @@ class VitNavigationScaffold extends StatefulWidget {
     this.extendBodyBehindAppBar = false,
     this.extendBody = false,
     this.loading = false,
+    this.hasNotch = false,
+    this.notchMargin = 8.0,
   }) : assert(
          items.length == pages.length,
          'items and pages must have the same length',
@@ -1422,6 +1490,8 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
       iconSize: widget.iconSize,
       labelFontSize: widget.labelFontSize,
       isLoading: widget.isLoading,
+      hasNotch: widget.hasNotch,
+      notchMargin: widget.notchMargin,
     );
 
     Widget body;
@@ -1441,13 +1511,23 @@ class VitNavigationScaffoldState extends State<VitNavigationScaffold> {
     }
 
     if (isTablet) {
+      FloatingActionButtonLocation? effectiveFabLocation =
+          widget.floatingActionButtonLocation;
+
+      if (widget.floatingActionButtonLocation ==
+          FloatingActionButtonLocation.centerDocked) {
+        effectiveFabLocation = widget.sideBarPosition == VitSideBarPosition.left
+            ? FloatingActionButtonLocation.startFloat
+            : FloatingActionButtonLocation.endFloat;
+      }
+
       return Scaffold(
         appBar: widget.appBar,
         backgroundColor:
             widget.scaffoldBackgroundColor ?? context.theme.backgroundColor,
         extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
         floatingActionButton: widget.floatingActionButton,
-        floatingActionButtonLocation: widget.floatingActionButtonLocation,
+        floatingActionButtonLocation: effectiveFabLocation,
         body: VitLoadingScope(
           loading: widget.loading,
           child: Row(

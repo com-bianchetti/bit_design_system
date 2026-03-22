@@ -11,7 +11,13 @@ export default function LandingFlutterPreview({
   height = 500
 }: LandingFlutterPreviewProps): JSX.Element {
   return (
-    <div className={styles.previewWrapper}>
+    <div
+      className={styles.previewWrapper}
+      style={
+        {
+          '--preview-height': `${height}px`,
+        } as React.CSSProperties
+      }>
       <div className={styles.deviceFrame}>
         <div className={styles.deviceNotch}></div>
         <div className={styles.deviceScreen}>

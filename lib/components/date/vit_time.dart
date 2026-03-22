@@ -139,6 +139,9 @@ class VitTime extends StatefulWidget {
   /// The color of the selected time in the time picker popover.
   final Color? selectedColor;
 
+  /// A list of times that are disabled and cannot be selected.
+  final List<DateTime>? disabledTimes;
+
   /// The mode of the time picker.
   /// VitTimeMode.amPm: 12-hour format with AM/PM selection.
   /// VitTimeMode.twentyFourHour: 24-hour format.
@@ -197,6 +200,7 @@ class VitTime extends StatefulWidget {
     this.popoverBorderRadius = 25,
     this.confirmButtonText,
     this.selectedColor,
+    this.disabledTimes,
     this.mode = VitTimeMode.twentyFourHour,
     this.variant = VitPickerVariant.input,
     this.id,
@@ -283,6 +287,7 @@ class _VitTimeState extends State<VitTime> {
         mode: widget.mode,
         selectedColor: widget.selectedColor,
         confirmButtonText: widget.confirmButtonText ?? strings.confirm,
+        disabledTimes: widget.disabledTimes,
       ),
       borderRadius: widget.popoverBorderRadius,
       isDismissible: true,
@@ -525,6 +530,7 @@ class _VitTimeSelector extends StatefulWidget {
   final VitTimeMode mode;
   final Color? selectedColor;
   final String confirmButtonText;
+  final List<DateTime>? disabledTimes;
 
   const _VitTimeSelector({
     required this.initialTime,
@@ -532,6 +538,7 @@ class _VitTimeSelector extends StatefulWidget {
     required this.mode,
     this.selectedColor,
     required this.confirmButtonText,
+    this.disabledTimes,
   });
 
   @override
@@ -548,6 +555,28 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
   late FixedExtentScrollController _amPmController;
 
   static const double _itemExtent = 45.0;
+
+  int get _current24Hour {
+    int finalHour = _selectedHour;
+    if (widget.mode == VitTimeMode.amPm) {
+      if (_isAm) {
+        if (finalHour == 12) finalHour = 0;
+      } else {
+        if (finalHour != 12) finalHour += 12;
+      }
+    }
+    return finalHour;
+  }
+
+  bool _isTimeDisabled(int hour, int minute) {
+    if (widget.disabledTimes == null) return false;
+    for (final time in widget.disabledTimes!) {
+      if (time.hour == hour && time.minute == minute) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @override
   void initState() {
@@ -670,8 +699,11 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
                           });
                         },
                         itemBuilder: (context, index) {
+                          final hour = _current24Hour;
+                          final isDisabled = _isTimeDisabled(hour, index);
                           return _buildWheelItem(
                             index.toString().padLeft(2, '0'),
+                            isDisabled: isDisabled,
                           );
                         },
                       ),
@@ -701,6 +733,7 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
             width: double.infinity,
             child: VitButton(
               onPressed: _handleConfirm,
+              isDisabled: _isTimeDisabled(_current24Hour, _selectedMinute),
               text: widget.confirmButtonText,
               backgroundColor: theme.primaryColor,
               foregroundColor: theme.onPrimaryColor,
@@ -731,13 +764,14 @@ class _VitTimeSelectorState extends State<_VitTimeSelector> {
     );
   }
 
-  Widget _buildWheelItem(String text) {
+  Widget _buildWheelItem(String text, {bool isDisabled = false}) {
     return Center(
       child: VitText(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.w500,
+          color: isDisabled ? context.theme.disabledColor : null,
         ),
       ),
     );

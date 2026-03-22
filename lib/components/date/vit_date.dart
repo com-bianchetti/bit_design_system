@@ -216,6 +216,7 @@ class VitDate extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -299,6 +300,7 @@ class VitDate extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
@@ -449,6 +451,7 @@ class _VitDateState extends State<VitDate> {
               todayColor: widget.todayColor,
               minDate: widget.minDate,
               maxDate: widget.maxDate,
+              disabledDates: widget.disabledDates,
               dayStyle: widget.dayStyle,
               weekdayStyle: widget.weekdayStyle,
               headerStyle: widget.headerStyle,
@@ -462,6 +465,7 @@ class _VitDateState extends State<VitDate> {
               todayColor: widget.todayColor,
               minDate: widget.minDate,
               maxDate: widget.maxDate,
+              disabledDates: widget.disabledDates,
               dayStyle: widget.dayStyle,
               weekdayStyle: widget.weekdayStyle,
               headerStyle: widget.headerStyle,
@@ -771,6 +775,7 @@ class _VitDateCalendar extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -783,6 +788,7 @@ class _VitDateCalendar extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
@@ -861,6 +867,19 @@ class _VitDateCalendarState extends State<_VitDateCalendar> {
     }
     if (widget.maxDate != null && date.isAfter(widget.maxDate!)) {
       return true;
+    }
+    if (widget.disabledDates != null) {
+      final dateOnly = DateTime(date.year, date.month, date.day);
+      for (final disabledDate in widget.disabledDates!) {
+        final disabledDateOnly = DateTime(
+          disabledDate.year,
+          disabledDate.month,
+          disabledDate.day,
+        );
+        if (dateOnly == disabledDateOnly) {
+          return true;
+        }
+      }
     }
     return false;
   }
@@ -1296,6 +1315,7 @@ class _VitDateRangeCalendar extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -1310,6 +1330,7 @@ class _VitDateRangeCalendar extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
@@ -1408,6 +1429,19 @@ class _VitDateRangeCalendarState extends State<_VitDateRangeCalendar> {
     }
     if (widget.maxDate != null && date.isAfter(widget.maxDate!)) {
       return true;
+    }
+    if (widget.disabledDates != null) {
+      final dateOnly = DateTime(date.year, date.month, date.day);
+      for (final disabledDate in widget.disabledDates!) {
+        final disabledDateOnly = DateTime(
+          disabledDate.year,
+          disabledDate.month,
+          disabledDate.day,
+        );
+        if (dateOnly == disabledDateOnly) {
+          return true;
+        }
+      }
     }
     return false;
   }

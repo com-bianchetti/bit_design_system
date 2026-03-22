@@ -281,6 +281,27 @@ VitBottomBar(
 )
 ```
 
+### With Notched / Floating Button
+
+```dart
+VitNavigationScaffold(
+  hasNotch: true,
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {},
+    child: Icon(Icons.add),
+  ),
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+  ],
+  pages: [
+    HomePage(),
+    SearchPage(),
+  ],
+)
+```
+
 ### Properties
 
 | Property | Type | Description |
@@ -296,6 +317,8 @@ VitBottomBar(
 | `sideBarItemStyle` | `VitSideBarItemStyle` | Sidebar item visual style (default: rounded) |
 | `isLoading` | `bool` | Show skeleton loading state (default: false) |
 | `enableHapticFeedback` | `bool` | Enable tactile feedback (default: true) |
+| `hasNotch` | `bool` | Whether to show a notch for FAB (default: false) |
+| `notchMargin` | `double` | Margin around the notch (default: 8.0) |
 
 ## VitListView
 
