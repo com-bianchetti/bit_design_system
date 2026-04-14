@@ -696,6 +696,66 @@ class _VitListCardStoryWidgetState extends State<_VitListCardStoryWidget> {
                 ),
               ],
             ),
+            const SizedBox(height: 32),
+            const Text(
+              'Card with Bottom Widget',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            VitListCard(
+              leading: const Icon(Icons.event, color: Colors.purple),
+              title: VitText('Team Meeting'),
+              subtitle: VitText('10:00 AM - 11:30 AM'),
+              trailing: const Icon(Icons.chevron_right),
+              bottomWidget: Padding(
+                padding: const EdgeInsets.only(left: 72, right: 16, bottom: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: Colors.purple.shade50,
+                          foregroundColor: Colors.purple,
+                        ),
+                        onPressed: () {},
+                        child: const Text('Join'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {},
+                        child: const Text('Decline'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {},
+              margin: const EdgeInsets.only(bottom: 8),
+            ),
+            VitListCard(
+              leading: const Icon(Icons.cloud, color: Colors.blue),
+              title: VitText('Storage Limit'),
+              subtitle: VitText('You have used 80% of your space.'),
+              bottomWidget: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                  top: 8,
+                ),
+                child: LinearProgressIndicator(
+                  value: 0.8,
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(4),
+                  backgroundColor: Colors.grey.shade200,
+                  color: Colors.blue,
+                ),
+              ),
+              onTap: () {},
+            ),
           ],
         ),
       ),

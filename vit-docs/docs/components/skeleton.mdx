@@ -1,0 +1,452 @@
+---
+sidebar_position: 19
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Skeleton
+
+Skeleton loading provides a superior user experience during content loading by displaying animated placeholder shapes that match the layout and dimensions of the actual content. Instead of showing a blank screen or generic spinner, skeleton loading gives users a preview of the content structure while data is being fetched.
+
+The skeleton system in this design system uses a sophisticated approach where components render with mock data and then apply a shimmer animation effect, ensuring that skeleton states perfectly match the actual content dimensions and layout. This creates a seamless transition from loading to loaded state.
+
+<FlutterPreview story="VitSkeleton" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Overview
+
+The skeleton loading system consists of three main components:
+
+- **VitLoadingScope**: An InheritedWidget that propagates loading state to all descendant components
+- **VitSkeletonShimmer**: The animated shimmer effect that creates the loading appearance
+- **VitSkeletonUtils**: Utility methods for generating mock data to maintain content dimensions
+
+This architecture allows entire widget trees to enter a loading state without manually configuring each component, while still providing the flexibility to override loading behavior on individual components when needed.
+
+## VitLoadingScope
+
+VitLoadingScope is an InheritedWidget that automatically propagates loading state to all descendant Vit components. When you wrap a widget tree with VitLoadingScope and set loading to true, all child components from the design system will automatically display their skeleton loading state.
+
+This approach eliminates the need to pass loading state as a prop to each individual component, making it easy to show skeleton loading for entire screens or sections of your UI.
+
+### Key Features
+
+- **Automatic Propagation**: Loading state flows down the widget tree without manual configuration
+- **Component Integration**: All design system components check for VitLoadingScope automatically
+- **Override Support**: Individual components can override the scope's loading state
+- **Stateful Management**: Works seamlessly with Flutter's state management patterns
+
+### Basic Usage
+
+Wrap your content with VitLoadingScope:
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: Column(
+    children: [
+      VitText('User Name'),
+      VitText('user@example.com'),
+      VitButton(text: 'Edit Profile', onPressed: () {}),
+    ],
+  ),
+)
+```
+
+When `isLoading` is true, all the child components automatically show skeleton loading.
+
+### Complete Loading Pattern
+
+```dart
+class ProfileScreen extends StatefulWidget {
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isLoading = true;
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    setState(() => _isLoading = true);
+    
+    _user = await fetchUserData();
+    
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VitLoadingScope(
+      loading: _isLoading,
+      child: Column(
+        children: [
+          VitAvatar(imageUrl: _user?.avatarUrl),
+          VitTitle(_user?.name ?? 'John Doe'),
+          VitBody(_user?.email ?? 'john@example.com'),
+          VitButton(
+            text: 'Edit Profile',
+            onPressed: handleEdit,
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Override Individual Components
+
+Components can opt out of the loading scope:
+
+```dart
+VitLoadingScope(
+  loading: true,
+  child: Column(
+    children: [
+      VitText('This shows skeleton'),
+      VitText('This also shows skeleton'),
+      VitText('This does NOT show skeleton', isLoading: false),
+    ],
+  ),
+)
+```
+
+### Nested Loading Scopes
+
+You can nest loading scopes for different sections:
+
+```dart
+Column(
+  children: [
+    VitLoadingScope(
+      loading: isHeaderLoading,
+      child: HeaderSection(),
+    ),
+    VitLoadingScope(
+      loading: isContentLoading,
+      child: ContentSection(),
+    ),
+  ],
+)
+```
+
+## VitSkeletonShimmer
+
+VitSkeletonShimmer is the component that applies the actual shimmer animation effect. While most of the time you'll use VitLoadingScope for automatic skeleton loading, VitSkeletonShimmer is useful when you need to create custom skeleton shapes or apply the shimmer effect to non-design-system components.
+
+The shimmer effect uses an animated linear gradient that moves across the widget, creating a wave-like loading appearance. The component also wraps its child in an AbsorbPointer to prevent user interactions during the loading state.
+
+### Key Features
+
+- **Smooth Animation**: Continuous linear gradient animation with customizable duration
+- **Customizable Colors**: Configure base and highlight colors to match your theme
+- **Interaction Blocking**: Automatically prevents user interactions during loading
+- **Conditional Enable**: Can be toggled on/off without rebuilding the widget tree
+- **Performance Optimized**: Uses efficient shader-based rendering
+
+### Basic Usage
+
+Apply shimmer effect to any widget:
+
+```dart
+VitSkeletonShimmer(
+  child: Container(
+    width: 200,
+    height: 20,
+    decoration: BoxDecoration(
+      color: Colors.grey[300],
+      borderRadius: BorderRadius.circular(4),
+    ),
+  ),
+)
+```
+
+### Custom Colors
+
+Match the shimmer to your brand:
+
+```dart
+VitSkeletonShimmer(
+  baseColor: Colors.grey[400],
+  highlightColor: Colors.grey[100],
+  child: YourWidget(),
+)
+```
+
+### Conditional Shimmer
+
+Enable/disable shimmer dynamically:
+
+```dart
+VitSkeletonShimmer(
+  enabled: isLoading,
+  child: YourWidget(),
+)
+```
+
+### Custom Duration
+
+Control animation speed:
+
+```dart
+VitSkeletonShimmer(
+  duration: Duration(milliseconds: 2000),
+  child: YourWidget(),
+)
+```
+
+### Complex Layouts
+
+Create skeleton layouts for complex content:
+
+```dart
+VitSkeletonShimmer(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        width: double.infinity,
+        height: 200,
+        color: Colors.grey[300],
+      ),
+      SizedBox(height: 16),
+      Container(
+        width: 150,
+        height: 24,
+        color: Colors.grey[300],
+      ),
+      SizedBox(height: 8),
+      Container(
+        width: double.infinity,
+        height: 16,
+        color: Colors.grey[300],
+      ),
+      Container(
+        width: double.infinity,
+        height: 16,
+        color: Colors.grey[300],
+      ),
+      Container(
+        width: 200,
+        height: 16,
+        color: Colors.grey[300],
+      ),
+    ],
+  ),
+)
+```
+
+## Examples
+
+### Content Loading
+
+```dart
+class ContentView extends StatelessWidget {
+  final bool isLoading;
+  
+  @override
+  Widget build(BuildContext context) {
+    return VitLoadingScope(
+      loading: isLoading,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          VitTitle('Article Title'),
+          SizedBox(height: 8),
+          VitBody('Article content goes here...'),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              VitAvatar(imageUrl: 'url'),
+              SizedBox(width: 8),
+              VitBody('Author Name'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+## Properties Reference
+
+### VitLoadingScope
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `loading` | `bool` | Whether descendant components should display skeleton state |
+| `child` | `Widget` | Required. The widget tree to apply loading state to |
+
+Static methods:
+- `VitLoadingScope.maybeOf(BuildContext)`: Returns the nearest VitLoadingScope ancestor or null
+- `VitLoadingScope.isLoading(BuildContext)`: Returns whether loading state is active (false if no ancestor found)
+
+### VitSkeletonShimmer
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `child` | `Widget` | Required. Widget to apply shimmer effect to |
+| `enabled` | `bool` | Whether shimmer effect is active (default: true) |
+| `baseColor` | `Color?` | Base color of the shimmer (default: theme's skeletonBaseColor) |
+| `highlightColor` | `Color?` | Highlight color of the shimmer (default: theme's skeletonHighlightColor) |
+| `duration` | `Duration` | Duration of one shimmer cycle (default: 1500ms) |
+
+### VitSkeletonUtils
+
+All methods are static:
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `mockString` | `length: int = 10` | `String` | Generates 'X' repeated length times |
+| `mockParagraph` | `lines: int = 3, charsPerLine: int = 40` | `String` | Generates multi-line placeholder |
+| `mockIcon` | None | `IconData` | Returns Icons.circle |
+| `mockEmail` | `length: int = 20` | `String` | Generates email-formatted placeholder |
+| `mockPhone` | None | `String` | Returns '+X (XXX) XXX-XXXX' |
+| `mockDate` | None | `String` | Returns 'XX/XX/XXXX' |
+| `mockUrl` | None | `String` | Returns 'https://xxxxxxxxxx.xxx' |
+| `mockNumber` | `length: int = 5` | `String` | Generates '8' repeated length times |
+
+## Common Patterns
+
+### List Loading
+
+Show skeleton loading for list items:
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: ListView.builder(
+    itemCount: isLoading ? 5 : items.length,
+    itemBuilder: (context, index) {
+      if (isLoading) {
+        return VitListCard(
+          leading: VitAvatar(name: VitSkeletonUtils.mockString(length: 2)),
+          title: VitSkeletonUtils.mockString(length: 20),
+          subtitle: VitSkeletonUtils.mockString(length: 30),
+        );
+      }
+      final item = items[index];
+      return VitListCard(
+        leading: VitAvatar(imageUrl: item.avatar),
+        title: item.name,
+        subtitle: item.description,
+      );
+    },
+  ),
+)
+```
+
+### Card Grid Loading
+
+Skeleton loading for grid layouts:
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: VitListView.grid(
+    crossAxisCount: 2,
+    itemCount: isLoading ? 6 : products.length,
+    itemBuilder: (context, index) {
+      if (isLoading) {
+        return VitCard(
+          child: Column(
+            children: [
+              Container(height: 150, color: Colors.grey[300]),
+              VitText(VitSkeletonUtils.mockString(length: 15)),
+            ],
+          ),
+        );
+      }
+      return ProductCard(product: products[index]);
+    },
+  ),
+)
+```
+
+### Custom Skeleton Shapes
+
+Create custom skeleton shapes with VitSkeletonShimmer:
+
+```dart
+VitSkeletonShimmer(
+  baseColor: Colors.grey[300],
+  highlightColor: Colors.grey[100],
+  child: Column(
+    children: [
+      Container(height: 200, color: Colors.grey),
+      SizedBox(height: 16),
+      Container(height: 20, width: 150, color: Colors.grey),
+      SizedBox(height: 8),
+      Container(height: 16, color: Colors.grey),
+    ],
+  ),
+)
+```
+
+## Best Practices
+
+### When to Use Skeleton Loading
+
+✅ **Use skeleton loading when:**
+- Loading content that will appear in a specific layout (lists, grids, cards)
+- The expected wait time is 1-3 seconds
+- You want to show users what type of content is coming
+- The content structure is predictable and consistent
+- Initial page load or navigation to a new screen
+
+❌ **Don't use skeleton loading when:**
+- Wait time is very short (< 500ms) - content may flash
+- Wait time is very long (> 5 seconds) - use progress indicators instead
+- Content structure varies significantly between loads
+- The operation blocks critical user interaction (use modal loading instead)
+
+### Design Guidelines
+
+**Match Content Dimensions**
+- Skeleton shapes should closely match the actual content dimensions
+- Use VitSkeletonUtils to maintain consistent text widths
+- For images, show containers with the same aspect ratio
+
+**Keep Animations Subtle**
+- Default shimmer duration (1.5s) works well for most cases
+- Avoid overly fast animations that feel jarring
+- Ensure contrast between base and highlight colors isn't too strong
+
+**Maintain Layout Stability**
+- Don't change layout when transitioning from skeleton to real content
+- Ensure skeleton and real content have identical padding and spacing
+- Test the transition to verify no layout shift occurs
+
+### Accessibility
+
+Skeleton loading is primarily visual. Ensure screen readers get appropriate feedback:
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: Semantics(
+    label: isLoading ? 'Loading user profile' : 'User profile loaded',
+    liveRegion: true,
+    child: ProfileContent(),
+  ),
+)
+```
+
+## Related Components
+
+- [Loading](./loading.md) - For spinner-based loading indicators and modal overlays
+- [Progress](./progress.md) - For showing determinate progress during long operations
+- [Button](./button.md) - Buttons have built-in loading states

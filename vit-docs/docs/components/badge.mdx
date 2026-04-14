@@ -1,0 +1,426 @@
+---
+sidebar_position: 3
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Badge
+
+Small status indicators and notification badges for your Flutter applications.
+
+<FlutterPreview story="VitBadge" />
+
+## Overview
+
+The `VitBadge` component is a versatile widget designed to display contextual information overlaid on other UI elements. It's commonly used to show notification counts, status indicators, or labels that draw attention to specific elements in your interface.
+
+Badges are particularly effective for:
+- Indicating unread notifications or messages
+- Showing numeric counts on icons or buttons
+- Displaying status labels like "New", "Pro", or "Beta"
+- Drawing attention to updates or changes in your UI
+- Marking premium features or special content
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Badge
+
+A standalone badge displaying text. Perfect for inline status indicators or labels that don't need to be attached to another widget.
+
+```dart
+VitBadge(
+  label: 'New',
+  color: Colors.red,
+)
+```
+
+### Badge with Count
+
+Display a numeric count overlaid on an icon or widget. The badge automatically positions itself at the top-right corner and formats the count appropriately. This is ideal for notification indicators on icons.
+
+```dart
+VitBadge(
+  count: 5,
+  child: Icon(Icons.notifications),
+)
+```
+
+### Badge on Widget
+
+Attach a label badge to any widget. The badge will overlay the child widget, making it perfect for highlighting premium features or special items.
+
+```dart
+VitBadge(
+  label: 'Pro',
+  color: Colors.blue,
+  child: VitText('Premium Feature'),
+)
+```
+
+## Display Modes
+
+The badge component adapts its appearance based on the content you provide, offering three distinct display modes:
+
+### Notification Dot
+
+When no label, count, or icon is provided, the badge appears as a small dot indicator. This minimal design is perfect for drawing attention without displaying specific information.
+
+```dart
+VitBadge(
+  child: Icon(Icons.chat),
+)
+```
+
+### Count Badge
+
+When a `count` value is provided, the badge displays as a pill-shaped indicator with the number. Counts greater than 99 are automatically formatted for better readability.
+
+```dart
+VitBadge(
+  count: 42,
+  child: Icon(Icons.mail),
+)
+```
+
+### Label or Icon Badge
+
+You can display custom text labels or icons within the badge. This mode is automatically activated when you provide a `label` or `icon` property.
+
+```dart
+VitBadge(
+  icon: Icons.star,
+  child: Icon(Icons.person),
+)
+```
+
+## Customization
+
+### Colors
+
+Control the appearance of your badges with custom colors. The `backgroundColor` sets the badge's fill color, while `foregroundColor` controls the text or icon color within the badge.
+
+```dart
+VitBadge(
+  label: 'Warning',
+  backgroundColor: Colors.orange,
+  foregroundColor: Colors.white,
+  child: Icon(Icons.warning_amber),
+)
+```
+
+### Sizing
+
+Adjust badge dimensions based on your design needs. Use `smallSize` for the dot indicator diameter and `largeSize` for badges with labels or counts.
+
+```dart
+VitBadge(
+  label: 'XL',
+  largeSize: 24,
+  child: Icon(Icons.shopping_bag),
+)
+```
+
+### Positioning
+
+Fine-tune badge placement using `alignment` and `offset` properties. The alignment determines the general position (like top-right or top-left), while offset allows pixel-perfect adjustments.
+
+```dart
+VitBadge(
+  count: 8,
+  alignment: AlignmentDirectional.topStart,
+  offset: Offset(-4, -4),
+  child: Icon(Icons.email),
+)
+```
+
+### Custom Content
+
+Create unique badge designs with the `labelBuilder` for complete control over the badge content. This is useful for custom formatting or complex badge layouts.
+
+```dart
+VitBadge(
+  labelBuilder: (context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(Icons.star, size: 12),
+      SizedBox(width: 2),
+      Text('5.0'),
+    ],
+  ),
+  child: Icon(Icons.store),
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `label` | `String?` | Text content displayed in the badge |
+| `count` | `int?` | Numeric value to display; automatically formatted |
+| `icon` | `IconData?` | Icon to display instead of text or count |
+| `iconSize` | `double` | Size of the icon (defaults to 18) |
+| `backgroundColor` | `Color?` | Fill color of the badge background |
+| `foregroundColor` | `Color?` | Color of the text or icon content |
+| `child` | `Widget?` | Widget that the badge overlays |
+| `alignment` | `AlignmentGeometry?` | Position of badge relative to child (default: top-right) |
+| `offset` | `Offset?` | Additional positioning adjustment in pixels |
+| `smallSize` | `double?` | Diameter of dot indicator when no label/count (default: 6) |
+| `largeSize` | `double?` | Height of badge with label/count (default: 16) |
+| `padding` | `EdgeInsetsGeometry?` | Internal spacing around badge content |
+| `textStyle` | `TextStyle?` | Custom text styling for label content |
+| `isLabelVisible` | `bool` | Controls badge visibility (default: true) |
+| `labelBuilder` | `WidgetBuilder?` | Custom builder for badge content |
+| `visualDensity` | `VisualDensity?` | Controls spacing and sizing density |
+| `controller` | `VitBadgeController?` | Controller for dynamic badge updates |
+| `semanticsLabel` | `String?` | Accessibility label for screen readers |
+
+## Examples
+
+### Notification Badge
+
+Create an interactive notification icon with a count badge. This pattern is commonly used in app bars and navigation to indicate unread items or pending actions.
+
+```dart
+VitBadge(
+  count: 12,
+  color: Colors.red,
+  child: IconButton(
+    icon: Icon(Icons.notifications),
+    onPressed: () {},
+  ),
+)
+```
+
+### Status Badges
+
+Use standalone badges to display status information in lists, cards, or inline with text. Different colors help users quickly identify different states.
+
+```dart
+Row(
+  children: [
+    VitBadge(label: 'Active', color: Colors.green),
+    SizedBox(width: 8),
+    VitBadge(label: 'Pending', color: Colors.orange),
+    SizedBox(width: 8),
+    VitBadge(label: 'Inactive', color: Colors.grey),
+  ],
+)
+```
+
+### Tab with Badge
+
+Draw attention to specific tabs by adding count badges. Perfect for indicating new messages, notifications, or updates in tabbed interfaces.
+
+```dart
+Tab(
+  child: VitBadge(
+    count: 3,
+    child: VitText('Messages'),
+  ),
+)
+```
+
+### Shopping Cart Badge
+
+Display the number of items in a cart or basket. The badge automatically updates when items are added or removed through the controller.
+
+```dart
+VitBadge(
+  count: cartItemCount,
+  backgroundColor: Colors.green,
+  child: Icon(Icons.shopping_cart),
+)
+```
+
+### Icon Badge
+
+Use icons instead of text or numbers for visual indicators. This is effective for showing verification status, warnings, or special attributes.
+
+```dart
+VitBadge(
+  icon: Icons.verified,
+  iconSize: 14,
+  backgroundColor: Colors.blue,
+  child: CircleAvatar(
+    child: Icon(Icons.person),
+  ),
+)
+```
+
+## Badge Controller
+
+The `VitBadgeController` enables dynamic badge management, allowing you to update badge content and visibility from anywhere in your application without rebuilding the entire widget tree. This is particularly useful for real-time updates like notification counts or status changes.
+
+### Creating a Controller
+
+Initialize a controller with default values or create an empty one to set values later.
+
+```dart
+final badgeController = VitBadgeController(
+  count: 0,
+  isVisible: true,
+);
+```
+
+### Connecting to Badge
+
+Pass the controller to your badge widget to enable dynamic updates.
+
+```dart
+VitBadge(
+  controller: badgeController,
+  child: Icon(Icons.shopping_cart),
+)
+```
+
+### Updating Count
+
+Change the numeric count displayed on the badge. Negative values are automatically rejected.
+
+```dart
+badgeController.setCount(5);
+```
+
+### Updating Label
+
+Switch from count mode to label mode by setting a text label. This automatically clears any count or icon.
+
+```dart
+badgeController.setLabel('New');
+```
+
+### Updating Icon
+
+Display an icon instead of text or count. When setting an icon, the label and count are automatically cleared.
+
+```dart
+badgeController.setIcon(Icons.star);
+```
+
+### Controlling Visibility
+
+Show or hide the badge without disposing of it. This is useful for temporarily hiding badges based on user actions or application state.
+
+```dart
+badgeController.toggleVisibility();
+```
+
+### Controller Properties
+
+The controller provides read-only access to its current state:
+
+- `count` - Current numeric count value
+- `label` - Current text label (if any)
+- `icon` - Current icon data (if any)
+- `isVisible` - Whether the badge is currently visible
+
+### Real-time Updates Example
+
+Here's a practical example showing how to update a shopping cart badge as items are added:
+
+```dart
+class ShoppingCartButton extends StatefulWidget {
+  @override
+  State<ShoppingCartButton> createState() => _ShoppingCartButtonState();
+}
+
+class _ShoppingCartButtonState extends State<ShoppingCartButton> {
+  final badgeController = VitBadgeController(count: 0);
+  
+  void addToCart() {
+    badgeController.setCount(badgeController.count + 1);
+  }
+  
+  @override
+  void dispose() {
+    badgeController.dispose();
+    super.dispose();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return VitBadge(
+      controller: badgeController,
+      child: IconButton(
+        icon: Icon(Icons.shopping_cart),
+        onPressed: addToCart,
+      ),
+    );
+  }
+}
+```
+
+### State Management
+
+The controller automatically notifies listeners when values change, triggering badge updates. When switching between count, label, and icon modes, the controller intelligently clears conflicting values to maintain a single display mode.
+
+## Accessibility
+
+The badge component includes built-in accessibility support to ensure all users can understand the information it conveys.
+
+### Semantic Labels
+
+Provide custom semantic descriptions for screen readers using the `semanticsLabel` property.
+
+```dart
+VitBadge(
+  count: 5,
+  semanticsLabel: 'You have 5 unread messages',
+  child: Icon(Icons.mail),
+)
+```
+
+### Live Regions
+
+The badge automatically marks itself as a live region, meaning screen readers will announce changes when the count or label updates. This is crucial for dynamic notifications.
+
+### Automatic Announcements
+
+When using a controller to update badge values, changes are automatically announced to assistive technologies without requiring manual intervention.
+
+## Best Practices
+
+### Choose the Right Mode
+
+- Use **dot indicators** for simple presence notifications without specific counts
+- Use **count badges** when the exact number matters (messages, notifications, cart items)
+- Use **label badges** for status or category information (New, Pro, Beta)
+- Use **icon badges** for visual status indicators (verified, premium, warning)
+
+### Color Selection
+
+- Use high-contrast color combinations to ensure readability
+- Reserve red badges for urgent notifications or alerts
+- Use brand colors for promotional badges (Pro, Premium)
+- Maintain consistency in color meaning across your application
+
+### Count Formatting
+
+The badge automatically handles count display, but consider these guidelines:
+
+- Very high counts may be hard to read; consider using "99+" or similar text
+- For extremely large numbers, use labels like "Many" or custom formatting with `labelBuilder`
+
+### Performance
+
+- Reuse controllers when possible instead of creating new ones frequently
+- Dispose of controllers properly to prevent memory leaks
+- Use `isVisible` instead of conditional rendering to maintain state
+
+### User Experience
+
+- Don't overuse badges; too many can reduce their effectiveness
+- Animate badge appearance for better user attention (consider wrapping in AnimatedSwitcher)
+- Clear badges when users acknowledge them to prevent notification fatigue
+- Position badges consistently across your application
+
+## Related Components
+
+- [Avatar](./avatar.md) - User avatars
+- [Chip](./chip.md) - Chips

@@ -1,8 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:vit_design_system/components/layout/vit_appbar.dart';
-import 'package:vit_design_system/components/layout/vit_bottom_bar.dart';
-import 'package:vit_design_system/components/layout/vit_list_view.dart';
+import 'package:vit_design_system/vit_design_system.dart';
 
 class VitScaffold extends StatelessWidget {
   const VitScaffold({
@@ -74,8 +72,14 @@ class VitScaffold extends StatelessWidget {
     this.navigationUnselectedColor,
     this.navigationBackgroundColor,
     this.preserveNavigationState = true,
+    this.showAppBarBorder = true,
+    this.loading = false,
+    this.bottomAppBarWidget,
+    this.unfocusOnTap = true,
   }) : assert(
-         body != null || children != null || (navigationItems != null && navigationPages != null),
+         body != null ||
+             children != null ||
+             (navigationItems != null && navigationPages != null),
          'Either body, children, or navigation (navigationItems and navigationPages) must be provided',
        );
 
@@ -548,29 +552,50 @@ class VitScaffold extends StatelessWidget {
   /// Defaults to true.
   final bool preserveNavigationState;
 
+  /// Whether to show the app bar border.
+  ///
+  /// Defaults to true.
+  final bool showAppBarBorder;
+
+  /// Controls the inner [VitLoadingScope].
+  ///
+  /// Defaults to false.
+  final bool loading;
+
+  /// Widget to display at the bottom
+  /// of the app bar.
+  final PreferredSizeWidget? bottomAppBarWidget;
+
+  /// Whether to unfocus the keyboard when tapping on the scaffold.
+  ///
+  /// Defaults to true.
+  final bool unfocusOnTap;
+
   @override
   Widget build(BuildContext context) {
-    final shouldShowAppBar = showAppBar &&
+    final shouldShowAppBar =
+        showAppBar &&
         (appBar != null ||
             title != null ||
             titleWidget != null ||
             leading != null);
 
-    final hasNavigation =
-        navigationItems != null && navigationPages != null;
+    final hasNavigation = navigationItems != null && navigationPages != null;
 
     if (hasNavigation) {
       final effectiveAppBar = shouldShowAppBar
           ? (appBar ??
-              VitAppBar(
-                title: title,
-                titleWidget: titleWidget,
-                leading: leading,
-                onLeadingPressed: onLeadingPressed,
-                leadingIcon: leadingIcon,
-                trailing: trailing,
-                centerTitle: centerTitle,
-              ))
+                VitAppBar(
+                  title: title,
+                  titleWidget: titleWidget,
+                  leading: leading,
+                  onLeadingPressed: onLeadingPressed,
+                  leadingIcon: leadingIcon,
+                  trailing: trailing,
+                  centerTitle: centerTitle,
+                  showBorder: showAppBarBorder,
+                  bottomWidget: bottomAppBarWidget,
+                ))
           : null;
 
       return VitNavigationScaffold(
@@ -602,6 +627,7 @@ class VitScaffold extends StatelessWidget {
         scaffoldBackgroundColor: backgroundColor,
         extendBodyBehindAppBar: extendBodyBehindAppBar,
         extendBody: extendBody,
+        loading: loading,
       );
     }
 
@@ -642,9 +668,23 @@ class VitScaffold extends StatelessWidget {
                   leadingIcon: leadingIcon,
                   trailing: trailing,
                   centerTitle: centerTitle,
+                  showBorder: showAppBarBorder,
+                  bottomWidget: bottomAppBarWidget,
                 ))
           : null,
-      body: body ?? defaultBody,
+      body: VitLoadingScope(
+        loading: loading,
+        child: unfocusOnTap
+            ? GestureDetector(
+                onTap: () {
+                  if (FocusScope.of(context).hasFocus) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                child: body ?? defaultBody ?? const SizedBox.shrink(),
+              )
+            : body ?? defaultBody ?? const SizedBox.shrink(),
+      ),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
       floatingActionButtonAnimator: floatingActionButtonAnimator,
@@ -656,7 +696,7 @@ class VitScaffold extends StatelessWidget {
       endDrawer: endDrawer,
       onEndDrawerChanged: onEndDrawerChanged,
       drawerScrimColor: drawerScrimColor,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? context.theme.backgroundColor,
       bottomNavigationBar: bottomNavigationBar,
       bottomSheet: bottomSheet,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,

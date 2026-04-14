@@ -47,6 +47,17 @@ class VitValues {
   final double loadingComfortableStrokeWidth;
   final double loadingStandardStrokeWidth;
   final double loadingCompactStrokeWidth;
+  final double checkboxComfortableSize;
+  final double checkboxStandardSize;
+  final double checkboxCompactSize;
+  final EdgeInsetsGeometry iconButtonComfortablePadding;
+  final EdgeInsetsGeometry iconButtonStandardPadding;
+  final EdgeInsetsGeometry iconButtonCompactPadding;
+  final BorderRadius? iconButtonGlobalRadius;
+  final EdgeInsetsGeometry tabBarComfortablePadding;
+  final EdgeInsetsGeometry tabBarStandardPadding;
+  final EdgeInsetsGeometry tabBarCompactPadding;
+  final BorderRadius? tabBarGlobalRadius;
 
   const VitValues({
     this.buttonComfortableHeight = 65,
@@ -65,6 +76,7 @@ class VitValues {
     this.rawInputStandardFontSize = 24,
     this.rawInputCompactFontSize = 21,
     this.popoverBorderRadius = 25,
+    this.iconButtonGlobalRadius,
     this.inputComfortablePadding = const EdgeInsets.symmetric(
       horizontal: 16,
       vertical: 26,
@@ -149,5 +161,15 @@ class VitValues {
     this.loadingComfortableStrokeWidth = 5,
     this.loadingStandardStrokeWidth = 4,
     this.loadingCompactStrokeWidth = 3,
+    this.checkboxComfortableSize = 21,
+    this.checkboxStandardSize = 18,
+    this.checkboxCompactSize = 15,
+    this.iconButtonComfortablePadding = const EdgeInsets.all(12),
+    this.iconButtonStandardPadding = const EdgeInsets.all(8),
+    this.iconButtonCompactPadding = const EdgeInsets.all(4),
+    this.tabBarComfortablePadding = const EdgeInsets.all(12),
+    this.tabBarStandardPadding = const EdgeInsets.all(6),
+    this.tabBarCompactPadding = const EdgeInsets.all(2),
+    this.tabBarGlobalRadius,
   });
 }

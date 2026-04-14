@@ -1,0 +1,235 @@
+---
+sidebar_position: 18
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Switch
+
+Switches are toggle controls that represent binary on/off states. They provide immediate visual feedback and are ideal for settings, feature toggles, or any scenario requiring instant state changes without form submission.
+
+<FlutterPreview story="VitSwitch" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Standalone or List Mode**: Render as a simple switch or as part of a styled list item with title and subtitle
+- **iOS-style Design**: Uses Cupertino-style switches for consistent, platform-appropriate appearance
+- **Flexible Positioning**: Place switch on left or right side of list items
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust spacing with compact, standard, or comfortable modes
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Controlled & Uncontrolled**: Support both state management approaches
+- **Accessibility**: Full semantic label and toggle state announcement support
+- **Customizable Colors**: Control active, track, and thumb colors
+
+## Basic Usage
+
+### Simple Switch
+
+A minimal switch without any labels, perfect for custom layouts or inline controls.
+
+```dart
+bool enabled = true;
+
+VitSwitch(
+  id: 'notifications',
+  value: enabled,
+  onChanged: (value) {
+    setState(() => enabled = value);
+  },
+)
+```
+
+### Switch with Title
+
+Add a title to provide context for what the switch controls.
+
+```dart
+VitSwitch(
+  id: 'notifications',
+  title: 'Enable Notifications',
+  value: true,
+  onChanged: (value) {
+    print('Notifications: $value');
+  },
+)
+```
+
+### Switch with Subtitle
+
+Include a subtitle to provide additional explanation or details about the setting.
+
+```dart
+VitSwitch(
+  id: 'darkMode',
+  title: 'Dark Mode',
+  subtitle: 'Use dark theme',
+  value: true,
+  onChanged: (value) {
+    print('Dark mode: $value');
+  },
+)
+```
+
+### Controlled Switch
+
+Manage switch state externally for complex scenarios and synchronized updates.
+
+```dart
+class MySwitch extends StatefulWidget {
+  @override
+  _MySwitchState createState() => _MySwitchState();
+}
+
+class _MySwitchState extends State<MySwitch> {
+  bool _enabled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return VitSwitch(
+      id: 'feature',
+      title: 'Enable Feature',
+      value: _enabled,
+      onChanged: (value) {
+        setState(() => _enabled = value);
+      },
+    );
+  }
+}
+```
+
+## Advanced Features
+
+### Switch with Icons
+
+Add icons to provide visual context for the switch's purpose.
+
+```dart
+VitSwitch(
+  id: 'wifi',
+  title: 'Wi-Fi',
+  icon: Icon(Icons.wifi),
+  value: true,
+  onChanged: (value) => print('Wi-Fi: $value'),
+)
+```
+
+### Switch Positioning
+
+Place switches on the left side of list items for different layout styles.
+
+```dart
+VitSwitch(
+  id: 'left_switch',
+  title: 'Left Switch',
+  subtitle: 'Switch on the left',
+  switchPosition: VitSwitchPosition.left,
+  value: false,
+  onChanged: (value) => print('Changed: $value'),
+)
+```
+
+### Visual Density
+
+Adjust the height and spacing of list-style switches to match your design requirements.
+
+```dart
+VitSwitch(
+  id: 'compact',
+  title: 'Compact Switch',
+  visualDensity: VisualDensity.compact,
+  value: true,
+  onChanged: (value) => print('Value: $value'),
+)
+```
+
+### Custom Colors
+
+Customize switch appearance with custom colors for active and inactive states.
+
+```dart
+VitSwitch(
+  id: 'custom',
+  title: 'Custom Colors',
+  value: true,
+  activeColor: Colors.green,
+  thumbColor: Colors.white,
+  onChanged: (value) => print('Value: $value'),
+)
+```
+
+### Disabled Switch
+
+Disable switches to prevent interaction while maintaining visibility.
+
+```dart
+VitSwitch(
+  id: 'locked',
+  title: 'Locked Setting',
+  subtitle: 'Cannot be changed',
+  value: true,
+  enabled: false,
+)
+```
+
+## Form Integration
+
+Switches integrate seamlessly with `VitForm` to collect boolean settings and preferences. The switch state is automatically included in the form data.
+
+The form integration provides:
+- **Automatic Data Collection**: Switch values are automatically saved to form data
+- **Validation Support**: Add validators to ensure required switches are enabled (e.g., terms acceptance)
+- **Error Display**: Validation errors appear below the switch (though rare for switches)
+- **Type-Safe Data**: Values are stored as `bool` in form data
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitSwitch(
+          id: 'terms',
+          title: 'Accept Terms and Conditions',
+          subtitle: 'Required to continue',
+          value: false,
+          validator: (value) {
+            if (value == null || !value) {
+              return 'You must accept the terms';
+            }
+            return null;
+          },
+        ),
+        VitSwitch(
+          id: 'notifications',
+          title: 'Push Notifications',
+          subtitle: 'Receive updates and alerts',
+          value: true,
+        ),
+        VitSwitch(
+          id: 'newsletter',
+          title: 'Email Newsletter',
+          subtitle: 'Monthly updates and tips',
+          value: false,
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Terms: ${data['terms']}');
+    print('Notifications: ${data['notifications']}');
+    print('Newsletter: ${data['newsletter']}');
+  },
+)
+```
+
+## Related Components
+
+- [Checkbox](./checkbox.md) - Multi-select options
+- [Radio](./radio.md) - Single selection
+- [Form](./form.md) - Form integration

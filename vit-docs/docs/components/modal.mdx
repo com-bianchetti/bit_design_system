@@ -1,0 +1,290 @@
+---
+sidebar_position: 13
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Modal
+
+Adaptive full-screen or overlay modals that automatically adjust presentation based on screen size.
+
+VitModal provides an intelligent modal system that adapts its presentation to the device: on mobile (width < 600px), it navigates to a full-screen route with an app bar and back button. On desktop (width >= 600px), it displays as a large centered overlay modal (default 80% width, max 900px) with smooth animations. This adaptive behavior ensures optimal user experience across all devices.
+
+**Key Features:**
+- Automatic mobile/desktop adaptation based on screen width
+- Full-screen navigation on mobile with system back button support
+- Large centered modal dialog on desktop with fade/scale animations
+- Responsive width (80% screen width on desktop, capped at 900px)
+- Scrollable content area with customizable padding
+- Optional header with title, action buttons, or custom widgets
+- Optional footer for actions, summaries, or persistent controls
+- Default footer with confirm/cancel buttons returning typed results
+- Barrier tap dismissal on desktop (configurable)
+- Custom border radius control for desktop presentation
+
+**Mobile vs Desktop Behavior:**
+- **Mobile (width &lt; 600px)**: Full-screen route with AppBar and native back button
+- **Desktop (width ≥ 600px)**: Centered overlay modal with semi-transparent barrier
+
+<FlutterPreview story="VitModal" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Modal
+
+Display content in an adaptive modal. On mobile, this opens as a full-screen route. On desktop, it appears as a centered overlay.
+
+```dart
+VitModal.show(
+  context,
+  title: VitTitle('Settings'),
+  content: Column(
+    children: [
+      VitListCard(
+        title: 'Account',
+        leading: Icon(Icons.person),
+        onTap: () => navigateToAccount(),
+      ),
+      VitListCard(
+        title: 'Notifications',
+        leading: Icon(Icons.notifications),
+        onTap: () => navigateToNotifications(),
+      ),
+      VitListCard(
+        title: 'Privacy',
+        leading: Icon(Icons.lock),
+        onTap: () => navigateToPrivacy(),
+      ),
+    ],
+  ),
+)
+```
+
+### Modal with Actions
+
+Use the default footer to present confirm and cancel options. The modal returns `true` when confirmed, `false` when cancelled, or `null` when dismissed.
+
+```dart
+final result = await VitModal.show<bool>(
+  context,
+  title: VitTitle('Confirm Action'),
+  content: VitText('Are you sure you want to proceed with this action?'),
+  showDefaultFooter: true,
+  confirmText: 'Confirm',
+  cancelText: 'Cancel',
+  onConfirm: () {
+    print('User confirmed');
+  },
+  onCancel: () {
+    print('User cancelled');
+  },
+);
+
+if (result == true) {
+  performAction();
+}
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `Widget?` | `null` | Modal title displayed in header |
+| `content` | `Widget` | required | Main content of the modal |
+| `header` | `Widget?` | `null` | Custom header replacing default |
+| `footer` | `Widget?` | `null` | Custom footer for actions |
+| `showDefaultFooter` | `bool` | `false` | Show built-in confirm/cancel footer |
+| `confirmText` | `String?` | `'Confirm'` | Confirm button text |
+| `cancelText` | `String?` | `'Cancel'` | Cancel button text |
+| `onConfirm` | `VoidCallback?` | `null` | Callback when confirmed |
+| `onCancel` | `VoidCallback?` | `null` | Callback when cancelled |
+| `showCloseButton` | `bool` | `true` | Show X button in header |
+| `centerTitle` | `bool` | `true` | Center title in header |
+| `isDismissible` | `bool` | `true` | Allow barrier tap dismissal (desktop) |
+| `maxWidth` | `double?` | `900` | Maximum width on desktop |
+| `maxHeight` | `double?` | `85%` of screen | Maximum height before scrolling |
+| `widthFactor` | `double` | `0.8` | Width as fraction of screen (desktop) |
+| `contentPadding` | `EdgeInsets` | `24h, 20v` | Padding around content |
+| `headerPadding` | `EdgeInsets` | `24h, 16v` | Padding around header |
+| `footerPadding` | `EdgeInsets` | `24h, 16v` | Padding around footer |
+| `borderRadius` | `BorderRadiusGeometry?` | theme radius | Border radius (desktop only) |
+| `actions` | `List<Widget>?` | `null` | Custom action buttons in header |
+| `useScroll` | `bool` | `true` | Enable scrolling for content |
+
+## Adaptive Behavior
+
+VitModal automatically adapts its presentation based on screen width:
+
+### Mobile Mode (< 600px width)
+- Navigates to a full-screen route using `Navigator.push()`
+- Displays standard AppBar with title and back button
+- Users can dismiss with system back button or swipe gesture
+- Content fills the entire screen for maximum focus
+- Natural mobile navigation pattern
+
+### Desktop Mode (>= 600px width)
+- Shows as centered modal overlay using `showGeneralDialog()`
+- Occupies 80% of screen width (customizable via `widthFactor`)
+- Capped at 900px maximum width (customizable via `maxWidth`)
+- Semi-transparent barrier allows tapping outside to dismiss
+- Smooth fade and scale animations
+- Rounded corners for polished appearance
+
+## Examples
+
+### Settings Panel
+
+A common use case for modals is displaying settings or configuration options that don't warrant a permanent screen.
+
+```dart
+VitModal.show(
+  context,
+  title: VitTitle('App Settings'),
+  content: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      VitSubtitle('Display'),
+      VitSwitch(
+        id: 'darkMode',
+        title: 'Dark Mode',
+        value: settings.darkMode,
+        onChanged: (value) => settings.setDarkMode(value),
+      ),
+      VitSwitch(
+        id: 'compactView',
+        title: 'Compact View',
+        value: settings.compactView,
+        onChanged: (value) => settings.setCompactView(value),
+      ),
+      const SizedBox(height: 24),
+      VitSubtitle('Notifications'),
+      VitSwitch(
+        id: 'pushNotifications',
+        title: 'Push Notifications',
+        value: settings.pushEnabled,
+        onChanged: (value) => settings.setPushEnabled(value),
+      ),
+    ],
+  ),
+)
+```
+
+### Detail View
+
+Show detailed information about an item in a modal that adapts to the device size.
+
+```dart
+VitModal.show(
+  context,
+  title: VitTitle('Order Details'),
+  content: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      VitListCard(
+        leading: Icon(Icons.shopping_bag),
+        title: 'Order #${order.id}',
+        subtitle: 'Placed on ${order.date}',
+      ),
+      const SizedBox(height: 16),
+      VitListCard(
+        leading: Icon(Icons.location_on),
+        title: 'Shipping Address',
+        subtitle: order.shippingAddress,
+      ),
+      const SizedBox(height: 16),
+      VitListCard(
+        leading: Icon(Icons.payment),
+        title: 'Payment Method',
+        subtitle: order.paymentMethod,
+      ),
+      const SizedBox(height: 16),
+      VitDivider(),
+      const SizedBox(height: 16),
+      VitTitle('Order Items'),
+      ...order.items.map((item) => OrderItemCard(item)),
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          VitTitle('Total'),
+          VitTitle('\$${order.total}'),
+        ],
+      ),
+    ],
+  ),
+  footer: VitButtonContainer(
+    middle: [
+      VitButton(
+        text: 'Track Order',
+        onPressed: () {
+          Navigator.pop(context);
+          navigateToTracking(order.id);
+        },
+      ),
+    ],
+  ),
+)
+```
+
+### Custom Size Modal
+
+Control the modal dimensions for specific use cases like image viewers or custom layouts.
+
+```dart
+VitModal.show(
+  context,
+  title: VitTitle('Image Gallery'),
+  maxWidth: 1200,
+  maxHeight: 800,
+  widthFactor: 0.95,
+  content: GridView.builder(
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 3,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+    ),
+    itemCount: images.length,
+    itemBuilder: (context, index) => Image.network(images[index]),
+  ),
+)
+```
+
+### Non-Scrolling Modal
+
+For content that should maintain fixed layout without scrolling, disable the scroll behavior.
+
+```dart
+VitModal.show(
+  context,
+  title: VitTitle('Video Player'),
+  useScroll: false,
+  content: AspectRatio(
+    aspectRatio: 16 / 9,
+    child: VideoPlayer(controller: videoController),
+  ),
+  footer: VideoControls(controller: videoController),
+)
+```
+
+## Best Practices
+
+- **Choose appropriate width** - Use default 80% width for most content; increase for media-rich modals
+- **Consider mobile first** - Remember content displays full-screen on mobile; design accordingly
+- **Use scrollable content** - For long content, let the modal scroll rather than forcing users to scan
+- **Provide clear actions** - Always include obvious ways to close or complete the modal interaction
+- **Test both modes** - Verify modal works well in both full-screen (mobile) and overlay (desktop) modes
+- **Avoid nested modals** - Don't open modals from within modals; use navigation instead
+- **Handle async actions** - Show loading states when performing operations in modal callbacks
+- **Return meaningful results** - Use generic types to return data from modals (`VitModal.show<T>`)
+
+## Related Components
+
+- [Dialog](./dialog.md) - Smaller centered dialogs for alerts and confirmations
+- [Sheet](./sheet.md) - Bottom sheets for mobile-optimized selections
+- [Popover](./popover.md) - Floating contextual content with margins

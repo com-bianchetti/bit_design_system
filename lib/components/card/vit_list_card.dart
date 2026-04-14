@@ -92,6 +92,11 @@ class VitListCard extends StatelessWidget {
   /// Typically an [Icon] or small text widget.
   final Widget? trailing;
 
+  /// A widget to display below the title, subtitle, leading and trailing.
+  ///
+  /// Makes the card possibly growing in height but show more flexible content.
+  final Widget? bottomWidget;
+
   /// Background color of the card.
   ///
   /// If null, uses the theme's card color or variant based on [variant].
@@ -286,6 +291,7 @@ class VitListCard extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.trailing,
+    this.bottomWidget,
     this.backgroundColor,
     this.variant = VitCardVariant.standard,
     this.elevation = 0,
@@ -360,51 +366,68 @@ class VitListCard extends StatelessWidget {
                       )
                     : null,
               ),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (leading != null) ...[
-                    Container(
-                      width: leadingSize ?? (dense ? 36 : 40),
-                      height: leadingSize ?? (dense ? 36 : 40),
-                      decoration: BoxDecoration(
-                        color: theme.skeletonHighlightColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    SizedBox(width: horizontalTitleGap ?? 16),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+                  Row(
+                    children: [
+                      if (leading != null) ...[
                         Container(
-                          height: 16,
-                          width: double.infinity,
+                          width: leadingSize ?? (dense ? 36 : 40),
+                          height: leadingSize ?? (dense ? 36 : 40),
+                          decoration: BoxDecoration(
+                            color: theme.skeletonHighlightColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: horizontalTitleGap ?? 16),
+                      ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              height: 16,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: theme.skeletonHighlightColor,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            if (subtitle != null) ...[
+                              SizedBox(height: 8),
+                              Container(
+                                height: 14,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: theme.skeletonHighlightColor,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      if (trailing != null) ...[
+                        SizedBox(width: horizontalTitleGap ?? 16),
+                        Container(
+                          width: trailingSize ?? 24,
+                          height: trailingSize ?? 24,
                           decoration: BoxDecoration(
                             color: theme.skeletonHighlightColor,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        if (subtitle != null) ...[
-                          SizedBox(height: 8),
-                          Container(
-                            height: 14,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: theme.skeletonHighlightColor,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ],
                       ],
-                    ),
+                    ],
                   ),
-                  if (trailing != null) ...[
-                    SizedBox(width: horizontalTitleGap ?? 16),
+                  if (bottomWidget != null) ...[
+                    SizedBox(height: 16),
                     Container(
-                      width: trailingSize ?? 24,
-                      height: trailingSize ?? 24,
+                      height: 48,
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: theme.skeletonHighlightColor,
                         borderRadius: BorderRadius.circular(4),
@@ -419,18 +442,21 @@ class VitListCard extends StatelessWidget {
       );
     }
 
+    final bool hasInteractions = onTap != null || onLongPress != null;
+    final bool isEnabled = enabled ?? hasInteractions;
+
     Widget listTile = ListTile(
       leading: leading,
       title: title,
       subtitle: subtitle,
       trailing: trailing,
       contentPadding: effectiveContentPadding,
-      enabled: enabled ?? (onTap != null || onLongPress != null),
+      enabled: isEnabled,
       dense: dense,
       isThreeLine: isThreeLine,
       selected: selected,
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: bottomWidget != null ? null : onTap,
+      onLongPress: bottomWidget != null ? null : onLongPress,
       focusColor: focusColor,
       hoverColor: hoverColor,
       selectedTileColor: selectedTileColor,
@@ -445,6 +471,28 @@ class VitListCard extends StatelessWidget {
       minTileHeight: minTileHeight,
       visualDensity: effectiveVisualDensity,
     );
+
+    if (bottomWidget != null) {
+      listTile = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          listTile,
+          bottomWidget!,
+        ],
+      );
+
+      if (hasInteractions) {
+        listTile = InkWell(
+          onTap: onTap,
+          onLongPress: onLongPress,
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          borderRadius: effectiveBorderRadius,
+          child: listTile,
+        );
+      }
+    }
 
     final effectiveShape =
         shape ??

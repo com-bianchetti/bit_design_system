@@ -1,0 +1,419 @@
+---
+sidebar_position: 8
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Dialog
+
+Centered modal dialogs for alerts, confirmations, and user input with responsive sizing and smooth animations.
+
+VitDialog provides a flexible dialog system that adapts to different screen sizes. On mobile devices (width < 600px), dialogs take up 90% of screen width, while on desktop they default to a maximum of 600px width. All dialogs are centered on screen with smooth fade and scale animations, creating a polished user experience.
+
+**Key Features:**
+- Responsive width that adapts to mobile and desktop screens
+- Automatic scrolling for long content with customizable max height (default 80% of screen)
+- Pre-built variants for success, error, and confirmation dialogs
+- Optional default footer with confirm/cancel buttons that return typed results
+- Customizable headers with title centering and action buttons
+- Non-dismissible mode for critical actions
+- Barrier tap dismissal (configurable)
+- Custom border radius and padding controls
+
+<FlutterPreview story="VitDialog" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Dialog
+
+The simplest way to show an informational dialog. This displays a message with an optional title and automatically includes a close button in the header.
+
+```dart
+VitDialog.show(
+  context,
+  title: VitTitle('Alert'),
+  content: VitText('This is an alert message'),
+)
+```
+
+### Confirmation Dialog
+
+For user confirmations, use the default footer with confirm and cancel callbacks. The dialog returns `true` when confirmed, `false` when cancelled, or `null` when dismissed by tapping outside.
+
+```dart
+final result = await VitDialog.show<bool>(
+  context,
+  title: VitTitle('Confirm Action'),
+  content: VitText('Are you sure you want to continue?'),
+  showDefaultFooter: true,
+  confirmText: 'Yes',
+  cancelText: 'No',
+  onConfirm: () {
+    print('User confirmed the action');
+  },
+  onCancel: () {
+    print('User cancelled the action');
+  },
+);
+
+if (result == true) {
+}
+
+## Dialog Variants
+
+VitDialog provides convenient pre-built methods for common dialog types with appropriate icons and colors.
+
+### Success Dialog
+
+Display success messages with a green checkmark icon. Perfect for confirming completed actions like saving data or completing a process.
+
+```dart
+VitDialog.success(
+  context,
+  title: 'Success',
+  message: 'Your action was completed successfully!',
+  onConfirm: () {
+  },
+)
+```
+
+### Error Dialog
+
+Show error messages with a red error icon. Use this to inform users when something goes wrong and provide helpful error context.
+
+```dart
+VitDialog.error(
+  context,
+  title: 'Error',
+  message: 'An error occurred. Please try again.',
+  buttonText: 'OK',
+)
+```
+
+### Warning Dialog
+
+Present warnings with appropriate styling before potentially destructive actions. The confirmation callback allows you to proceed with the action only after user acknowledgment.
+
+```dart
+VitDialog.warning(
+  context,
+  title: 'Warning',
+  message: 'This action cannot be undone.',
+  onConfirm: () {
+    performAction();
+  },
+)
+```
+
+### Confirm Dialog
+
+A simple confirmation dialog with both confirm and cancel buttons. Returns a boolean result that you can use to conditionally execute actions.
+
+```dart
+final shouldDelete = await VitDialog.confirm(
+  context,
+  title: 'Delete Item',
+  message: 'Are you sure you want to delete this item? This cannot be undone.',
+  confirmText: 'Delete',
+  cancelText: 'Keep',
+);
+
+if (shouldDelete == true) {
+  deleteItem();
+}
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `Widget?` | `null` | Dialog title displayed in the header |
+| `content` | `Widget` | required | Main content of the dialog |
+| `header` | `Widget?` | `null` | Custom header replacing default title bar |
+| `footer` | `Widget?` | `null` | Custom footer for actions |
+| `showDefaultFooter` | `bool` | `false` | Show built-in confirm/cancel buttons |
+| `confirmText` | `String?` | `'Confirm'` | Text for confirm button |
+| `cancelText` | `String?` | `'Cancel'` | Text for cancel button |
+| `onConfirm` | `VoidCallback?` | `null` | Callback when confirm is pressed |
+| `onCancel` | `VoidCallback?` | `null` | Callback when cancel is pressed |
+| `showCloseButton` | `bool` | `true` | Show X button in header |
+| `centerTitle` | `bool` | `true` | Center the title in header |
+| `isDismissible` | `bool` | `true` | Allow dismissal by tapping outside |
+| `maxWidth` | `double?` | `600` (desktop)<br/>`90%` (mobile) | Maximum width constraint |
+| `maxHeight` | `double?` | `80%` of screen | Maximum height before scrolling |
+| `contentPadding` | `EdgeInsets` | `24h, 20v` | Padding around content |
+| `headerPadding` | `EdgeInsets` | `24h, 16v` | Padding around header |
+| `footerPadding` | `EdgeInsets` | `24h, 16v` | Padding around footer |
+| `borderRadius` | `BorderRadiusGeometry?` | theme radius | Custom corner radius |
+| `actions` | `List<Widget>?` | `null` | Custom action buttons in header |
+
+## Custom Dialog
+
+### With Custom Content
+
+You can replace the simple text content with any widget tree. This example shows a list of options the user can select from.
+
+```dart
+VitDialog.show(
+  context,
+  title: VitTitle('Select Option'),
+  content: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      VitListCard(
+        title: 'Option 1',
+        subtitle: 'Description of option 1',
+        onTap: () {
+          Navigator.pop(context, 'option1');
+        },
+      ),
+      const SizedBox(height: 8),
+      VitListCard(
+        title: 'Option 2',
+        subtitle: 'Description of option 2',
+        onTap: () {
+          Navigator.pop(context, 'option2');
+        },
+      ),
+    ],
+  ),
+)
+```
+
+### With Custom Actions
+
+Replace the default footer with custom action buttons to have full control over button layout, styling, and behavior. Use `VitButtonContainer` for consistent button organization.
+
+```dart
+VitDialog.show(
+  context,
+  title: VitTitle('Delete Item'),
+  content: VitText('Are you sure? This will permanently delete the item and all associated data.'),
+  footer: VitButtonContainer(
+    middle: [
+      VitOutlinedButton(
+        text: 'Cancel',
+        onPressed: () => Navigator.pop(context, false),
+      ),
+      VitButton(
+        text: 'Delete',
+        backgroundColor: Colors.red,
+        onPressed: () {
+          deleteItem();
+          Navigator.pop(context, true);
+        },
+      ),
+    ],
+  ),
+)
+```
+
+### With Scrollable Content
+
+For dialogs with long content, the content area automatically becomes scrollable when it exceeds the `maxHeight` (default 80% of screen height). You can customize the max height to control when scrolling activates.
+
+```dart
+VitDialog.show(
+  context,
+  title: VitTitle('Terms and Conditions'),
+  maxHeight: 500,
+  content: SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        VitText('Very long terms and conditions text...'),
+        const SizedBox(height: 16),
+        VitText('More detailed legal text...'),
+        const SizedBox(height: 16),
+        VitText('Additional terms...'),
+      ],
+    ),
+  ),
+  showDefaultFooter: true,
+  onConfirm: () {},
+  confirmText: 'I Accept',
+)
+```
+
+### Non-Dismissible Dialog
+
+For critical actions where users must make an explicit choice, prevent dismissal by tapping outside or pressing back. Users can only close the dialog through action buttons.
+
+```dart
+VitDialog.show(
+  context,
+  title: VitTitle('Critical Warning'),
+  content: VitText('Your session is about to expire. Save your work to prevent data loss.'),
+  isDismissible: false,
+  showDefaultFooter: true,
+  confirmText: 'Save Now',
+  cancelText: 'Discard',
+  onConfirm: () {
+    saveWork();
+  },
+)
+```
+
+## Examples
+
+### Delete Confirmation
+
+A typical delete confirmation pattern that returns a boolean result. The result can be used to conditionally execute the delete operation.
+
+```dart
+Future<bool> confirmDelete(BuildContext context, String itemName) async {
+  final result = await VitDialog.show<bool>(
+    context,
+    title: VitTitle('Delete $itemName'),
+    content: VitText('This item will be permanently deleted and cannot be recovered.'),
+    showDefaultFooter: true,
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    isDismissible: true,
+  );
+  
+  return result ?? false;
+}
+
+void handleDelete() async {
+  final confirmed = await confirmDelete(context, 'Document');
+  if (confirmed) {
+    await deleteDocument();
+    showSuccessMessage();
+  }
+}
+```
+
+### Form Dialog
+
+Embed form inputs directly in a dialog for quick data entry without navigating to a new screen. The input value can be validated before accepting.
+
+```dart
+final nameController = TextEditingController();
+
+final result = await VitDialog.show<String>(
+  context,
+  title: VitTitle('Edit Name'),
+  content: VitInput(
+    id: 'name',
+    label: 'Name',
+    controller: nameController,
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Name is required';
+      }
+      return null;
+    },
+  ),
+  showDefaultFooter: true,
+  confirmText: 'Save',
+  onConfirm: () {
+    if (nameController.text.isNotEmpty) {
+      saveName(nameController.text);
+      Navigator.pop(context, nameController.text);
+    }
+  },
+);
+```
+
+### Multi-Step Confirmation
+
+For complex or risky operations, combine informational text with required acknowledgment before allowing the user to proceed.
+
+```dart
+bool _understood = false;
+
+await VitDialog.show(
+  context,
+  title: VitTitle('Important Notice'),
+  content: StatefulBuilder(
+    builder: (context, setState) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        VitText('This action will:'),
+        const SizedBox(height: 8),
+        VitText('• Delete all user data'),
+        VitText('• Cancel active subscriptions'),
+        VitText('• Remove account access'),
+        const SizedBox(height: 16),
+        VitCheckbox(
+          id: 'confirm',
+          label: 'I understand the consequences',
+          value: _understood,
+          onChanged: (value) {
+            setState(() => _understood = value ?? false);
+          },
+        ),
+      ],
+    ),
+  ),
+  showDefaultFooter: true,
+  confirmText: 'Proceed',
+  onConfirm: () {
+    if (_understood) {
+      performDangerousAction();
+    }
+  },
+);
+```
+
+### Loading Dialog
+
+Show a dialog with a progress indicator while performing async operations. Update the dialog content when complete.
+
+```dart
+void showLoadingDialog() {
+  VitDialog.show(
+    context,
+    showCloseButton: false,
+    isDismissible: false,
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircularProgressIndicator(),
+        const SizedBox(height: 16),
+        VitText('Processing your request...'),
+      ],
+    ),
+  );
+}
+
+Future<void> processRequest() async {
+  showLoadingDialog();
+  
+  try {
+    await performAsyncOperation();
+    Navigator.pop(context);
+    VitDialog.success(context, message: 'Request completed successfully!');
+  } catch (e) {
+    Navigator.pop(context);
+    VitDialog.error(context, message: 'Failed to process request: $e');
+  }
+}
+```
+
+## Best Practices
+
+- **Use appropriate variants** - Choose `VitDialog.success()`, `VitDialog.error()`, or `VitDialog.warning()` for status messages instead of generic dialogs
+- **Keep content concise** - Dialogs should communicate essential information quickly; move complex content to full screens
+- **Provide clear actions** - Button labels should clearly indicate what will happen (e.g., "Delete" instead of "OK")
+- **Use non-dismissible sparingly** - Only prevent dismissal for critical decisions that require explicit user choice
+- **Return typed results** - Use generic type parameters (`VitDialog.show<bool>`) to return meaningful results from dialogs
+- **Validate before closing** - For form dialogs, validate input in the `onConfirm` callback before calling `Navigator.pop()`
+- **Consider mobile sizes** - Test dialogs on mobile devices to ensure content fits within the 90% width constraint
+- **Use max height wisely** - For long content, set appropriate `maxHeight` to ensure dialogs don't overflow on smaller screens
+- **Provide context in messages** - Include enough detail in error/success messages so users understand what happened
+
+## Related Components
+
+- [Modal](./modal.md) - Full-screen modals with mobile/desktop adaptation
+- [Sheet](./sheet.md) - Bottom sheets for mobile-optimized selections
+- [Toast](./toast.md) - Brief, non-blocking toast notifications
+- [Popover](./popover.md) - Contextual floating content with drag gestures

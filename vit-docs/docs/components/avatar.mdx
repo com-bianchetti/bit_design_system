@@ -1,0 +1,722 @@
+---
+sidebar_position: 2
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Avatar
+
+The Avatar component is a versatile circular widget designed to display user profile images, icons, initials, or custom content. It provides extensive customization options including badges, overlays, borders, error handling, and Hero animations for seamless transitions between screens.
+
+Avatars are essential UI elements for representing users, contacts, or entities throughout your application. The component automatically handles image loading errors by falling back to icons or initials, ensuring a consistent user experience.
+
+<FlutterPreview story="VitAvatar" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+The Avatar component supports three primary display modes: images, text (initials), and icons. Each mode provides a different way to represent users or entities in your application.
+
+### Image Avatar
+
+Display a user's profile picture by providing an image through the `backgroundImage` property. The component uses Flutter's `ImageProvider` for flexible image loading from networks, assets, or other sources.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+)
+```
+
+### Avatar with Text Initials
+
+When no image is available, the Avatar can display user initials or any short text. This is particularly useful for displaying names, abbreviations, or single characters that represent the user.
+
+```dart
+VitAvatar(
+  text: 'JD',
+  radius: 32,
+  backgroundColor: Colors.blue,
+  foregroundColor: Colors.white,
+)
+```
+
+### Avatar with Icon
+
+Use icons as avatar content for generic profiles, system users, or placeholder states. The component supports any `IconData` from Flutter's icon libraries.
+
+```dart
+VitAvatar(
+  icon: Icons.person,
+  radius: 32,
+  iconColor: Colors.grey,
+)
+```
+
+## Advanced Features
+
+### Size and Visual Density
+
+Control the avatar's size using the `radius`, `minRadius`, and `maxRadius` properties. The component also respects `VisualDensity` for adaptive sizing based on your design system's density settings.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 40,
+  visualDensity: VisualDensity.comfortable,
+)
+
+VitAvatar(
+  text: 'AB',
+  minRadius: 20,
+  maxRadius: 60,
+  visualDensity: VisualDensity.compact,
+)
+```
+
+The visual density affects default radius values:
+- `compact`: Uses smaller default sizing
+- `standard`: Uses medium default sizing
+- `comfortable`: Uses larger default sizing
+
+### Borders and Styling
+
+Add visual emphasis with customizable borders. The border appears as a ring around the avatar, creating depth and separation from the background.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  borderColor: Colors.blue,
+  borderWidth: 3,
+  backgroundColor: Colors.grey[200],
+)
+```
+
+### Error Handling
+
+The Avatar component gracefully handles image loading failures by automatically switching to a fallback icon. You can customize the error icon and its color to match your design.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/broken-url.jpg'),
+  iconError: Icons.person_outline,
+  iconErrorColor: Colors.grey,
+  radius: 32,
+)
+```
+
+When an image fails to load:
+1. The component automatically catches the error
+2. Displays the `iconError` (defaults to `Icons.person`)
+3. Applies the `iconErrorColor` for consistent styling
+4. Maintains the avatar's layout and dimensions
+
+### Badges
+
+Enhance avatars with badges to display notification counts or status labels. Badges appear as small overlays positioned on the avatar's edge.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  badgeCount: 5,
+  badgeColor: Colors.red,
+  badgeTextColor: Colors.white,
+)
+
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  badgeLabel: 'New',
+  badgeAlignment: Alignment.topRight,
+  badgeOffset: Offset(4, 4),
+)
+```
+
+Badge customization options:
+- `badgeCount`: Displays a numeric counter
+- `badgeLabel`: Shows custom text
+- `badgeColor`: Background color of the badge
+- `badgeTextColor`: Text color for count or label
+- `badgeSize`: Badge dimensions
+- `badgeAlignment`: Position relative to avatar
+- `badgeOffset`: Fine-tune badge placement
+
+### Overlay Icons
+
+Add interactive or status indicators directly on top of the avatar using overlay icons. This is useful for camera buttons, edit actions, or status indicators like "online" or "verified".
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  overlayIcon: Icons.camera_alt,
+  overlayIconColor: Colors.white,
+  overlayBackgroundColor: Colors.black54,
+  overlayIconSize: 24,
+)
+```
+
+The overlay creates a semi-transparent layer over the avatar, making the icon visible while keeping the avatar image recognizable underneath.
+
+### Hero Animations
+
+Enable smooth transitions between screens by providing a `label` property. This automatically wraps the avatar in a Hero widget for animated navigation.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  label: 'user_profile_123',
+  onTap: () => Navigator.push(...),
+)
+
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 80,
+  label: 'user_profile_123',
+)
+```
+
+When both avatars share the same `label`, Flutter automatically animates the transition between them during navigation.
+
+### Interactive Avatars
+
+Make avatars tappable by providing an `onTap` callback. The component automatically adds appropriate accessibility semantics to indicate it's a button.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  onTap: () {
+    showDialog(
+      context: context,
+      builder: (context) => UserProfileDialog(),
+    );
+  },
+  semanticsLabel: 'User profile picture, tap to view details',
+)
+```
+
+### Loading States
+
+Display skeleton loading states while avatar data is being fetched. The component integrates with `VitLoadingScope` for coordinated loading states across multiple widgets.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 32,
+  isLoading: true,
+)
+
+VitLoadingScope(
+  loading: isDataLoading,
+  child: Row(
+    children: [
+      VitAvatar(backgroundImage: NetworkImage('...')),
+      VitAvatar(backgroundImage: NetworkImage('...')),
+    ],
+  ),
+)
+```
+
+During loading:
+- A shimmer skeleton effect displays
+- Original dimensions are preserved
+- Badges show skeleton states
+- The transition to loaded state is smooth
+
+### Foreground Images
+
+Layer a second image on top of the background image for creative effects, such as frames, decorations, or status overlays.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  foregroundImage: AssetImage('assets/frame.png'),
+  radius: 32,
+)
+```
+
+## Avatar Group
+
+The `VitAvatarGroup` component arranges multiple avatars in an overlapping layout, perfect for displaying team members, participants, or collaborators. It supports four different layout modes to fit various design needs.
+
+### Layout Modes
+
+The component offers flexible positioning through the `mode` parameter:
+
+#### Horizontal Layout (Default)
+
+Avatars overlap horizontally in a row, creating a compact, linear arrangement.
+
+```dart
+VitAvatarGroup(
+  avatars: [
+    VitAvatar(backgroundImage: NetworkImage('https://example.com/user1.jpg')),
+    VitAvatar(backgroundImage: NetworkImage('https://example.com/user2.jpg')),
+    VitAvatar(backgroundImage: NetworkImage('https://example.com/user3.jpg')),
+  ],
+  offset: 20,
+  mode: VitAvatarGroupMode.horizontal,
+)
+```
+
+#### Vertical Layout
+
+Avatars stack vertically with overlapping, ideal for sidebar or narrow layouts.
+
+```dart
+VitAvatarGroup(
+  avatars: [
+    VitAvatar(text: 'AB'),
+    VitAvatar(text: 'CD'),
+    VitAvatar(text: 'EF'),
+  ],
+  offset: 25,
+  mode: VitAvatarGroupMode.vertical,
+)
+```
+
+#### Diagonal Layouts
+
+Create dynamic visual arrangements with diagonal positioning.
+
+```dart
+VitAvatarGroup(
+  avatars: teamMembers.map((member) => 
+    VitAvatar(backgroundImage: NetworkImage(member.avatarUrl))
+  ).toList(),
+  offset: 15,
+  mode: VitAvatarGroupMode.diagonalLeft,
+)
+
+VitAvatarGroup(
+  avatars: participants,
+  offset: 15,
+  mode: VitAvatarGroupMode.diagonalRight,
+)
+```
+
+- `diagonalLeft`: Avatars flow from top-left to bottom-right
+- `diagonalRight`: Avatars flow from top-right to bottom-left
+
+### Customizing Overlap
+
+The `offset` property controls how much avatars overlap. Higher values create more overlap, making the group more compact.
+
+```dart
+VitAvatarGroup(
+  avatars: avatarList,
+  offset: 30,
+)
+
+VitAvatarGroup(
+  avatars: avatarList,
+  offset: 10,
+)
+```
+
+Recommended offset values:
+- `10-15`: Minimal overlap, individual avatars are clearly distinct
+- `20-25`: Standard overlap (default), balanced appearance
+- `30-40`: Heavy overlap, very compact layout
+
+### Practical Examples
+
+#### Team Display with Mixed Content
+
+```dart
+VitAvatarGroup(
+  avatars: [
+    VitAvatar(
+      backgroundImage: NetworkImage('https://example.com/user1.jpg'),
+      radius: 24,
+    ),
+    VitAvatar(
+      text: 'JD',
+      radius: 24,
+      backgroundColor: Colors.blue,
+    ),
+    VitAvatar(
+      icon: Icons.person,
+      radius: 24,
+    ),
+  ],
+  offset: 20,
+)
+```
+
+#### Dynamic Member List with Count Badge
+
+```dart
+VitAvatarGroup(
+  avatars: [
+    ...team.members.take(4).map((member) => 
+      VitAvatar(
+        backgroundImage: NetworkImage(member.avatarUrl),
+        radius: 22,
+      )
+    ),
+    if (team.members.length > 4)
+      VitAvatar(
+        text: '+${team.members.length - 4}',
+        radius: 22,
+        backgroundColor: Colors.grey,
+      ),
+  ],
+  offset: 18,
+)
+```
+
+## Complete Property Reference
+
+### VitAvatar Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `child` | `Widget?` | `null` | Custom widget to display inside the avatar |
+| `backgroundColor` | `Color?` | Theme background | Background color of the avatar circle |
+| `backgroundImage` | `ImageProvider?` | `null` | Primary image to display |
+| `foregroundImage` | `ImageProvider?` | `null` | Overlay image on top of background |
+| `onBackgroundImageError` | `ImageErrorListener?` | Auto fallback | Error handler for background image |
+| `onForegroundImageError` | `ImageErrorListener?` | `null` | Error handler for foreground image |
+| `foregroundColor` | `Color?` | Theme foreground | Color for icon or text content |
+| `radius` | `double?` | Theme-based | Size of the avatar's radius |
+| `minRadius` | `double?` | `null` | Minimum radius constraint |
+| `maxRadius` | `double?` | `null` | Maximum radius constraint |
+| `borderColor` | `Color?` | Theme variant | Color of the avatar's border ring |
+| `borderWidth` | `double` | `2` | Width of the border ring |
+| `visualDensity` | `VisualDensity?` | Theme density | Affects default sizing |
+| `semanticsLabel` | `String?` | Auto-generated | Accessibility label |
+| `text` | `String?` | `null` | Text to display (e.g., initials) |
+| `textStyle` | `TextStyle?` | `null` | Custom text styling |
+| `icon` | `IconData?` | `null` | Icon to display |
+| `iconColor` | `Color?` | Foreground color | Color of the icon |
+| `iconError` | `IconData?` | `Icons.person` | Fallback icon on image error |
+| `iconErrorColor` | `Color?` | Theme variant | Color of error icon |
+| `label` | `String?` | `null` | Hero animation tag |
+| `onTap` | `VoidCallback?` | `null` | Tap handler callback |
+| `preview` | `bool` | `false` | Preview mode flag |
+| `overlayIcon` | `IconData?` | `null` | Icon to overlay on avatar |
+| `overlayIconColor` | `Color?` | `null` | Color of overlay icon |
+| `overlayBackgroundColor` | `Color?` | Semi-transparent | Background of overlay icon |
+| `overlayIconSize` | `double?` | `28` | Size of overlay icon |
+| `badgeLabel` | `String?` | `null` | Text badge label |
+| `badgeCount` | `int?` | `null` | Numeric badge count |
+| `badgeColor` | `Color?` | Theme primary | Badge background color |
+| `badgeTextColor` | `Color?` | On primary color | Badge text color |
+| `badgeSize` | `double?` | `24` large / `16` small | Badge dimensions |
+| `badgeOffset` | `Offset?` | `Offset(0, -13)` | Badge position offset |
+| `badgeAlignment` | `Alignment?` | `bottomRight` | Badge position alignment |
+| `isLoading` | `bool` | `false` | Show skeleton loading state |
+
+### VitAvatarGroup Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `avatars` | `List<VitAvatar>` | Required | List of avatar widgets to display |
+| `offset` | `double` | `25` | Overlap amount between avatars |
+| `mode` | `VitAvatarGroupMode` | `horizontal` | Layout arrangement mode |
+
+### VitAvatarPreview Properties
+
+`VitAvatarPreview` accepts all `VitAvatar` properties with these differences:
+
+| Property | Default | Note |
+|----------|---------|------|
+| `radius` | 30% of screen width | Larger default size |
+| `borderColor` | `Colors.transparent` | No visible border by default |
+| `overlayIconSize` | `46` | Larger overlay icons |
+| `preview` | `true` | Always in preview mode |
+
+### VitAvatarGroupMode Values
+
+| Value | Description |
+|-------|-------------|
+| `horizontal` | Avatars arranged in a row, overlapping left to right |
+| `vertical` | Avatars stacked in a column, overlapping top to bottom |
+| `diagonalLeft` | Avatars arranged diagonally from top-left to bottom-right |
+| `diagonalRight` | Avatars arranged diagonally from top-right to bottom-left |
+
+## Practical Examples
+
+### User Profile Header
+
+Combine avatar with user information in a typical profile header layout.
+
+```dart
+Row(
+  children: [
+    VitAvatar(
+      backgroundImage: NetworkImage(user.avatarUrl),
+      radius: 40,
+      borderColor: Theme.of(context).primaryColor,
+      borderWidth: 3,
+      label: 'user_${user.id}',
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfilePage(user: user),
+        ),
+      ),
+    ),
+    SizedBox(width: 16),
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          VitTitle(user.name),
+          VitBody(user.email),
+          VitCaption('${user.followers} followers'),
+        ],
+      ),
+    ),
+  ],
+)
+```
+
+### Contact List Item
+
+Display contacts with avatars, handling both images and initials gracefully.
+
+```dart
+ListTile(
+  leading: VitAvatar(
+    backgroundImage: contact.avatarUrl != null 
+      ? NetworkImage(contact.avatarUrl!) 
+      : null,
+    text: contact.initials,
+    radius: 24,
+    backgroundColor: contact.color,
+  ),
+  title: Text(contact.name),
+  subtitle: Text(contact.phoneNumber),
+  trailing: Icon(Icons.chevron_right),
+  onTap: () => openContactDetails(contact),
+)
+```
+
+### Notification Avatar with Badge
+
+Show unread notification counts on user avatars.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage(user.avatarUrl),
+  radius: 28,
+  badgeCount: unreadCount,
+  badgeColor: Colors.red,
+  badgeAlignment: Alignment.topRight,
+  onTap: () => openNotifications(),
+)
+```
+
+### Team Members with Overflow Indicator
+
+Display a limited number of team members with a count of additional members.
+
+```dart
+VitAvatarGroup(
+  avatars: [
+    ...team.members.take(4).map((member) => 
+      VitAvatar(
+        backgroundImage: NetworkImage(member.avatarUrl),
+        text: member.initials,
+        radius: 22,
+        borderWidth: 2,
+        borderColor: Colors.white,
+      )
+    ),
+    if (team.members.length > 4)
+      VitAvatar(
+        text: '+${team.members.length - 4}',
+        radius: 22,
+        backgroundColor: Colors.grey[700],
+        foregroundColor: Colors.white,
+        borderWidth: 2,
+        borderColor: Colors.white,
+      ),
+  ],
+  offset: 18,
+  mode: VitAvatarGroupMode.horizontal,
+)
+```
+
+### Profile Edit Screen
+
+Large avatar preview with camera overlay for profile editing.
+
+```dart
+Center(
+  child: GestureDetector(
+    onTap: () => showImagePicker(),
+    child: VitAvatarPreview(
+      backgroundImage: selectedImage != null
+        ? FileImage(selectedImage!)
+        : NetworkImage(currentUser.avatarUrl),
+      overlayIcon: Icons.camera_alt,
+      overlayIconColor: Colors.white,
+      overlayBackgroundColor: Colors.black54,
+      radius: 100,
+    ),
+  ),
+)
+```
+
+### Status Indicator with Online Badge
+
+Show user presence with a custom badge.
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage(user.avatarUrl),
+  radius: 32,
+  badgeLabel: user.isOnline ? '●' : '',
+  badgeColor: Colors.green,
+  badgeAlignment: Alignment.bottomRight,
+  badgeOffset: Offset(-2, -2),
+  badgeSize: 16,
+)
+```
+
+### Loading State
+
+Display skeleton avatars while data loads.
+
+```dart
+FutureBuilder<List<User>>(
+  future: fetchUsers(),
+  builder: (context, snapshot) {
+    return VitAvatarGroup(
+      avatars: snapshot.hasData
+        ? snapshot.data!.map((user) => 
+            VitAvatar(backgroundImage: NetworkImage(user.avatarUrl))
+          ).toList()
+        : List.generate(
+            5, 
+            (_) => VitAvatar(isLoading: true),
+          ),
+      offset: 20,
+    );
+  },
+)
+```
+
+## Accessibility
+
+The Avatar component includes comprehensive accessibility support:
+
+- **Semantic Labels**: Automatically generates descriptive labels or accepts custom ones via `semanticsLabel`
+- **Interactive States**: When `onTap` is provided, the avatar is marked as a button for screen readers
+- **Image Context**: Avatars with images are marked with `image: true` semantics
+- **Keyboard Navigation**: Interactive avatars support standard focus and activation patterns
+
+### Example with Custom Accessibility
+
+```dart
+VitAvatar(
+  backgroundImage: NetworkImage(user.avatarUrl),
+  semanticsLabel: '${user.name}, online status: ${user.status}',
+  onTap: () => viewProfile(user),
+)
+```
+
+## Best Practices
+
+### Size Guidelines
+
+- **Small** (radius: 16-20): List items, compact UI, chips
+- **Medium** (radius: 24-32): Default UI, cards, headers
+- **Large** (radius: 40-60): Profile headers, emphasis areas
+- **Extra Large** (radius: 80+): Profile pages, preview screens
+
+### Performance Considerations
+
+1. **Image Caching**: Use `CachedNetworkImage` for network images to improve load times
+2. **Loading States**: Always provide `isLoading` states for better UX
+3. **Error Handling**: Set appropriate `iconError` fallbacks for failed image loads
+4. **Hero Animations**: Use unique `label` values to avoid animation conflicts
+
+### Design Recommendations
+
+1. **Borders**: Use borders to separate avatars from similarly colored backgrounds
+2. **Consistency**: Maintain consistent sizing within the same UI context
+3. **Initials**: Use 1-2 characters for text avatars for clarity
+4. **Colors**: Ensure sufficient contrast between background and foreground colors
+5. **Badges**: Keep badge text short (max 3 characters) for readability
+
+## Avatar Preview
+
+The `VitAvatarPreview` component is designed for displaying large, prominent avatars in profile screens, detail views, or full-screen previews. It's a specialized variant that defaults to a larger size and disables certain interactive features.
+
+### Basic Preview Usage
+
+The preview automatically sizes itself to 30% of the screen width, making it responsive across different device sizes.
+
+```dart
+VitAvatarPreview(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  label: 'user_preview',
+)
+```
+
+### Preview with Overlay Actions
+
+Add overlay icons to indicate actions like "change photo" or "upload image" in profile editing screens.
+
+```dart
+VitAvatarPreview(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  overlayIcon: Icons.camera_alt,
+  overlayIconColor: Colors.white,
+  overlayBackgroundColor: Colors.black45,
+  overlayIconSize: 46,
+)
+```
+
+### Preview with Badges
+
+Display status or notification badges on large profile avatars.
+
+```dart
+VitAvatarPreview(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  badgeLabel: 'Pro',
+  badgeColor: Colors.amber,
+  badgeTextColor: Colors.black,
+  badgeAlignment: Alignment.bottomRight,
+)
+```
+
+### Custom Size Preview
+
+Override the default responsive sizing with a specific radius value.
+
+```dart
+VitAvatarPreview(
+  backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+  radius: 80,
+  borderWidth: 4,
+  borderColor: Colors.white,
+)
+```
+
+### Key Differences from VitAvatar
+
+- **Larger default size**: 30% of screen width vs. theme-based defaults
+- **Preview mode enabled**: Internal flag set to `true`
+- **Transparent border**: Border color defaults to transparent
+- **No tap actions**: Designed for display rather than interaction
+- **Larger overlay icons**: Default overlay icon size is 46 instead of 28
+
+## Related Components
+
+- [Badge](./badge.md) - Status badges
+- [Card](./card.md) - Profile cards

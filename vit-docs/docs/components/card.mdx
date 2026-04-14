@@ -1,0 +1,701 @@
+---
+sidebar_position: 4
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Card
+
+Container components for grouping related content.
+
+Cards are versatile containers that provide consistent styling and structure for displaying related information. The VitCard component offers extensive customization options including elevation, borders, custom colors, gradients, and interactive behaviors. Use cards to organize content into logical sections, create visual hierarchy, and provide clickable areas for navigation.
+
+<FlutterPreview story="VitCard" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Card
+
+The simplest form of a card wraps any widget child with consistent styling. Cards automatically apply theme-based colors, border radius, and padding based on your design system configuration.
+
+```dart
+VitCard(
+  child: VitText('Card content'),
+)
+```
+
+### Card with Variants
+
+VitCard provides four distinct visual variants that use different color schemes from your theme. These variants help establish visual hierarchy and distinguish between different types of content in your application.
+
+**Standard Variant** - Uses the default card background color from your theme:
+
+```dart
+VitCard(
+  variant: VitCardVariant.standard,
+  child: VitText('Standard card'),
+)
+```
+
+**Elevated Variant** - Uses a slightly elevated appearance with different background color:
+
+```dart
+VitCard(
+  variant: VitCardVariant.elevated,
+  child: VitText('Elevated variant'),
+)
+```
+
+**Variant Style** - Uses an alternative color scheme for visual distinction:
+
+```dart
+VitCard(
+  variant: VitCardVariant.variant,
+  child: VitText('Variant style'),
+)
+```
+
+**Elevated Variant Style** - Combines elevated styling with variant colors:
+
+```dart
+VitCard(
+  variant: VitCardVariant.elevatedVariant,
+  child: VitText('Elevated variant style'),
+)
+```
+
+### Card with Elevation
+
+Add depth and shadow to cards using the elevation property. Higher elevation values create stronger shadows, making the card appear to float above the surface. This is useful for emphasizing important content or creating layered interfaces.
+
+```dart
+VitCard(
+  elevation: 4,
+  child: Column(
+    children: [
+      VitText('Card with shadow'),
+    ],
+  ),
+)
+```
+
+## Customization Features
+
+### Custom Colors and Gradients
+
+Customize the visual appearance with custom background colors or gradients. When using gradients, the card creates stunning visual effects perfect for hero sections or featured content.
+
+```dart
+VitCard(
+  backgroundColor: Colors.blue.shade50,
+  child: VitText('Custom background color'),
+)
+```
+
+```dart
+VitCard(
+  gradient: LinearGradient(
+    colors: [Colors.purple, Colors.blue],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  ),
+  child: VitText('Gradient card', style: TextStyle(color: Colors.white)),
+)
+```
+
+### Borders and Border Radius
+
+Control the card's border appearance with border visibility, color, width, and corner radius. Borders can help define card boundaries, especially on backgrounds with similar colors.
+
+```dart
+VitCard(
+  showBorder: true,
+  borderColor: Colors.grey.shade300,
+  borderWidth: 2,
+  borderRadius: BorderRadius.circular(16),
+  child: VitText('Card with custom border'),
+)
+```
+
+### Padding and Dimensions
+
+Control the card's internal spacing and overall size. Use padding to adjust content spacing, and set explicit dimensions when you need fixed-size cards like in grid layouts.
+
+```dart
+VitCard(
+  padding: EdgeInsets.all(24),
+  width: 200,
+  height: 150,
+  child: VitText('Fixed size card'),
+)
+```
+
+### Visual Density
+
+Adjust card padding automatically based on visual density. This ensures consistent spacing across your app that adapts to different screen sizes or user preferences.
+
+```dart
+VitCard(
+  visualDensity: VisualDensity.compact,
+  child: VitText('Compact padding'),
+)
+```
+
+```dart
+VitCard(
+  visualDensity: VisualDensity.comfortable,
+  child: VitText('Comfortable padding'),
+)
+```
+
+### Interactive Cards
+
+Make cards interactive with tap, long press, and double tap handlers. Interactive cards display ink splash effects on touch, providing visual feedback to users. This is perfect for navigation cards, selection items, or any tappable content.
+
+```dart
+VitCard(
+  onTap: () {
+    print('Card tapped');
+  },
+  onLongPress: () {
+    print('Card long pressed');
+  },
+  onDoubleTap: () {
+    print('Card double tapped');
+  },
+  child: VitText('Interactive card'),
+)
+```
+
+### Loading States
+
+Display skeleton loading states while content is being fetched. The card automatically shows a shimmer effect that preserves the layout, providing excellent user experience during data loading.
+
+```dart
+VitCard(
+  isLoading: true,
+  child: Column(
+    children: [
+      VitText('Title'),
+      VitText('Content'),
+    ],
+  ),
+)
+```
+
+You can also use VitLoadingScope to control loading states for multiple cards at once:
+
+```dart
+VitLoadingScope(
+  loading: isLoadingData,
+  child: Column(
+    children: [
+      VitCard(child: VitText('Card 1')),
+      VitCard(child: VitText('Card 2')),
+    ],
+  ),
+)
+```
+
+### Accessibility
+
+Add semantic labels for screen readers to improve accessibility. This helps visually impaired users understand the purpose and content of your cards.
+
+```dart
+VitCard(
+  semanticLabel: 'User profile card for John Doe',
+  child: VitText('John Doe'),
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `child` | `Widget` | The content widget displayed inside the card (required) |
+| `backgroundColor` | `Color?` | Custom background color (overrides variant color) |
+| `variant` | `VitCardVariant` | Visual variant: standard, elevated, variant, or elevatedVariant |
+| `elevation` | `double` | Shadow depth (0 = no shadow, higher = more shadow) |
+| `borderRadius` | `BorderRadius?` | Custom corner radius (uses theme default if null) |
+| `padding` | `EdgeInsets?` | Internal content padding (uses visual density default if null) |
+| `margin` | `EdgeInsets?` | External spacing around the card |
+| `width` | `double?` | Fixed card width (expands to fill if null) |
+| `height` | `double?` | Fixed card height (sized by child if null) |
+| `showBorder` | `bool?` | Whether to show border (uses theme default if null) |
+| `borderColor` | `Color?` | Border color when showBorder is true |
+| `borderWidth` | `double` | Border width in pixels (default: 1.0) |
+| `onTap` | `VoidCallback?` | Callback when card is tapped |
+| `onLongPress` | `VoidCallback?` | Callback when card is long pressed |
+| `onDoubleTap` | `VoidCallback?` | Callback when card is double tapped |
+| `clipBehavior` | `Clip` | How content should be clipped (default: antiAlias) |
+| `visualDensity` | `VisualDensity?` | Controls default padding size (compact, standard, comfortable) |
+| `semanticLabel` | `String?` | Accessibility label for screen readers |
+| `isLoading` | `bool` | Whether to show skeleton loading state (default: false) |
+| `gradient` | `Gradient?` | Gradient background (overrides backgroundColor) |
+| `shadowColor` | `Color?` | Custom shadow color for elevation |
+| `surfaceTintColor` | `Color?` | Material 3 surface tint color |
+| `alignment` | `AlignmentGeometry?` | Alignment of child within the card |
+| `id` | `String?` | Unique identifier for form integration |
+
+## List Card
+
+VitListCard is a specialized card variant designed for list items. It combines the structure of Flutter's ListTile with card styling, making it perfect for contact lists, settings menus, navigation items, and any list-based interface.
+
+The component provides a consistent layout with leading widgets (icons or avatars), title and subtitle text, and trailing widgets (icons or badges), all wrapped in a card container with full customization options.
+
+### Basic List Card
+
+```dart
+VitListCard(
+  title: Text('John Doe'),
+  subtitle: Text('john@example.com'),
+)
+```
+
+### List Card with Leading Icon
+
+Leading widgets appear at the start of the card. Use icons, avatars, or custom widgets to provide visual context for the list item.
+
+```dart
+VitListCard(
+  leading: Icon(Icons.person),
+  title: Text('John Doe'),
+  subtitle: Text('Software Engineer'),
+)
+```
+
+### Interactive List Card
+
+List cards support tap and long press interactions, making them perfect for navigation or triggering actions. The entire card becomes a tappable area with visual feedback.
+
+```dart
+VitListCard(
+  leading: Icon(Icons.settings),
+  title: Text('Settings'),
+  trailing: Icon(Icons.chevron_right),
+  onTap: () {
+    Navigator.push(context, SettingsPage());
+  },
+)
+```
+
+### List Card with Avatar
+
+Combine list cards with avatar components for rich contact lists or user directories.
+
+```dart
+VitListCard(
+  leading: VitAvatar(
+    name: 'Jane Smith',
+    imageUrl: 'https://example.com/avatar.jpg',
+  ),
+  title: Text('Jane Smith'),
+  subtitle: Text('Online'),
+  trailing: Icon(Icons.message, color: Colors.blue),
+  onTap: () {},
+)
+```
+
+### Dense and Three-Line Cards
+
+Control the vertical spacing and text line limits for different layout needs.
+
+```dart
+VitListCard(
+  dense: true,
+  title: Text('Compact list item'),
+  subtitle: Text('Uses less vertical space'),
+)
+```
+
+```dart
+VitListCard(
+  isThreeLine: true,
+  title: Text('Extended content'),
+  subtitle: Text('This subtitle can wrap up to three lines of text for displaying longer descriptions'),
+)
+```
+
+### Selected List Cards
+
+Highlight selected items in lists with selection styling.
+
+```dart
+VitListCard(
+  selected: true,
+  selectedColor: Colors.blue,
+  selectedTileColor: Colors.blue.shade50,
+  title: Text('Selected item'),
+  trailing: Icon(Icons.check),
+)
+```
+
+### List Card Loading State
+
+List cards also support skeleton loading states, showing placeholder content while data loads.
+
+```dart
+VitListCard(
+  isLoading: true,
+  leading: Icon(Icons.person),
+  title: Text('Loading...'),
+  subtitle: Text('Please wait'),
+)
+```
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | `Widget?` | Primary content (typically Text widget) |
+| `subtitle` | `Widget?` | Secondary content below title |
+| `leading` | `Widget?` | Widget before title (icons, avatars) |
+| `trailing` | `Widget?` | Widget after title (icons, badges) |
+| `backgroundColor` | `Color?` | Custom background color |
+| `variant` | `VitCardVariant` | Visual variant (standard, elevated, variant, elevatedVariant) |
+| `elevation` | `double` | Shadow depth (default: 0) |
+| `borderRadius` | `BorderRadius?` | Custom corner radius |
+| `contentPadding` | `EdgeInsets?` | Internal ListTile padding |
+| `margin` | `EdgeInsets?` | External card spacing |
+| `showBorder` | `bool?` | Whether to show border |
+| `borderColor` | `Color?` | Border color when showBorder is true |
+| `borderWidth` | `double` | Border width (default: 1.0) |
+| `onTap` | `VoidCallback?` | Tap handler |
+| `onLongPress` | `VoidCallback?` | Long press handler |
+| `enabled` | `bool?` | Whether tile is interactive |
+| `dense` | `bool` | Reduces vertical size (default: false) |
+| `isThreeLine` | `bool` | Allows three lines of text (default: false) |
+| `selected` | `bool` | Whether tile is selected (default: false) |
+| `focusColor` | `Color?` | Color when focused |
+| `hoverColor` | `Color?` | Color when hovering (desktop/web) |
+| `selectedTileColor` | `Color?` | Background when selected |
+| `selectedColor` | `Color?` | Text/icon color when selected |
+| `iconColor` | `Color?` | Leading icon color |
+| `textColor` | `Color?` | Title text color |
+| `titleTextStyle` | `TextStyle?` | Custom title style |
+| `subtitleTextStyle` | `TextStyle?` | Custom subtitle style |
+| `leadingSize` | `double?` | Leading widget size |
+| `trailingSize` | `double?` | Trailing widget size |
+| `horizontalTitleGap` | `double?` | Gap between leading/trailing and text |
+| `minVerticalPadding` | `double?` | Minimum vertical padding |
+| `minTileHeight` | `double?` | Minimum tile height |
+| `visualDensity` | `VisualDensity?` | Controls padding size |
+| `semanticLabel` | `String?` | Accessibility label |
+| `isLoading` | `bool` | Skeleton loading state (default: false) |
+| `shadowColor` | `Color?` | Custom shadow color |
+| `surfaceTintColor` | `Color?` | Material 3 surface tint |
+| `shape` | `ShapeBorder?` | Custom shape |
+| `id` | `String?` | Unique identifier for forms |
+
+## Examples
+
+### Content Card with Actions
+
+Create rich content cards with titles, descriptions, and action buttons. Perfect for blog posts, articles, or news feeds.
+
+```dart
+VitCard(
+  elevation: 2,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      VitTitleMedium('Article Title'),
+      SizedBox(height: 8),
+      VitCaption('Posted 2 hours ago'),
+      SizedBox(height: 16),
+      VitBody(
+        'Article content preview goes here. This is a longer description that provides context about the content.',
+      ),
+      SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          VitButton(
+            text: 'Share',
+            variant: VitButtonVariant.ghost,
+            onPressed: () {},
+          ),
+          SizedBox(width: 8),
+          VitButton(
+            text: 'Read More',
+            onPressed: () {},
+          ),
+        ],
+      ),
+    ],
+  ),
+)
+```
+
+### Contact List
+
+Build elegant contact lists using VitListCard. The consistent layout makes scanning and interaction effortless.
+
+```dart
+ListView(
+  children: [
+    VitListCard(
+      leading: VitAvatar(name: 'John Doe'),
+      title: Text('John Doe'),
+      subtitle: Text('Software Engineer'),
+      trailing: Icon(Icons.phone, color: Colors.green),
+      onTap: () {},
+    ),
+    VitListCard(
+      leading: VitAvatar(name: 'Jane Smith'),
+      title: Text('Jane Smith'),
+      subtitle: Text('Product Manager'),
+      trailing: Icon(Icons.phone, color: Colors.green),
+      onTap: () {},
+    ),
+    VitListCard(
+      leading: VitAvatar(name: 'Bob Johnson'),
+      title: Text('Bob Johnson'),
+      subtitle: Text('Designer'),
+      trailing: Icon(Icons.phone, color: Colors.green),
+      onTap: () {},
+    ),
+  ],
+)
+```
+
+### Stats Dashboard
+
+Create dashboard cards for displaying key metrics and statistics. Use cards in rows or grids for consistent layouts.
+
+```dart
+Row(
+  children: [
+    Expanded(
+      child: VitCard(
+        variant: VitCardVariant.variant,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            VitCaption('Total Users'),
+            SizedBox(height: 8),
+            VitTitleBig('1,234'),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.trending_up, size: 16, color: Colors.green),
+                SizedBox(width: 4),
+                VitCaption('+12%', style: TextStyle(color: Colors.green)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+    SizedBox(width: 16),
+    Expanded(
+      child: VitCard(
+        variant: VitCardVariant.variant,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            VitCaption('Revenue'),
+            SizedBox(height: 8),
+            VitTitleBig('\$12.5K'),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.trending_up, size: 16, color: Colors.green),
+                SizedBox(width: 4),
+                VitCaption('+8%', style: TextStyle(color: Colors.green)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  ],
+)
+```
+
+### Settings Menu
+
+Build settings menus with VitListCard for consistent navigation and organization.
+
+```dart
+Column(
+  children: [
+    VitListCard(
+      leading: Icon(Icons.person),
+      title: Text('Account'),
+      subtitle: Text('Manage your account settings'),
+      trailing: Icon(Icons.chevron_right),
+      onTap: () {},
+    ),
+    VitListCard(
+      leading: Icon(Icons.notifications),
+      title: Text('Notifications'),
+      subtitle: Text('Configure notification preferences'),
+      trailing: Icon(Icons.chevron_right),
+      onTap: () {},
+    ),
+    VitListCard(
+      leading: Icon(Icons.security),
+      title: Text('Privacy & Security'),
+      subtitle: Text('Control your privacy settings'),
+      trailing: Icon(Icons.chevron_right),
+      onTap: () {},
+    ),
+    VitListCard(
+      leading: Icon(Icons.help),
+      title: Text('Help & Support'),
+      subtitle: Text('Get help and contact support'),
+      trailing: Icon(Icons.chevron_right),
+      onTap: () {},
+    ),
+  ],
+)
+```
+
+### Product Card with Image
+
+Create product cards with images, descriptions, and actions for e-commerce interfaces.
+
+```dart
+VitCard(
+  elevation: 2,
+  padding: EdgeInsets.zero,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        child: Image.network(
+          'https://example.com/product.jpg',
+          height: 200,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            VitTitleMedium('Product Name'),
+            SizedBox(height: 4),
+            VitCaption('Category Name'),
+            SizedBox(height: 8),
+            VitBody('Product description goes here with details about features.'),
+            SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                VitTitleMedium('\$99.99'),
+                VitButton(
+                  text: 'Add to Cart',
+                  size: VitButtonSize.small,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+### Notification Card
+
+Display notifications or alerts with appropriate icons and styling.
+
+```dart
+VitCard(
+  showBorder: true,
+  borderColor: Colors.blue,
+  borderWidth: 2,
+  child: Row(
+    children: [
+      Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(Icons.info, color: Colors.blue),
+      ),
+      SizedBox(width: 16),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            VitTitleSmall('New Update Available'),
+            SizedBox(height: 4),
+            VitBody('Version 2.0 is now available with new features and improvements.'),
+          ],
+        ),
+      ),
+      IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {},
+      ),
+    ],
+  ),
+)
+```
+
+### Loading States Example
+
+Demonstrate loading states for better user experience during data fetching.
+
+```dart
+Column(
+  children: [
+    VitCard(
+      isLoading: true,
+      child: Column(
+        children: [
+          VitTitleMedium('Loading...'),
+          VitBody('Content will appear here'),
+        ],
+      ),
+    ),
+    SizedBox(height: 16),
+    VitListCard(
+      isLoading: true,
+      leading: Icon(Icons.person),
+      title: Text('Loading user...'),
+      subtitle: Text('Please wait'),
+    ),
+  ],
+)
+```
+
+## Best Practices
+
+1. **Choose the Right Variant**: Use different card variants to establish visual hierarchy and distinguish between types of content in your interface.
+
+2. **Consider Elevation Carefully**: Higher elevation creates visual hierarchy but use it sparingly. Too many elevated cards can make interfaces feel cluttered.
+
+3. **Use VitListCard for Lists**: When building lists of similar items (contacts, settings, menus), prefer VitListCard over regular VitCard for consistency.
+
+4. **Loading States**: Always implement loading states for cards that display fetched data. This provides better user experience during data loading.
+
+5. **Interactive Feedback**: When cards are tappable, ensure they have appropriate trailing icons (like chevron_right) to indicate interactivity.
+
+6. **Consistent Padding**: Use visual density to maintain consistent padding across your app rather than hardcoding padding values.
+
+7. **Accessibility**: Always provide semantic labels for cards that contain important information or actions.
+
+8. **Group Related Content**: Use cards to group related information together, making your interface easier to scan and understand.
+
+## Related Components
+
+- [Text](./text.md) - Text components for titles and content
+- [Avatar](./avatar.md) - User avatars for list cards
+- [Button](./button.md) - Action buttons within cards
+- [Badge](./badge.md) - Status indicators for cards
+- [Skeleton](./skeleton.md) - Loading states

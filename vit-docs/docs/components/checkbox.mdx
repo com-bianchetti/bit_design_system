@@ -1,0 +1,237 @@
+---
+sidebar_position: 5
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Checkbox
+
+Checkboxes are interactive controls that allow users to select one or multiple options from a set. They provide clear visual feedback and are ideal for enabling/disabling features, accepting terms, or selecting multiple items.
+
+<FlutterPreview story="VitCheckbox" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Shapes Options**: Render as square, circle, or convex (pillow shape)
+- **Standalone or List Mode**: Render as a simple checkbox or as part of a styled list item with title and subtitle
+- **Tristate Support**: Optional indeterminate state for parent-child checkbox relationships
+- **Flexible Positioning**: Place checkbox on left or right side of list items
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust spacing and **checkbox size** with compact, standard, or comfortable modes
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Accessibility**: Full semantic label and hint support for screen readers
+- **Customizable Styling**: Control colors, borders, and backgrounds through theme
+
+## Basic Usage
+
+### Simple Checkbox
+
+A minimal checkbox without any labels, perfect for custom layouts or inline controls.
+
+```dart
+VitCheckbox(
+  id: 'agree',
+  title: 'I agree to the terms',
+  value: false,
+)
+```
+
+### Checkbox with Subtitle
+
+Add a subtitle to provide additional context or explanation for the checkbox option.
+
+```dart
+VitCheckbox(
+  id: 'marketing',
+  title: 'Marketing Emails',
+  subtitle: 'Receive promotional offers',
+  value: false,
+)
+```
+
+### Controlled Checkbox
+
+Use controlled state to manage checkbox value externally and respond to changes.
+
+```dart
+class MyCheckbox extends StatefulWidget {
+  @override
+  _MyCheckboxState createState() => _MyCheckboxState();
+}
+
+class _MyCheckboxState extends State<MyCheckbox> {
+  bool _checked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return VitCheckbox(
+      id: 'option',
+      title: 'Enable Feature',
+      value: _checked,
+      onChanged: (value) {
+        setState(() => _checked = value);
+      },
+    );
+  }
+}
+```
+
+## Advanced Features
+
+### Shape Variations
+
+Override the default shape (from the theme configuration) for a specific checkbox using the `shape` property.
+
+```dart
+VitCheckbox(
+  id: 'shape_circle',
+  title: 'Circle Checkbox',
+  shape: VitCheckboxShape.circle,
+  value: false,
+)
+```
+
+### Checkbox Positioning
+
+Control whether the checkbox appears on the left or right side of list items.
+
+```dart
+VitCheckbox(
+  id: 'left_check',
+  title: 'Left Checkbox',
+  subtitle: 'Checkbox on the left',
+  checkboxPosition: VitCheckboxPosition.left,
+  value: false,
+)
+```
+
+### Tristate Checkbox
+
+Use tristate mode for parent-child relationships where the parent can be checked, unchecked, or indeterminate.
+
+```dart
+VitCheckbox(
+  id: 'parent',
+  title: 'Select All',
+  value: null,
+  tristate: true,
+  onChanged: (value) {
+  },
+)
+```
+
+### With Icon
+
+Add an icon to provide visual context for the checkbox option.
+
+```dart
+VitCheckbox(
+  id: 'notifications',
+  title: 'Push Notifications',
+  icon: Icon(Icons.notifications),
+  value: true,
+)
+```
+
+### Visual Density & Sizing
+
+Adjust the height and spacing of list-style checkboxes to match your design requirements. The visual density also automatically scales the checkbox size based on `VitValues` (`checkboxComfortableSize`, `checkboxStandardSize`, `checkboxCompactSize`).
+
+```dart
+VitCheckbox(
+  id: 'compact',
+  title: 'Compact Option',
+  visualDensity: VisualDensity.compact,
+  value: false,
+)
+```
+
+You can also explicitly override the checkbox size using `checkboxSize` regardless of visual density.
+
+```dart
+VitCheckbox(
+  id: 'custom_size',
+  title: 'Large Checkbox',
+  checkboxSize: 32.0,
+  value: false,
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `String` | Unique identifier |
+| `title` | `String` | Main label |
+| `subtitle` | `String?` | Secondary description |
+| `value` | `bool` | Checked state |
+| `shape` | `VitCheckboxShape?` | Shape of the checkbox |
+| `checkboxSize` | `double?` | Explicit size override |
+| `onChanged` | `ValueChanged<bool>?` | Change callback |
+| `enabled` | `bool` | Enable/disable |
+
+## Form Integration
+
+Checkboxes integrate seamlessly with `VitForm` to collect and validate user selections. When used with a form, checkbox values are automatically included in the form data map using their `id` as the key.
+
+The form integration provides:
+- **Automatic Data Collection**: Values are automatically saved to form data
+- **Validation Support**: Add validators to ensure required checkboxes are selected
+- **Error Display**: Validation errors appear below the checkbox
+- **Multi-page Support**: Use checkboxes across multiple form pages
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitCheckbox(
+          id: 'terms',
+          title: 'I accept the terms',
+          subtitle: 'Required to continue',
+          validator: (value) {
+            if (value == null || !value) {
+              return 'You must accept the terms';
+            }
+            return null;
+          },
+        ),
+        VitCheckbox(
+          id: 'newsletter',
+          title: 'Subscribe to newsletter',
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Terms: ${data['terms']}');
+    print('Newsletter: ${data['newsletter']}');
+  },
+)
+```
+
+## Examples
+
+### Multiple Checkboxes
+
+```dart
+Column(
+  children: [
+    VitCheckbox(id: 'option1', title: 'Option 1'),
+    VitCheckbox(id: 'option2', title: 'Option 2'),
+    VitCheckbox(id: 'option3', title: 'Option 3'),
+  ],
+)
+```
+
+## Related Components
+
+- [Radio](./radio.md) - Single selection
+- [Switch](./switch.md) - Toggle switches
+- [Form](./form.md) - Form integration

@@ -1,0 +1,525 @@
+---
+sidebar_position: 11
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Layout
+
+Layout components provide the structural foundation for building consistent, responsive application interfaces. These components handle the overall page structure, navigation patterns, scrolling behavior, and responsive layouts across different screen sizes.
+
+The layout system includes four main components that work together to create a complete application structure: VitScaffold for overall page layout, VitAppBar for top navigation, VitBottomBar for responsive navigation (bottom bar on phones, sidebar on tablets), and VitListView for flexible scrollable content with responsive grid support.
+
+<FlutterPreview story="VitScaffold" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Overview
+
+The layout components are designed to work seamlessly together while remaining flexible enough to use independently. They share common responsive breakpoints and theming, ensuring consistent behavior across your application. The system automatically adapts between mobile and tablet layouts at configurable breakpoints, making it easy to build truly responsive applications without manual media query management.
+
+## VitScaffold
+
+VitScaffold is the foundational component for building complete pages in your application. It extends Flutter's standard Scaffold with powerful features specifically designed for the design system, including integrated responsive navigation, simplified app bar configuration, and support for both single widgets and lists of children.
+
+This component serves as the primary container for page content and automatically coordinates with other layout components like VitAppBar and VitBottomBar. It handles common patterns like drawer navigation, floating action buttons, and persistent footer buttons while providing convenient shortcuts for app bar configuration without needing to create a separate VitAppBar instance.
+
+### Key Features
+
+- **Integrated Navigation**: Built-in support for responsive navigation that automatically switches between bottom bar and sidebar based on screen size
+- **Simplified App Bar**: Configure app bar properties directly on the scaffold without creating a separate component
+- **Flexible Content**: Support for single body widget, list of children with automatic scrolling, or custom navigation pages
+- **Responsive Grid**: When using children, automatically adapts between single column on phones and multi-column grid on tablets
+- **Full Scaffold API**: Complete access to all standard Flutter Scaffold features including drawers, floating action buttons, and more
+
+### Basic Usage
+
+```dart
+VitScaffold(
+  title: 'My App',
+  body: Center(
+    child: VitText('Page content'),
+  ),
+)
+```
+
+### With App Bar and Navigation
+
+```dart
+VitScaffold(
+  appBar: VitAppBar(
+    title: 'My App',
+  ),
+  body: Center(
+    child: VitText('Page content'),
+  ),
+  bottomNavigationBar: VitBottomBar(
+    items: [
+      VitBottomBarItem(icon: Icons.home, label: 'Home'),
+      VitBottomBarItem(icon: Icons.search, label: 'Search'),
+      VitBottomBarItem(icon: Icons.person, label: 'Profile'),
+    ],
+    currentIndex: 0,
+    onIndexChanged: (index) {},
+  ),
+)
+```
+
+### With Integrated Navigation
+
+The scaffold can manage navigation automatically using the navigationItems and navigationPages properties. This creates a complete navigation solution that adapts between bottom bar and sidebar layouts:
+
+```dart
+VitScaffold(
+  title: 'My App',
+  navigationItems: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+    VitBottomBarItem(icon: Icons.person, label: 'Profile'),
+  ],
+  navigationPages: [
+    HomePage(),
+    SearchPage(),
+    ProfilePage(),
+  ],
+  navigationIndex: currentIndex,
+  onNavigationIndexChanged: (index) {
+    setState(() => currentIndex = index);
+  },
+)
+```
+
+## VitAppBar
+
+VitAppBar provides a flexible and customizable top navigation bar that maintains design system consistency while offering extensive configuration options. Unlike Flutter's standard AppBar, VitAppBar provides simplified APIs for common patterns like back navigation, custom titles, and action buttons, while still supporting advanced customization when needed.
+
+The component automatically handles safe area padding, border styling, and theme integration. It supports both simple string titles and completely custom title widgets, making it suitable for everything from basic page headers to complex navigation patterns with search bars or custom branding.
+
+### Key Features
+
+- **Flexible Title Options**: Use simple text titles or provide custom title widgets for complex headers
+- **Smart Leading Widget**: Automatic back button with customizable icon and callback, or use completely custom leading widgets
+- **Action Button Support**: Easy-to-configure trailing action buttons for search, menu, and other common actions
+- **Border Customization**: Optional bottom border with configurable color and width
+- **Elevation Control**: Support for shadow elevation or flat appearance
+- **Theme Integration**: Automatic integration with design system colors and typography
+- **Accessibility Support**: Built-in semantic labels for screen readers
+
+### Basic Usage
+
+```dart
+VitAppBar(
+  title: 'Page Title',
+)
+```
+
+### With Navigation
+
+```dart
+VitAppBar(
+  title: 'Page Title',
+  onLeadingPressed: () => Navigator.pop(context),
+  trailing: [
+    IconButton(
+      icon: Icon(Icons.search),
+      onPressed: () {},
+    ),
+    IconButton(
+      icon: Icon(Icons.more_vert),
+      onPressed: () {},
+    ),
+  ],
+)
+```
+
+### Custom Leading Widget
+
+```dart
+VitAppBar(
+  title: 'Menu',
+  leading: IconButton(
+    icon: Icon(Icons.menu),
+    onPressed: () => Scaffold.of(context).openDrawer(),
+  ),
+)
+```
+
+### Without Border
+
+```dart
+VitAppBar(
+  title: 'Clean Look',
+  showBorder: false,
+)
+```
+
+### Centered Title
+
+```dart
+VitAppBar(
+  title: 'Centered',
+  centerTitle: true,
+)
+```
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | `String?` | AppBar title text |
+| `titleWidget` | `Widget?` | Custom title widget (takes precedence over title) |
+| `leading` | `Widget?` | Custom leading widget |
+| `onLeadingPressed` | `VoidCallback?` | Callback for default back button |
+| `leadingIcon` | `IconData` | Icon for default back button (default: Icons.arrow_back) |
+| `trailing` | `List<Widget>?` | Action buttons displayed at the end |
+| `backgroundColor` | `Color?` | Background color |
+| `foregroundColor` | `Color?` | Color for text and icons |
+| `showBorder` | `bool` | Whether to show bottom border (default: true) |
+| `borderColor` | `Color?` | Color of the bottom border |
+| `borderWidth` | `double` | Width of the bottom border (default: 1.0) |
+| `centerTitle` | `bool` | Whether to center the title (default: false) |
+| `elevation` | `double?` | Shadow elevation depth |
+| `showLeading` | `bool` | Whether to show the leading widget (default: true) |
+| `boldTitle` | `bool` | Whether to make the title bold (default: true) |
+
+## VitBottomBar
+
+VitBottomBar is a sophisticated responsive navigation component that intelligently adapts between a bottom navigation bar on mobile devices and a collapsible sidebar on tablets and larger screens. This automatic responsive behavior eliminates the need to manually manage different navigation patterns for different screen sizes.
+
+The component supports extensive customization including multiple visual variants, animation styles, custom item builders, and advanced sidebar features like expandable/collapsible behavior, custom headers and footers, and multiple item style variants. It also includes built-in support for badges, tooltips, loading states, and disabled items.
+
+### Key Features
+
+- **Responsive Layout**: Automatically switches between bottom bar (phones) and sidebar (tablets) at configurable breakpoint
+- **Multiple Visual Variants**: Standard, elevated, primary, and transparent background options
+- **Animation Support**: Five different animation styles for item transitions (none, fade, scale, slide, fadeScale)
+- **Expandable Sidebar**: Collapsible sidebar on tablets with smooth animations
+- **Custom Builders**: Complete control over item appearance with custom builder functions
+- **Badge Support**: Show notification badges on navigation items
+- **Loading States**: Built-in skeleton shimmer effect for loading states
+- **Label Control**: Configure when labels are shown (always, only when selected, never)
+- **Haptic Feedback**: Optional tactile feedback on item selection
+
+### Basic Usage
+
+```dart
+VitBottomBar(
+  currentIndex: currentIndex,
+  onIndexChanged: (index) => setState(() => currentIndex = index),
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+    VitBottomBarItem(icon: Icons.person, label: 'Profile'),
+  ],
+)
+```
+
+### With Badges
+
+```dart
+VitBottomBar(
+  currentIndex: currentIndex,
+  onIndexChanged: (index) => setState(() => currentIndex = index),
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(
+      icon: Icons.notifications,
+      label: 'Notifications',
+      badge: '3',
+      badgeColor: Colors.red,
+    ),
+    VitBottomBarItem(icon: Icons.person, label: 'Profile'),
+  ],
+)
+```
+
+### Different Visual Variants
+
+```dart
+VitBottomBar(
+  currentIndex: currentIndex,
+  onIndexChanged: (index) => setState(() => currentIndex = index),
+  variant: VitBottomBarVariant.elevated,
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+  ],
+)
+```
+
+### Custom Breakpoint
+
+By default, the component switches to sidebar layout at 600px. You can customize this:
+
+```dart
+VitBottomBar(
+  currentIndex: currentIndex,
+  onIndexChanged: (index) => setState(() => currentIndex = index),
+  tabletBreakpoint: 800,
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+  ],
+)
+```
+
+### Custom Animations
+
+```dart
+VitBottomBar(
+  currentIndex: currentIndex,
+  onIndexChanged: (index) => setState(() => currentIndex = index),
+  animation: VitBottomBarAnimation.scale,
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+  ],
+)
+```
+
+### With Notched / Floating Button
+
+```dart
+VitNavigationScaffold(
+  hasNotch: true,
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {},
+    child: Icon(Icons.add),
+  ),
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  items: [
+    VitBottomBarItem(icon: Icons.home, label: 'Home'),
+    VitBottomBarItem(icon: Icons.search, label: 'Search'),
+  ],
+  pages: [
+    HomePage(),
+    SearchPage(),
+  ],
+)
+```
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `items` | `List<VitBottomBarItem>` | Navigation items to display |
+| `currentIndex` | `int` | Currently selected item index |
+| `onIndexChanged` | `ValueChanged<int>?` | Callback when selection changes |
+| `tabletBreakpoint` | `double` | Screen width to switch to sidebar (default: 600) |
+| `variant` | `VitBottomBarVariant` | Visual style variant (default: standard) |
+| `animation` | `VitBottomBarAnimation` | Item transition animation (default: fadeScale) |
+| `labelBehavior` | `VitBottomBarLabelBehavior` | When to show labels (default: alwaysShow) |
+| `sideBarExpandable` | `bool` | Whether sidebar can collapse (default: true) |
+| `sideBarItemStyle` | `VitSideBarItemStyle` | Sidebar item visual style (default: rounded) |
+| `isLoading` | `bool` | Show skeleton loading state (default: false) |
+| `enableHapticFeedback` | `bool` | Enable tactile feedback (default: true) |
+| `hasNotch` | `bool` | Whether to show a notch for FAB (default: false) |
+| `notchMargin` | `double` | Margin around the notch (default: 8.0) |
+
+## VitListView
+
+VitListView is a powerful and flexible scrollable container built on Flutter's CustomScrollView with slivers. It provides sophisticated features for creating complex scrolling layouts including headers, footers, responsive grids, and custom sliver content, all while maintaining a simple API for common use cases.
+
+The component automatically handles responsive layouts, switching between single-column lists on phones and multi-column grids on tablets. It supports both simple children lists and builder patterns for large or dynamic datasets, with built-in support for separators, pinned headers/footers, and custom sliver content for advanced use cases.
+
+### Key Features
+
+- **Responsive Grid**: Automatically switches between single column and multi-column layouts at configurable breakpoint
+- **Header/Footer Support**: Optional scrollable or pinned headers and footers
+- **Multiple Construction Patterns**: Support for children list, item builder, or completely custom slivers
+- **Separator Support**: Built-in separated list builder for lists with dividers
+- **Flexible Grid Configuration**: Configure columns, spacing, aspect ratio, and item extent
+- **Custom Slivers**: Full access to sliver API for advanced scrolling effects
+- **Performance Optimized**: Uses slivers for efficient rendering of large lists
+- **Scroll Control**: Complete control over scroll physics, direction, and behavior
+
+### Basic List
+
+```dart
+VitListView(
+  itemCount: 20,
+  itemBuilder: (context, index) => ListTile(
+    title: VitText('Item $index'),
+  ),
+)
+```
+
+### With Static Children
+
+```dart
+VitListView(
+  children: [
+    VitCard(title: 'Item 1'),
+    VitCard(title: 'Item 2'),
+    VitCard(title: 'Item 3'),
+  ],
+)
+```
+
+### Responsive Grid
+
+This automatically shows 1 column on phones and 3 columns on tablets:
+
+```dart
+VitListView.grid(
+  crossAxisCount: 1,
+  tabletCrossAxisCount: 3,
+  tabletBreakpoint: 600,
+  mainAxisSpacing: 16,
+  crossAxisSpacing: 16,
+  itemCount: 20,
+  itemBuilder: (context, index) => VitCard(
+    child: Center(child: VitText('Item $index')),
+  ),
+)
+```
+
+### With Header and Footer
+
+```dart
+VitListView(
+  header: Container(
+    height: 200,
+    child: VitText('Header', style: VitTitle()),
+  ),
+  footer: Container(
+    height: 100,
+    child: VitText('Footer'),
+  ),
+  itemCount: 20,
+  itemBuilder: (context, index) => ListTile(
+    title: VitText('Item $index'),
+  ),
+)
+```
+
+### Pinned Header
+
+Useful for sticky section headers:
+
+```dart
+VitListView(
+  header: Container(
+    padding: EdgeInsets.all(16),
+    child: VitText('Sticky Header'),
+  ),
+  pinnedHeader: true,
+  itemCount: 20,
+  itemBuilder: (context, index) => ListTile(
+    title: VitText('Item $index'),
+  ),
+)
+```
+
+### Separated List
+
+```dart
+VitListView.separated(
+  itemCount: 20,
+  itemBuilder: (context, index) => ListTile(
+    title: VitText('Item $index'),
+  ),
+  separatorBuilder: (context, index) => Divider(),
+)
+```
+
+### Custom Slivers
+
+For advanced scrolling effects:
+
+```dart
+VitListView.custom(
+  slivers: [
+    SliverAppBar(
+      title: VitText('Custom App Bar'),
+      floating: true,
+      expandedHeight: 200,
+    ),
+    SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => ListTile(title: VitText('Item $index')),
+        childCount: 20,
+      ),
+    ),
+  ],
+)
+```
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `children` | `List<Widget>?` | List of widgets to display |
+| `itemBuilder` | `IndexedWidgetBuilder?` | Builder function for items |
+| `itemCount` | `int?` | Number of items to build |
+| `separatorBuilder` | `IndexedWidgetBuilder?` | Builder for item separators |
+| `header` | `Widget?` | Header widget |
+| `headerSliver` | `Widget?` | Custom header sliver |
+| `pinnedHeader` | `bool` | Pin header while scrolling (default: false) |
+| `footer` | `Widget?` | Footer widget |
+| `footerSliver` | `Widget?` | Custom footer sliver |
+| `pinnedFooter` | `bool` | Pin footer while scrolling (default: false) |
+| `crossAxisCount` | `int` | Columns on phones (default: 1) |
+| `tabletCrossAxisCount` | `int?` | Columns on tablets |
+| `tabletBreakpoint` | `double` | Screen width for tablet layout (default: 600) |
+| `mainAxisSpacing` | `double` | Spacing along main axis (default: 0) |
+| `crossAxisSpacing` | `double` | Spacing along cross axis (default: 0) |
+| `childAspectRatio` | `double` | Item width/height ratio (default: 1.0) |
+| `slivers` | `List<Widget>?` | Custom slivers for advanced layouts |
+| `padding` | `EdgeInsets?` | Padding around entire scroll view |
+| `contentPadding` | `EdgeInsets?` | Padding around content area only |
+
+## Complete Example
+
+```dart
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    HomeTab(),
+    SearchTab(),
+    ProfileTab(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return VitScaffold(
+      appBar: VitAppBar(
+        title: 'My App',
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: _pages[_currentIndex],
+      bottomBar: VitBottomBar(
+        items: [
+          BottomBarItem(icon: Icons.home, label: 'Home'),
+          BottomBarItem(icon: Icons.search, label: 'Search'),
+          BottomBarItem(icon: Icons.person, label: 'Profile'),
+        ],
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+        },
+      ),
+    );
+  }
+}
+```
+
+## Related Components
+
+- [Card](./card.md) - Content cards
+- [Text](./text.md) - Text components

@@ -1,0 +1,184 @@
+---
+sidebar_position: 8
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Time
+
+Time pickers provide an intuitive interface for users to select a specific time of day. They combine a text input field with a scrolling wheel popover, offering flexible time selection in both 12-hour (AM/PM) and 24-hour formats.
+
+<FlutterPreview story="VitTime" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **12-Hour & 24-Hour Formats**: Pick time using AM/PM format or 24-hour format
+- **Duration Mode**: Select durations spanning infinite hours seamlessly
+- **Interactive Wheels**: Smooth scrolling wheels for Hours, Minutes, and AM/PM selection
+- **Controlled & Uncontrolled**: Support both controlled and uncontrolled state management
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Localization**: Follows localization patterns for displaying time according to system locale
+
+## Basic Usage
+
+### Basic Time Picker (12-hour)
+
+A basic time picker for selecting time.
+
+```dart
+VitTime(
+  id: 'alarm',
+  label: 'Alarm',
+  hintText: 'Select your alarm time',
+  onChanged: (time) {
+    print('Selected: $time');
+  },
+)
+```
+
+### 24-Hour Time Picker
+
+Enable the 24-hour format for military time or standard European representations.
+
+```dart
+VitTime(
+  id: 'meeting',
+  label: 'Meeting Time',
+  hintText: 'Select meeting time',
+  mode: VitTimeMode.twentyFourHour,
+  onChanged: (time) {
+    print('Selected: $time');
+  },
+)
+```
+
+### With Initial Time
+
+Pre-populate the time picker with an initial value for better user experience.
+
+```dart
+VitTime(
+  id: 'startTime',
+  label: 'Start Time',
+  initialValue: TimeOfDay(hour: 9, minute: 0),
+  onChanged: (time) {
+    print('Selected: $time');
+  },
+)
+```
+
+### Card Variant
+
+Display the selected time in a large, visually appealing card format rather than an input field.
+
+```dart
+VitTime(
+  id: 'eventTimeCard',
+  label: 'Event Time',
+  variant: VitPickerVariant.card,
+  mode: VitTimeMode.amPm,
+  onChanged: (time) {
+    print('Selected: $time');
+  },
+)
+```
+
+### Duration Picker
+
+Select a duration by using the infinite scrolling hours option without AM/PM limits.
+
+```dart
+VitTime(
+  id: 'task_duration',
+  label: 'Task Duration',
+  hintText: 'Select how long the task will take',
+  mode: VitTimeMode.duration,
+  onChanged: (time) {
+    print('Selected duration: ${time.hour}h ${time.minute}m');
+  },
+)
+```
+
+### Controlled Time Picker
+
+Use controlled state for dynamic time management and complex validation scenarios.
+
+```dart
+TimeOfDay? selectedTime = TimeOfDay.now();
+
+VitTime(
+  id: 'event',
+  label: 'Event Time',
+  value: selectedTime,
+  onChanged: (time) {
+    setState(() {
+      selectedTime = time;
+    });
+  },
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|---------|
+| `id` | `String` | Unique identifier |
+| `label` | `String?` | Field label |
+| `hintText` | `String?` | Placeholder |
+| `value` | `TimeOfDay?` | Controlled time |
+| `initialValue` | `TimeOfDay?` | Uncontrolled initial time |
+| `mode` | `VitTimeMode` | Enable 12-hour, 24-hour, or duration mode (`amPm` / `twentyFourHour` / `duration`) |
+| `variant` | `VitPickerVariant` | Visual variant (`input` / `card`) |
+| `validator` | `FormFieldValidator?` | Validation |
+| `enabled` | `bool` | Whether picker is interactive |
+
+## Form Integration
+
+Time pickers integrate seamlessly with `VitForm` to collect and validate time selections.
+
+The form integration provides:
+- **Automatic Data Collection**: Selected times are automatically saved to form data
+- **Validation Support**: Add validators to ensure required times are selected
+- **Error Display**: Validation errors appear below the time picker
+- **Type-Safe Data**: Returns `TimeOfDay` value in validation and submission
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitTime(
+          id: 'alarm_time',
+          label: 'Alarm Time',
+          validator: (timeData) {
+            if (timeData.time == null) {
+              return 'Please select an alarm time';
+            }
+            if (timeData.time!.hour < 6) {
+              return 'Alarms before 6 AM are not allowed';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Alarm Time: ${data['alarm_time']}');
+  },
+)
+```
+
+## Related Components
+
+- [Date](./date.md) - Date picker
+- [Input](./input.md) - Text input
+- [Select](./select.md) - Dropdown
+- [Form](./form.md) - Form integration

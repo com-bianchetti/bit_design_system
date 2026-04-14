@@ -297,7 +297,7 @@ class VitCard extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: theme.skeletonHighlightColor,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: effectiveBorderRadius,
                 ),
               ),
             ),
@@ -339,6 +339,7 @@ class VitCard extends StatelessWidget {
           padding: effectivePadding,
           decoration: BoxDecoration(
             gradient: gradient,
+            borderRadius: effectiveBorderRadius,
             border: (showBorder ?? theme.configuration.showCardBorder)
                 ? Border.all(
                     color: effectiveBorderColor,

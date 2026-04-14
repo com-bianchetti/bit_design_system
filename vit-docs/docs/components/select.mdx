@@ -1,0 +1,343 @@
+---
+sidebar_position: 16
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Select
+
+Select dropdowns provide an elegant way to choose from a list of options. With built-in search functionality and support for both single and multi-selection, they offer a powerful alternative to radio buttons when dealing with many options.
+
+<FlutterPreview story="VitSelect" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Single & Multi-Selection**: Choose one or multiple options with visual feedback
+- **Built-in Search**: Automatic search filtering with debouncing
+- **Popover Interface**: Clean dropdown UI with customizable height
+- **Controlled & Uncontrolled**: Support both state management approaches
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Custom Separators**: Configurable display for multiple selected values
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Visual Density Control**: Adjust option spacing with compact, standard, or comfortable modes
+- **Accessibility**: Full semantic label support for screen readers
+- **Empty State**: Customizable "no results" messaging
+
+## Basic Usage
+
+### Simple Select
+
+A basic dropdown for selecting a single option from a list.
+
+```dart
+VitSelect(
+  id: 'country',
+  label: 'Country',
+  hintText: 'Select country',
+  options: const ['USA', 'UK', 'Canada', 'Australia'],
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+### Multi-Selection
+
+Enable multi-selection for scenarios where users can choose multiple options.
+
+```dart
+VitSelect(
+  id: 'interests',
+  label: 'Interests',
+  hintText: 'Select your interests',
+  multiSelection: true,
+  options: const ['Sports', 'Music', 'Technology', 'Travel'],
+  onChangedMultiple: (values) {
+    print('Selected: $values');
+  },
+)
+```
+
+### With Initial Value
+
+Pre-populate the select with an initial value for better user experience.
+
+```dart
+VitSelect(
+  id: 'language',
+  label: 'Language',
+  options: const ['English', 'Spanish', 'French'],
+  initialValue: 'English',
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+### Controlled Select
+
+Manage selection state externally for complex scenarios and dynamic updates.
+
+```dart
+String? selectedValue = 'Option 1';
+
+VitSelect(
+  id: 'options',
+  label: 'Options',
+  options: const ['Option 1', 'Option 2', 'Option 3'],
+  value: selectedValue,
+  onChanged: (value) {
+    setState(() {
+      selectedValue = value;
+    });
+  },
+)
+```
+
+## Advanced Features
+
+### Large Option Lists
+
+Configure maximum height and enable search for long option lists.
+
+```dart
+VitSelect(
+  id: 'city',
+  label: 'City',
+  options: List.generate(100, (i) => 'City $i'),
+  maxHeight: 300,
+  showSearch: true,
+  searchHintText: 'Search cities...',
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+### Multi-Selection with Initial Values
+
+Pre-select multiple options for editing scenarios.
+
+```dart
+VitSelect(
+  id: 'tags',
+  label: 'Tags',
+  multiSelection: true,
+  initialValues: ['Tag1', 'Tag3'],
+  options: const ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
+  onChangedMultiple: (values) {
+    print('Selected: $values');
+  },
+)
+```
+
+### Custom Display Separator
+
+Customize how multiple selected values are displayed in the input field.
+
+```dart
+VitSelect(
+  id: 'skills',
+  label: 'Skills',
+  multiSelection: true,
+  multiValueSeparator: ' • ',
+  options: const ['Flutter', 'Dart', 'Firebase'],
+  onChangedMultiple: (values) {
+    print('Skills: $values');
+  },
+)
+```
+
+### With Icons
+
+Add leading icons to provide visual context.
+
+```dart
+VitSelect(
+  id: 'category',
+  label: 'Category',
+  leading: Icon(Icons.category),
+  options: const ['Electronics', 'Clothing', 'Food'],
+  onChanged: (value) {
+    print('Category: $value');
+  },
+)
+```
+
+### Disabled Select
+
+Disable selection while maintaining visibility.
+
+```dart
+VitSelect(
+  id: 'locked',
+  label: 'Locked Option',
+  enabled: false,
+  initialValue: 'Cannot change',
+  options: const ['Cannot change', 'Option 2'],
+)
+```
+
+### Search Debounce
+
+Configure search responsiveness with custom debounce duration.
+
+```dart
+VitSelect(
+  id: 'fast_search',
+  label: 'Fast Search',
+  options: largeOptionList,
+  searchDebounce: Duration(milliseconds: 150),
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `String` | Unique identifier |
+| `label` | `String?` | Field label |
+| `hintText` | `String?` | Placeholder text |
+| `options` | `List<String>` | Dropdown options |
+| `value` | `dynamic` | Selected value(s) |
+| `multiSelection` | `bool` | Allow multiple |
+| `enabled` | `bool` | Enable/disable |
+| `validator` | `FormFieldValidator?` | Validation |
+
+## Advanced Usage
+
+### With Search
+
+```dart
+VitSelect(
+  id: 'city',
+  label: 'City',
+  options: cities,
+  searchable: true,
+  hintText: 'Search cities...',
+)
+```
+
+### Custom Display
+
+```dart
+VitSelect<User>(
+  id: 'user',
+  label: 'Assign To',
+  options: users,
+  displayStringForOption: (user) => user.name,
+)
+```
+
+## Examples
+
+### Country Selector
+
+```dart
+VitSelect(
+  id: 'country',
+  label: 'Country',
+  hintText: 'Select your country',
+  options: const [
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'Germany',
+    'France',
+  ],
+)
+```
+
+### Multi-Tag Selector
+
+```dart
+VitSelect(
+  id: 'tags',
+  label: 'Tags',
+  multiSelection: true,
+  options: const [
+    'Flutter',
+    'Dart',
+    'Mobile',
+    'Web',
+    'Design',
+    'Development',
+  ],
+)
+```
+
+## Form Integration
+
+Select dropdowns integrate seamlessly with `VitForm` to collect user selections. Both single and multi-selection modes are supported with automatic data collection.
+
+The form integration provides:
+- **Automatic Data Collection**: Selected values are automatically saved to form data
+- **Single or Multi-Select**: Returns single value or list based on mode
+- **Validation Support**: Add validators to ensure required selections are made
+- **Error Display**: Validation errors appear below the select
+- **Type-Safe Data**: Single selection returns `String?`, multi-selection returns `List<String>`
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitSelect(
+          id: 'country',
+          label: 'Country',
+          options: const [
+            'United States',
+            'United Kingdom',
+            'Canada',
+            'Australia',
+          ],
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select a country';
+            }
+            return null;
+          },
+        ),
+        VitSelect(
+          id: 'languages',
+          label: 'Languages',
+          multiSelection: true,
+          options: const [
+            'English',
+            'Spanish',
+            'French',
+            'German',
+            'Chinese',
+          ],
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select at least one language';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Country: ${data['country']}');
+    print('Languages: ${data['languages']}');
+  },
+)
+```
+
+## Related Components
+
+- [Radio](./radio.md) - Radio selection
+- [Checkbox](./checkbox.md) - Multi-select
+- [Input](./input.md) - Text input

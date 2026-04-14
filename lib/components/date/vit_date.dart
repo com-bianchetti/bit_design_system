@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:vit_design_system/components/button/vit_button.dart';
+import 'package:vit_design_system/components/card/vit_card.dart';
 import 'package:vit_design_system/components/form/vit_form.dart';
 import 'package:vit_design_system/components/input/vit_input.dart';
 import 'package:vit_design_system/components/popover/vit_popover.dart';
 import 'package:vit_design_system/components/skeleton/vit_loading_scope.dart';
+import 'package:vit_design_system/components/skeleton/vit_skeleton_shimmer.dart';
 import 'package:vit_design_system/components/text/vit_text.dart';
+import 'package:vit_design_system/config/vit_strings.dart';
 import 'package:vit_design_system/config/vit_theme.dart';
 import 'package:vit_design_system/config/vit_types.dart';
 import 'package:vit_design_system/utils/extensions.dart';
@@ -213,6 +216,7 @@ class VitDate extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -238,6 +242,9 @@ class VitDate extends StatefulWidget {
   /// When used within a [VitForm], this id will be used as the key
   /// to store the date or date range in the form data map.
   final String? id;
+
+  /// The presentation variant of the picker, `input` or `card`.
+  final VitPickerVariant variant;
 
   /// Whether the date picker is in a skeleton loading state.
   ///
@@ -293,10 +300,12 @@ class VitDate extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
     this.selectDate = false,
+    this.variant = VitPickerVariant.input,
     this.id,
     this.isLoading = false,
   });
@@ -442,6 +451,7 @@ class _VitDateState extends State<VitDate> {
               todayColor: widget.todayColor,
               minDate: widget.minDate,
               maxDate: widget.maxDate,
+              disabledDates: widget.disabledDates,
               dayStyle: widget.dayStyle,
               weekdayStyle: widget.weekdayStyle,
               headerStyle: widget.headerStyle,
@@ -455,6 +465,7 @@ class _VitDateState extends State<VitDate> {
               todayColor: widget.todayColor,
               minDate: widget.minDate,
               maxDate: widget.maxDate,
+              disabledDates: widget.disabledDates,
               dayStyle: widget.dayStyle,
               weekdayStyle: widget.weekdayStyle,
               headerStyle: widget.headerStyle,
@@ -529,35 +540,231 @@ class _VitDateState extends State<VitDate> {
       isLoading: effectiveLoading,
     );
 
-    if (widget.id != null) {
-      if (widget.rangeSelection) {
-        return FormField<Map<String, DateTime?>>(
-          initialValue: {
-            'start': _rangeStartDate,
-            'end': _rangeEndDate,
-          },
-          onSaved: (value) {
-            final form = VitFormProvider.maybeOf(context);
-            form?.save(widget.id!, {
-              'start': _rangeStartDate,
-              'end': _rangeEndDate,
-            });
-          },
-          builder: (field) => input,
+    Widget content;
+
+    if (widget.variant == VitPickerVariant.card) {
+      if (effectiveLoading) {
+        content = const VitSkeletonShimmer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              VitCard(
+                height: 120,
+                child: SizedBox.shrink(),
+              ),
+            ],
+          ),
         );
       } else {
-        return FormField<DateTime>(
-          initialValue: _selectedDate,
-          onSaved: (value) {
-            final form = VitFormProvider.maybeOf(context);
-            form?.save(widget.id!, _selectedDate);
-          },
-          builder: (field) => input,
-        );
+        final strings = context.theme.bitStrings;
+
+        content = widget.rangeSelection
+            ? FormField<Map<String, DateTime?>>(
+                initialValue: {
+                  'start': _rangeStartDate,
+                  'end': _rangeEndDate,
+                },
+                validator: (value) => _validateDate(null),
+                onSaved: (value) {
+                  if (widget.id != null) {
+                    final form = VitFormProvider.maybeOf(context);
+                    form?.save(widget.id!, {
+                      'start': _rangeStartDate,
+                      'end': _rangeEndDate,
+                    });
+                  }
+                },
+                builder: (field) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      VitCard(
+                        onTap: _showCalendar,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 32,
+                          horizontal: 16,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _buildDateCardDisplay(
+                                _rangeStartDate,
+                                strings,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              child: VitText(
+                                widget.rangeSeparator,
+                                style: context.theme.titleBig.copyWith(
+                                  fontSize: 32,
+                                  color: context.theme.disabledColor,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildDateCardDisplay(
+                                _rangeEndDate,
+                                strings,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (field.hasError) ...[
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: VitText(
+                            field.errorText ?? '',
+                            style: context.theme.bodySmall.copyWith(
+                              color: context.theme.errorColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
+              )
+            : FormField<DateTime>(
+                initialValue: _selectedDate,
+                validator: (value) => _validateDate(null),
+                onSaved: (value) {
+                  if (widget.id != null) {
+                    final form = VitFormProvider.maybeOf(context);
+                    form?.save(widget.id!, _selectedDate);
+                  }
+                },
+                builder: (field) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      VitCard(
+                        onTap: _showCalendar,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 32,
+                          horizontal: 16,
+                        ),
+                        child: _buildDateCardDisplay(
+                          _selectedDate,
+                          strings,
+                        ),
+                      ),
+                      if (field.hasError) ...[
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: VitText(
+                            field.errorText ?? '',
+                            style: context.theme.bodySmall.copyWith(
+                              color: context.theme.errorColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
+              );
+      }
+    } else {
+      if (widget.id != null) {
+        if (widget.rangeSelection) {
+          content = FormField<Map<String, DateTime?>>(
+            initialValue: {
+              'start': _rangeStartDate,
+              'end': _rangeEndDate,
+            },
+            onSaved: (value) {
+              final form = VitFormProvider.maybeOf(context);
+              form?.save(widget.id!, {
+                'start': _rangeStartDate,
+                'end': _rangeEndDate,
+              });
+            },
+            builder: (field) => input,
+          );
+        } else {
+          content = FormField<DateTime>(
+            initialValue: _selectedDate,
+            onSaved: (value) {
+              final form = VitFormProvider.maybeOf(context);
+              form?.save(widget.id!, _selectedDate);
+            },
+            builder: (field) => input,
+          );
+        }
+      } else {
+        content = input;
       }
     }
 
-    return input;
+    return content;
+  }
+
+  Widget _buildDateCardDisplay(DateTime? date, VitStrings strings) {
+    if (date == null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildDatePart('--', strings.day),
+          _buildSeparator(),
+          _buildDatePart('--', strings.month),
+          _buildSeparator(),
+          _buildDatePart('----', strings.year),
+        ],
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildDatePart(date.day.toString().padLeft(2, '0'), strings.day),
+        _buildSeparator(),
+        _buildDatePart(date.month.toString().padLeft(2, '0'), strings.month),
+        _buildSeparator(),
+        _buildDatePart(date.year.toString().padLeft(4, '0'), strings.year),
+      ],
+    );
+  }
+
+  Widget _buildDatePart(String value, String label) {
+    return Column(
+      children: [
+        VitText(
+          value,
+          style: context.theme.titleBig.copyWith(
+            fontSize: 48,
+            height: 1,
+          ),
+        ),
+        const SizedBox(height: 8),
+        VitText(
+          label,
+          style: context.theme.label.copyWith(
+            color: context.theme.onBackgroundVariantColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeparator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: VitText(
+        '/',
+        style: context.theme.titleBig.copyWith(
+          fontSize: 32,
+          color: context.theme.disabledColor,
+        ),
+      ),
+    );
   }
 }
 
@@ -568,6 +775,7 @@ class _VitDateCalendar extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -580,6 +788,7 @@ class _VitDateCalendar extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
@@ -658,6 +867,19 @@ class _VitDateCalendarState extends State<_VitDateCalendar> {
     }
     if (widget.maxDate != null && date.isAfter(widget.maxDate!)) {
       return true;
+    }
+    if (widget.disabledDates != null) {
+      final dateOnly = DateTime(date.year, date.month, date.day);
+      for (final disabledDate in widget.disabledDates!) {
+        final disabledDateOnly = DateTime(
+          disabledDate.year,
+          disabledDate.month,
+          disabledDate.day,
+        );
+        if (dateOnly == disabledDateOnly) {
+          return true;
+        }
+      }
     }
     return false;
   }
@@ -1093,6 +1315,7 @@ class _VitDateRangeCalendar extends StatefulWidget {
   final Color? todayColor;
   final DateTime? minDate;
   final DateTime? maxDate;
+  final List<DateTime>? disabledDates;
   final TextStyle? dayStyle;
   final TextStyle? weekdayStyle;
   final TextStyle? headerStyle;
@@ -1107,6 +1330,7 @@ class _VitDateRangeCalendar extends StatefulWidget {
     this.todayColor,
     this.minDate,
     this.maxDate,
+    this.disabledDates,
     this.dayStyle,
     this.weekdayStyle,
     this.headerStyle,
@@ -1205,6 +1429,19 @@ class _VitDateRangeCalendarState extends State<_VitDateRangeCalendar> {
     }
     if (widget.maxDate != null && date.isAfter(widget.maxDate!)) {
       return true;
+    }
+    if (widget.disabledDates != null) {
+      final dateOnly = DateTime(date.year, date.month, date.day);
+      for (final disabledDate in widget.disabledDates!) {
+        final disabledDateOnly = DateTime(
+          disabledDate.year,
+          disabledDate.month,
+          disabledDate.day,
+        );
+        if (dateOnly == disabledDateOnly) {
+          return true;
+        }
+      }
     }
     return false;
   }

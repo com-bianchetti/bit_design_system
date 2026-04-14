@@ -159,51 +159,58 @@ class _VitFormState extends State<VitForm> with SingleTickerProviderStateMixin {
                 final index = entry.key;
                 final page = entry.value;
 
+                final child = Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (page.title != null) ...[
+                      VitTitle(
+                        page.title!,
+                        bold: true,
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    if (page.subtitle != null) ...[
+                      VitText(
+                        page.subtitle!,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                    if (page.spacing != null)
+                      ...List.generate(
+                        page.children.length,
+                        (childIndex) {
+                          if (childIndex == page.children.length - 1) {
+                            return page.children[childIndex];
+                          }
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: page.spacing!,
+                            ),
+                            child: page.children[childIndex],
+                          );
+                        },
+                      )
+                    else
+                      ...page.children,
+                    const SizedBox(height: 24),
+                  ],
+                );
+
                 return _VitFormPageKeepAlive(
                   child: VitFormPageScope(
                     pageIndex: index,
                     child: Form(
                       key: _controller.formKeys[index],
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (page.title != null) ...[
-                              VitTitle(
-                                page.title!,
-                                bold: true,
-                              ),
-                              const SizedBox(height: 8),
-                            ],
-                            if (page.subtitle != null) ...[
-                              VitText(
-                                page.subtitle!,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const SizedBox(height: 24),
-                            ],
-                            if (page.spacing != null)
-                              ...List.generate(
-                                page.children.length,
-                                (childIndex) {
-                                  if (childIndex == page.children.length - 1) {
-                                    return page.children[childIndex];
-                                  }
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: page.spacing!,
-                                    ),
-                                    child: page.children[childIndex],
-                                  );
-                                },
-                              )
-                            else
-                              ...page.children,
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      ),
+                      child: page.scrollable
+                          ? SingleChildScrollView(
+                              padding: const EdgeInsets.all(16),
+                              child: child,
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: child,
+                            ),
                     ),
                   ),
                 );

@@ -1,0 +1,417 @@
+---
+sidebar_position: 9
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Fields
+
+Pre-configured specialized form fields with built-in validation, formatting, and appropriate input types.
+
+The Fields component library provides a comprehensive set of ready-to-use form fields that handle common input patterns. Each field comes pre-configured with appropriate validation rules, keyboard types, input formatters, icons, and localized labels from VitStrings. This eliminates repetitive validation logic and ensures consistent behavior across your application.
+
+**Key Features:**
+- Pre-built validation for email, phone, URL, passwords, and more
+- Automatic input formatting for numbers, currency, percentages, and dates
+- Appropriate keyboard types for each field (email, phone, numeric, etc.)
+- Built-in password visibility toggle
+- Password confirmation matching validation
+- Internationalized labels and error messages
+- Seamless integration with VitForm for multi-page forms
+- Customizable labels, hints, and validators
+- Type-safe data extraction from forms
+
+**Available Field Categories:**
+- **Authentication**: Email, Password, Confirm Password, Username
+- **Personal Info**: Name, Birthday, Gender, Phone
+- **Location**: Country, Language
+- **Numeric**: Number, Decimal, Currency, Percentage
+- **Text**: URL, Search, Text Area
+- **Date/Time**: Date Range
+- **Agreements**: Terms, Newsletter
+
+<FlutterPreview story="VitFields" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Overview
+
+Vit Design System provides specialized field components that come with pre-configured validation, formatting, and appropriate input types. These fields eliminate the need to write repetitive validation logic and ensure consistent user experience throughout your application.
+
+Each specialized field extends the base `VitInput` component while adding specific functionality:
+- **Validation rules** tailored to the data type
+- **Keyboard types** optimized for the input (email, phone, numeric)
+- **Input formatters** for automatic formatting (currency, phone numbers)
+- **Icons and visual indicators** that match the field purpose
+- **Localized labels and errors** from VitStrings for internationalization
+
+## Available Fields
+
+### Email Field
+
+Validates email addresses using regex pattern matching and provides an email keyboard for mobile devices.
+
+```dart
+VitEmailField(
+  id: 'email',
+  label: 'Work Email',
+  hintText: 'you@company.com',
+)
+```
+
+Features:
+- Email format validation using standard regex
+- Email keyboard type with @ and . easily accessible
+- Envelope icon for visual identification
+- Localized "Email" label and "Invalid email" error message
+
+### Password Fields
+
+Secure password input with visibility toggle and confirmation matching.
+
+```dart
+VitPasswordField(
+  id: 'password',
+  label: 'Password',
+)
+
+VitConfirmPasswordField(
+  id: 'confirmPassword',
+  passwordFieldId: 'password',
+)
+```
+
+Features:
+- Password obscuring with toggleable visibility (eye icon)
+- Minimum length validation (default 6 characters)
+- Confirm field automatically validates matching with original password
+- Secure text entry mode
+- Localized error messages for empty, short, or mismatched passwords
+
+### Phone Field
+
+Validates and formats phone numbers with appropriate keyboard.
+
+```dart
+VitPhoneField(
+  id: 'phone',
+  label: 'Mobile Number',
+)
+```
+
+Features:
+- Phone number format validation
+- Phone keyboard type with number pad
+- Phone icon for visual identification
+- Localized labels and validation messages
+
+### URL Field
+
+Validates web URLs and provides appropriate keyboard.
+
+```dart
+VitUrlField(
+  id: 'website',
+  label: 'Website',
+  hintText: 'https://example.com',
+)
+```
+
+Features:
+- URL format validation (requires http/https protocol)
+- URL keyboard type with easy access to / and .com
+- Link icon for visual identification
+- Localized error for invalid URLs
+
+### Numeric Fields
+
+Specialized number inputs with automatic formatting and validation.
+
+```dart
+VitNumberField(
+  id: 'age',
+  label: 'Age',
+  min: 0,
+  max: 120,
+)
+
+VitDecimalField(
+  id: 'weight',
+  label: 'Weight (kg)',
+)
+
+VitCurrencyField(
+  id: 'salary',
+  subtitle: 'Annual Salary',
+  currencySymbol: '\$',
+)
+
+VitPercentageField(
+  id: 'discount',
+  label: 'Discount',
+)
+```
+
+Features:
+- Numeric keyboard type for easy number entry (or a dedicated large virtual keyboard for `VitCurrencyField`)
+- Automatic formatting for currency (with symbol) and percentage (with %)
+- Range validation for min/max values
+- Decimal precision control for decimal fields
+- Integer-only input for number fields
+- Localized thousands separators and currency formatting
+
+### Personal Information
+
+Fields for collecting user profile data with appropriate validation.
+
+```dart
+VitNameField(
+  id: 'fullName',
+  label: 'Full Name',
+)
+
+VitUsernameField(
+  id: 'username',
+  hintText: 'Choose a unique username',
+)
+
+VitBirthdayField(
+  id: 'birthday',
+  minAge: 13,
+)
+
+VitGenderField(
+  id: 'gender',
+)
+```
+
+Features:
+- Name field allows letters, spaces, and common name characters
+- Username field validates format (alphanumeric, underscores, hyphens)
+- Birthday field provides date picker with age validation
+- Gender field offers predefined options as a select dropdown
+- All fields include appropriate icons and localized labels
+
+### Location Fields
+
+Select-based fields for country and language selection.
+
+```dart
+VitCountryField(
+  id: 'country',
+  label: 'Country of Residence',
+)
+
+VitLanguageField(
+  id: 'preferredLanguage',
+)
+```
+
+Features:
+- Dropdown selection from predefined lists
+- Searchable country list with all countries
+- Language list with common languages
+- Flag/globe icons for visual identification
+- Localized labels
+
+### Other Fields
+
+Additional utility fields for common use cases.
+
+```dart
+VitSearchField(
+  id: 'search',
+  hintText: 'Search...',
+  onChanged: (value) {
+    performSearch(value);
+  },
+)
+
+VitTextAreaField(
+  id: 'description',
+  label: 'Description',
+  maxLines: 5,
+)
+
+VitDateRangeField(
+  id: 'dateRange',
+  label: 'Select Date Range',
+)
+```
+
+Features:
+- Search field with magnifying glass icon and real-time change callbacks
+- Text area with multi-line input and automatic expansion
+- Date range picker for selecting start and end dates
+- All fields respect theme styling and localization
+
+### Checkbox Fields
+
+Pre-configured checkbox fields for common agreements.
+
+```dart
+VitTermsField(
+  id: 'terms',
+  termsUrl: 'https://example.com/terms',
+)
+
+VitNewsletterField(
+  id: 'newsletter',
+  defaultValue: true,
+)
+```
+
+Features:
+- Terms field includes link to terms and conditions (opens in browser)
+- Newsletter field with opt-in/opt-out functionality
+- Required validation for terms acceptance
+- Localized labels like "I agree to the Terms and Conditions"
+- Default unchecked state (except newsletter can default to checked)
+
+## Usage in Forms
+
+All specialized fields work seamlessly with VitForm and automatically register their values in the form data using their `id` property. You can access the collected data in the `onComplete` callback.
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      title: 'Account Setup',
+      subtitle: 'Create your account',
+      children: [
+        VitEmailField(id: 'email'),
+        VitUsernameField(id: 'username'),
+        VitPasswordField(id: 'password'),
+        VitConfirmPasswordField(
+          id: 'confirmPassword',
+          passwordFieldId: 'password',
+        ),
+      ],
+    ),
+    VitFormPage(
+      title: 'Personal Information',
+      subtitle: 'Tell us about yourself',
+      children: [
+        VitNameField(id: 'fullName'),
+        VitPhoneField(id: 'phone'),
+        VitBirthdayField(id: 'birthday'),
+        VitGenderField(id: 'gender'),
+        VitCountryField(id: 'country'),
+      ],
+    ),
+    VitFormPage(
+      title: 'Preferences',
+      subtitle: 'Customize your experience',
+      children: [
+        VitLanguageField(id: 'language'),
+        VitTermsField(id: 'terms'),
+        VitNewsletterField(id: 'newsletter'),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Email: ${data['email']}');
+    print('Name: ${data['fullName']}');
+    print('Phone: ${data['phone']}');
+    print('Budget: ${data['budget']}');
+    
+    createAccount(data);
+  },
+)
+```
+
+## Customization
+
+All fields accept standard input properties for customization while maintaining their specialized behavior. You can override labels, hints, validators, and more.
+
+```dart
+VitEmailField(
+  id: 'workEmail',
+  label: 'Work Email Address',
+  hintText: 'you@company.com',
+  initialValue: user.email,
+  enabled: !isReadOnly,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Work email is required';
+    }
+    if (!value.endsWith('@company.com')) {
+      return 'Must use company email address';
+    }
+    return null;
+  },
+  onChanged: (value) {
+    checkEmailAvailability(value);
+  },
+)
+```
+
+### Common Customization Options
+
+- `label` - Override the default localized label
+- `hintText` - Provide placeholder text
+- `initialValue` - Pre-fill the field with a value
+- `validator` - Add custom validation logic (supplements built-in validation)
+- `enabled` - Make field read-only when false
+- `onChanged` - React to value changes in real-time
+- `controller` - Provide external TextEditingController for advanced control
+- `autofocus` - Automatically focus field on screen load
+
+### Extending Validation
+
+You can extend the built-in validation by providing your own validator. The custom validator runs in addition to the field's default validation.
+
+```dart
+VitPasswordField(
+  id: 'password',
+  validator: (value) {
+    if (value == null || value.isEmpty) return 'Required';
+    if (value.length < 8) return 'Must be at least 8 characters';
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Must contain at least one uppercase letter';
+    }
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Must contain at least one number';
+    }
+    if (!value.contains(RegExp(r'[!@#$%^&*]'))) {
+      return 'Must contain at least one special character';
+    }
+    return null;
+  },
+)
+```
+
+## Benefits
+
+- **Pre-configured validation** - No need to write validation logic for common patterns like email or phone
+- **Consistent UX** - Same behavior and styling across your entire application
+- **Automatic formatting** - Numbers, currencies, percentages, and phones formatted correctly without extra code
+- **Internationalization** - Labels and error messages automatically localized using VitStrings
+- **Type safety** - Proper data types extracted from form data (numbers as numbers, not strings)
+- **Reduced boilerplate** - One line of code instead of dozens for configuring validation, formatters, and keyboards
+- **Accessibility** - Semantic keyboard types improve mobile input experience
+- **Maintainability** - Validation rules centralized; changes apply everywhere automatically
+
+## Best Practices
+
+- **Use specialized fields** - Always prefer specialized fields over generic VitInput when available
+- **Provide meaningful IDs** - Use descriptive IDs for form data extraction (`'userEmail'` not `'field1'`)
+- **Group related fields** - Organize related fields into logical form pages for better UX
+- **Consider field order** - Place required fields first and optional fields last
+- **Test validation** - Verify that validation messages are clear and helpful
+- **Localize custom labels** - If overriding labels, ensure they're translated for all supported languages
+- **Handle edge cases** - For numeric fields, consider min/max bounds appropriate to your use case
+- **Show password requirements** - For custom password validators, display requirements upfront
+- **Validate on blur** - Consider showing validation errors after users leave a field, not while typing
+
+## Related Components
+
+- [Input](./input.md) - Base input component for custom fields
+- [Form](./form.md) - Multi-page form management system
+- [Select](./select.md) - Dropdown selection fields
+- [Checkbox](./checkbox.md) - Checkbox components
+- [Date](./date.md) - Date picker component

@@ -1,0 +1,291 @@
+---
+sidebar_position: 17
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Sheet
+
+Bottom sheets for contextual content and actions.
+
+<FlutterPreview story="VitBottomSheet" />
+
+## Overview
+
+VitSheet is a highly adaptive component that provides a seamless user experience across different screen sizes. It automatically switches between a mobile bottom sheet and a desktop side panel based on screen width, ensuring optimal presentation for your content.
+
+**Key Features:**
+- **Responsive Layout**: Automatically adapts between mobile bottom sheets (< 600px) and desktop side panels
+- **Draggable Interface**: Mobile sheets can be dragged to resize or dismiss
+- **Flexible Content**: Supports custom headers, scrollable content, and pinned footers
+- **Smart Sizing**: Automatically calculates optimal height based on content
+- **Dismissible**: Can be closed by tapping outside or dragging down
+- **Customizable Actions**: Add buttons or custom widgets to the header or footer
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+The sheet component uses the `VitSheet.show()` method to display content. The most basic usage requires just a `context` and `content` widget.
+
+### Simple Sheet
+
+This example shows a basic sheet with a title and list items. The sheet will automatically calculate its height based on the content.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Options'),
+  content: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      ListTile(
+        leading: Icon(Icons.share),
+        title: Text('Share'),
+        onTap: () => Navigator.pop(context),
+      ),
+      ListTile(
+        leading: Icon(Icons.link),
+        title: Text('Copy Link'),
+        onTap: () => Navigator.pop(context),
+      ),
+    ],
+  ),
+)
+```
+
+### Sheet with Custom Header Actions
+
+You can add custom action buttons in the header area using the `actions` parameter. This is useful for providing quick access to additional functionality.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Settings'),
+  actions: [
+    IconButton(
+      icon: Icon(Icons.save),
+      onPressed: () {
+        
+      },
+    ),
+  ],
+  content: Column(
+    children: [
+      SwitchListTile(
+        title: Text('Enable notifications'),
+        value: true,
+        onChanged: (value) {},
+      ),
+      SwitchListTile(
+        title: Text('Dark mode'),
+        value: false,
+        onChanged: (value) {},
+      ),
+    ],
+  ),
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `content` | `Widget` | required | Main content displayed in the sheet body |
+| `title` | `Widget?` | null | Title displayed in the default header |
+| `header` | `Widget?` | null | Custom header widget (replaces default app bar) |
+| `footer` | `Widget?` | null | Footer widget for actions or summaries |
+| `actions` | `List<Widget>?` | null | Action buttons in the default header |
+| `showCloseButton` | `bool` | true | Show close button in default header |
+| `centerTitle` | `bool` | true | Center the title in the header |
+| `isExpanded` | `bool` | false | Start at 95% height on mobile |
+| `maxSize` | `double?` | auto | Maximum height ratio (0.0 - 1.0) |
+| `minSize` | `double?` | 0.1 | Minimum height ratio (0.0 - 1.0) |
+| `initialSize` | `double?` | auto | Initial height ratio (0.0 - 1.0) |
+| `closeOnDragDown` | `bool` | true | Dismiss when dragged to minimum |
+| `isDismissible` | `bool` | true | Allow dismissal by tapping outside |
+| `scrollController` | `ScrollController?` | null | External scroll controller |
+| `contentPadding` | `EdgeInsets` | 16h, 20v | Padding around content |
+| `footerPadding` | `EdgeInsets` | 16h, 10v | Padding around footer |
+| `fixedHeader` | `bool` | true | Keep header pinned while scrolling |
+| `fixedFooter` | `bool` | true | Keep footer pinned at bottom |
+| `adaptiveLayout` | `bool` | true | Enable responsive layout switching |
+
+## Advanced Features
+
+### Pinned Footer
+
+The footer stays at the bottom of the sheet even when scrolling through long content. This is perfect for action buttons that should always be visible.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Shopping Cart'),
+  content: ListView.builder(
+    shrinkWrap: true,
+    itemCount: 20,
+    itemBuilder: (context, index) => ListTile(
+      title: Text('Item ${index + 1}'),
+      subtitle: Text('\$${(index + 1) * 10}'),
+    ),
+  ),
+  footer: VitButton(
+    text: 'Checkout',
+    onPressed: () {},
+  ),
+  fixedFooter: true,
+)
+```
+
+### Scrollable Footer
+
+When you want the footer to scroll with the content, set `fixedFooter` to false.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Terms and Conditions'),
+  content: Column(
+    children: [
+      Text('Long content here...'),
+      
+    ],
+  ),
+  footer: VitButton(
+    text: 'Accept',
+    onPressed: () {},
+  ),
+  fixedFooter: false,
+)
+```
+
+### Expanded Sheet
+
+Use `isExpanded` to make the sheet open at 95% of screen height, useful for content-heavy sheets.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Product Details'),
+  isExpanded: true,
+  content: Column(
+    children: [
+      Image.network('https://example.com/product.jpg'),
+      Text('Product description...'),
+      
+    ],
+  ),
+)
+```
+
+### Custom Header
+
+Replace the default header with your own custom widget for complete control over the sheet's appearance.
+
+```dart
+VitSheet.show(
+  context,
+  header: Container(
+    padding: EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.blue, Colors.purple],
+      ),
+    ),
+    child: Row(
+      children: [
+        Icon(Icons.star, color: Colors.white),
+        SizedBox(width: 8),
+        Text('Premium Features', 
+          style: TextStyle(color: Colors.white, fontSize: 20)),
+      ],
+    ),
+  ),
+  content: Column(
+    children: [
+      
+    ],
+  ),
+)
+```
+
+### Non-Dismissible Sheet
+
+For critical actions, prevent users from accidentally dismissing the sheet.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Confirm Delete'),
+  isDismissible: false,
+  closeOnDragDown: false,
+  showCloseButton: false,
+  content: Text('Are you sure you want to delete this item?'),
+  footer: Row(
+    children: [
+      Expanded(
+        child: VitButton(
+          text: 'Cancel',
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: VitButton(
+          text: 'Delete',
+          onPressed: () {
+            
+          },
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+### Custom Size Control
+
+Fine-tune the sheet's height behavior with size parameters.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Custom Sizing'),
+  initialSize: 0.5,
+  minSize: 0.3,
+  maxSize: 0.9,
+  content: Text('This sheet starts at 50% height'),
+)
+```
+
+## Responsive Behavior
+
+### Mobile Layout (< 600px)
+
+On mobile devices, VitSheet appears as a bottom sheet that slides up from the bottom of the screen. It can be dragged to resize and dismissed by swiping down or tapping outside.
+
+### Desktop Layout (≥ 600px)
+
+On larger screens, VitSheet appears as a side panel that slides in from the right, occupying 60% of the screen width. This provides better use of screen space and maintains context with the main content.
+
+### Disabling Adaptive Layout
+
+If you want to force the mobile bottom sheet layout on all screen sizes, set `adaptiveLayout` to false.
+
+```dart
+VitSheet.show(
+  context,
+  title: Text('Always Bottom Sheet'),
+  adaptiveLayout: false,
+  content: Text('This will be a bottom sheet even on desktop'),
+)
+```
+
+## Related Components
+
+- [Dialog](./dialog.md) - Modal dialogs
+- [Modal](./modal.md) - Full-screen modals

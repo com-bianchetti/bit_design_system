@@ -1,0 +1,290 @@
+---
+sidebar_position: 7
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Date
+
+Date pickers provide an intuitive interface for users to select single dates or date ranges. They combine a text input field with a calendar popover, offering flexible date selection with optional constraints.
+
+<FlutterPreview story="VitDate" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Single or Range Selection**: Pick individual dates or date ranges with visual feedback
+- **Interactive Calendar**: Full-featured calendar popover with month/year navigation
+- **Month & Year Dropdowns**: Quick selection of specific months and years
+- **Date Constraints**: Set minimum and maximum selectable dates
+- **Controlled & Uncontrolled**: Support both controlled and uncontrolled state management
+- **Custom Formatting**: Configurable date display formats
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Localization**: Automatic date and weekday localization based on system locale
+- **Accessibility**: Full semantic label support for screen readers
+
+## Basic Usage
+
+### Single Date Picker
+
+A basic date picker for selecting a single date. Perfect for birthdays, appointments, or any single-date scenario.
+
+```dart
+VitDate(
+  id: 'birthday',
+  label: 'Birthday',
+  hintText: 'Select your birthday',
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
+### Date Range Picker
+
+Enable range selection for booking systems, report filters, or any scenario requiring start and end dates.
+
+```dart
+VitDate(
+  id: 'dateRange',
+  label: 'Date Range',
+  hintText: 'Select date range',
+  rangeSelection: true,
+  onRangeChanged: (start, end) {
+    print('Range: $start to $end');
+  },
+)
+```
+
+### With Initial Date
+
+Pre-populate the date picker with an initial value for better user experience.
+
+```dart
+VitDate(
+  id: 'startDate',
+  label: 'Start Date',
+  initialValue: DateTime.now(),
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
+### Card Variant
+
+Display the selected date (or date range) in a large visually appealing card instead of an input field.
+
+```dart
+VitDate(
+  id: 'eventDateCard',
+  label: 'Event Date',
+  variant: VitPickerVariant.card, // Set layout as card
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
+### Controlled Date Picker
+
+Use controlled state for dynamic date management and complex validation scenarios.
+
+```dart
+DateTime? selectedDate = DateTime.now();
+
+VitDate(
+  id: 'event',
+  label: 'Event Date',
+  value: selectedDate,
+  onChanged: (date) {
+    setState(() {
+      selectedDate = date;
+    });
+  },
+)
+```
+
+## Advanced Features
+
+### Date Constraints
+
+Restrict selectable dates to valid ranges, useful for booking systems or age verification.
+
+```dart
+VitDate(
+  id: 'vacation',
+  label: 'Vacation Dates',
+  rangeSelection: true,
+  firstDate: DateTime.now(),
+  lastDate: DateTime.now().add(Duration(days: 365)),
+  onRangeChanged: (start, end) {
+    print('Vacation: $start to $end');
+  },
+)
+```
+
+### Birthday Selector
+
+Configure the picker for age-appropriate date selection.
+
+```dart
+VitDate(
+  id: 'birthday',
+  label: 'Date of Birth',
+  lastDate: DateTime.now(),
+  firstDate: DateTime.now().subtract(Duration(days: 36500)),
+  onChanged: (date) {
+    print('Birthday: $date');
+  },
+)
+```
+
+### Custom Date Format
+
+Customize how dates are displayed in the input field.
+
+```dart
+VitDate(
+  id: 'custom',
+  label: 'Custom Format',
+  dateFormat: 'dd/MM/yyyy',
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
+### Month & Year Selection
+
+Enable dropdown selectors in the calendar header for quick navigation to specific months and years.
+
+```dart
+VitDate(
+  id: 'birthdate',
+  label: 'Birth Date',
+  selectDate: true,
+  lastDate: DateTime.now(),
+  onChanged: (date) {
+    print('Selected: $date');
+  },
+)
+```
+
+### Range with Month Selection
+
+Combine range selection with month/year dropdowns for enhanced usability.
+
+```dart
+VitDate(
+  id: 'project',
+  label: 'Project Duration',
+  rangeSelection: true,
+  selectDate: true,
+  onRangeChanged: (start, end) {
+    print('Duration: $start to $end');
+  },
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|---------|-------------|
+| `id` | `String` | Unique identifier |
+| `label` | `String?` | Field label |
+| `hintText` | `String?` | Placeholder |
+| `value` | `DateTime?` | Initial date |
+| `rangeSelection` | `bool` | Enable range mode |
+| `firstDate` | `DateTime?` | Minimum date |
+| `lastDate` | `DateTime?` | Maximum date |
+| `variant` | `VitPickerVariant` | Visual variant (`input` / `card`) |
+| `validator` | `FormFieldValidator?` | Validation |
+
+## Advanced Usage
+
+### Date Range with Restrictions
+
+```dart
+VitDate(
+  id: 'vacation',
+  label: 'Vacation Dates',
+  rangeSelection: true,
+  firstDate: DateTime.now(),
+  lastDate: DateTime.now().add(Duration(days: 365)),
+)
+```
+
+### Birthday Selector
+
+```dart
+VitDate(
+  id: 'birthday',
+  label: 'Date of Birth',
+  lastDate: DateTime.now(),
+  firstDate: DateTime.now().subtract(Duration(days: 36500)),
+)
+```
+
+## Form Integration
+
+Date pickers integrate seamlessly with `VitForm` to collect and validate date selections. Both single dates and date ranges are automatically included in the form data.
+
+The form integration provides:
+- **Automatic Data Collection**: Selected dates are automatically saved to form data
+- **Single or Range Mode**: Choose between single date or date range values
+- **Validation Support**: Add validators to ensure required dates are selected or meet specific criteria
+- **Error Display**: Validation errors appear below the date picker
+- **Type-Safe Data**: Single dates return `DateTime`, ranges return a map with `start` and `end` keys
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitDate(
+          id: 'birthday',
+          label: 'Birthday',
+          validator: (dateData) {
+            if (dateData.date == null) {
+              return 'Please select your birthday';
+            }
+            final age = DateTime.now().difference(dateData.date!).inDays ~/ 365;
+            if (age < 18) {
+              return 'You must be 18 or older';
+            }
+            return null;
+          },
+        ),
+        VitDate(
+          id: 'tripDates',
+          label: 'Trip Dates',
+          rangeSelection: true,
+          validator: (dateData) {
+            if (dateData.start == null || dateData.end == null) {
+              return 'Please select trip dates';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Birthday: ${data['birthday']}');
+    print('Trip: ${data['tripDates']}');
+  },
+)
+```
+
+## Related Components
+
+- [Input](./input.md) - Text input
+- [Select](./select.md) - Dropdown
+- [Form](./form.md) - Form integration

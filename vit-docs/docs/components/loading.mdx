@@ -1,0 +1,262 @@
+---
+sidebar_position: 12
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Loading
+
+Loading indicators provide visual feedback during asynchronous operations, helping users understand that the application is processing their request. The VitLoading component offers a clean, customizable circular progress indicator that can be used inline or as a full-screen modal overlay.
+
+Unlike skeleton loading (which shows placeholder content), VitLoading displays a spinning progress indicator. This is ideal for operations where the wait time is unpredictable or when you need to block all user interaction until a critical operation completes.
+
+<FlutterPreview story="VitLoading" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Overview
+
+The loading component provides two main patterns: inline loading indicators that can be embedded anywhere in your UI, and modal overlays that block interaction while displaying a centered spinner. The component automatically adapts its size and appearance based on the design system's visual density settings while allowing complete customization when needed.
+
+## Basic Usage
+
+### Simple Loading Indicator
+
+Display a basic loading spinner with default theme colors and size:
+
+```dart
+VitLoading()
+```
+
+The default size adapts based on the theme's visual density:
+- Comfortable: 60px with 5px stroke
+- Standard: 50px with 4px stroke  
+- Compact: 40px with 3px stroke
+
+### Custom Size
+
+Override the default size for larger or smaller contexts:
+
+```dart
+VitLoading(
+  size: 60,
+  strokeWidth: 5,
+)
+```
+
+### Custom Color
+
+Match the loading indicator to your color scheme:
+
+```dart
+VitLoading(
+  color: Colors.blue,
+)
+```
+
+If no color is specified, the theme's primary color is used automatically.
+
+### Visual Density
+
+Control the size preset using visual density:
+
+```dart
+VitLoading(
+  visualDensity: VisualDensity.comfortable,
+)
+```
+
+## Modal Loading Overlay
+
+The `VitLoading.show()` method displays a non-dismissible modal overlay that blocks all user interaction while an async operation completes. This is the recommended approach for critical operations that must finish before the user can continue.
+
+### Basic Modal Loading
+
+The modal automatically dismisses when the Future completes:
+
+```dart
+final result = await VitLoading.show<String>(
+  context,
+  future: Future.delayed(
+    Duration(seconds: 2),
+    () => 'Operation completed',
+  ),
+);
+print(result);
+```
+
+### With Custom Appearance
+
+Customize the spinner appearance in the modal:
+
+```dart
+await VitLoading.show(
+  context,
+  future: saveDataToServer(),
+  size: 60,
+  color: Colors.blue,
+  strokeWidth: 6,
+)
+```
+
+### Error Handling
+
+Errors are automatically propagated, and the modal is dismissed:
+
+```dart
+try {
+  final data = await VitLoading.show(
+    context,
+    future: fetchData(),
+  );
+  print('Success: $data');
+} catch (e) {
+  print('Error occurred: $e');
+}
+```
+
+### Custom Background
+
+Control the overlay background color and opacity:
+
+```dart
+await VitLoading.show(
+  context,
+  future: uploadFile(),
+  backgroundColor: Colors.black87,
+)
+```
+
+## Properties
+
+### VitLoading Constructor
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `size` | `double?` | Diameter of the spinner in pixels. If null, uses size based on visualDensity |
+| `strokeWidth` | `double?` | Width of the circular stroke. If null, uses width based on visualDensity |
+| `color` | `Color?` | Color of the spinner. If null, uses theme's primary color |
+| `visualDensity` | `VisualDensity?` | Controls default size and stroke width. Options: comfortable, standard, compact |
+| `backgroundColor` | `Color?` | Background color for modal overlay (default: Colors.black54) |
+
+### VitLoading.show() Method
+
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `context` | `BuildContext` | Required. The build context for showing the modal |
+| `future` | `Future<T>` | Required. The async operation to wait for completion |
+| `size` | `double?` | Custom spinner size |
+| `color` | `Color?` | Custom spinner color |
+| `strokeWidth` | `double?` | Custom stroke width |
+| `visualDensity` | `VisualDensity?` | Controls default sizing |
+| `backgroundColor` | `Color?` | Modal overlay background color |
+
+Returns a `Future<T?>` that completes with the result of the provided future.
+
+## Common Use Cases
+
+### Centered Loading Screen
+
+Display a loading indicator in the center of the screen:
+
+```dart
+Center(
+  child: VitLoading(),
+)
+```
+
+### Inline Loading State
+
+Show loading inline with other content:
+
+```dart
+Row(
+  children: [
+    VitText('Processing'),
+    SizedBox(width: 8),
+    VitLoading(size: 20, strokeWidth: 2),
+  ],
+)
+```
+
+### Form Submission
+
+Block interaction during form submission:
+
+```dart
+Future<void> handleSubmit() async {
+  final result = await VitLoading.show<bool>(
+    context,
+    future: submitForm(),
+  );
+  
+  if (result == true) {
+    showSuccessMessage();
+  }
+}
+```
+
+### Data Fetching
+
+Load data with a modal overlay:
+
+```dart
+Future<void> loadUserData() async {
+  try {
+    final user = await VitLoading.show<User>(
+      context,
+      future: fetchUserFromApi(),
+    );
+    setState(() => currentUser = user);
+  } catch (e) {
+    showErrorDialog('Failed to load user data');
+  }
+}
+```
+
+### Button Loading State
+
+Many Vit components have built-in loading state support:
+
+```dart
+VitButton(
+  text: 'Submit',
+  isLoading: isSubmitting,
+  onPressed: handleSubmit,
+)
+```
+
+### Multiple Operations
+
+Chain multiple operations with a single loading overlay:
+
+```dart
+Future<void> saveAndUpload() async {
+  await VitLoading.show(
+    context,
+    future: Future.wait([
+      saveToDatabase(),
+      uploadToCloud(),
+      sendNotification(),
+    ]),
+  );
+}
+```
+
+## Best Practices
+
+- **Use modal loading** for critical operations that must complete before the user can continue (authentication, data submission, payment processing)
+- **Use inline loading** for optional or non-blocking operations (loading more items in a list, refreshing data)
+- **Use skeleton loading** (VitLoadingScope) when you want to show the layout structure while content loads
+- **Keep loading durations short** - operations longer than 5 seconds should show progress indicators or additional feedback
+- **Provide feedback** after loading completes, especially for operations that modify data
+- **Handle errors gracefully** - always wrap loading operations in try-catch blocks
+
+## Related Components
+
+- [Skeleton](./skeleton.md) - Skeleton loading
+- [Button](./button.md) - Button loading states

@@ -1,0 +1,632 @@
+---
+sidebar_position: 3
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Form
+
+Powerful multi-page form system with built-in validation, state management, and navigation.
+
+VitForm provides a comprehensive solution for building complex multi-step forms with ease. It handles state management, validation, page navigation, and data collection automatically. Each form consists of one or more pages, with built-in navigation buttons, optional page indicators, and seamless integration with all Vit input components.
+
+**Key Features:**
+- Multi-page forms with automatic navigation and state persistence
+- Built-in validation with page-level and field-level support
+- Automatic data collection from all form fields using their IDs
+- Optional page indicators (dots) for visual progress tracking
+- Customizable navigation buttons with localized labels
+- Auto-focus on first field when navigating to a new page
+- Modal form support for quick data entry dialogs
+- Form controller API for programmatic control and data access
+- Keep-alive state management (pages retain state when navigating)
+- Custom page validators for complex validation logic
+- Callback hooks for page changes and form completion
+
+**Use Cases:**
+- User registration and onboarding flows
+- Multi-step checkout processes
+- Profile setup and editing
+- Survey and questionnaire forms
+- Settings configuration
+- Application forms
+- Data collection workflows
+
+<FlutterPreview story="VitForm" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Form
+
+A basic single-page form with validation and data collection. The `onComplete` callback receives all field data as a map keyed by field IDs.
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      title: 'Personal Info',
+      subtitle: 'Please provide your details',
+      children: [
+        VitInput(
+          id: 'name',
+          label: 'Full Name',
+          validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
+        ),
+        VitEmailField(id: 'email'),
+        VitPhoneField(id: 'phone'),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Name: ${data['name']}');
+    print('Email: ${data['email']}');
+    print('Phone: ${data['phone']}');
+    saveUserData(data);
+  },
+)
+```
+
+### Multi-Page Form
+
+Create step-by-step forms with automatic navigation. Users progress through pages with Continue/Back buttons, and the form validates each page before advancing.
+
+```dart
+VitForm(
+  showPageIndicator: true,
+  validateOnPageChange: true,
+  pages: [
+    VitFormPage(
+      title: 'Step 1',
+      subtitle: 'Basic Information',
+      children: [
+        VitNameField(id: 'name'),
+        VitEmailField(id: 'email'),
+      ],
+    ),
+    VitFormPage(
+      title: 'Step 2',
+      subtitle: 'Contact Details',
+      children: [
+        VitPhoneField(id: 'phone'),
+        VitCountryField(id: 'country'),
+        VitInput(
+          id: 'address',
+          label: 'Address',
+          maxLines: 3,
+        ),
+      ],
+    ),
+    VitFormPage(
+      title: 'Step 3',
+      subtitle: 'Preferences',
+      children: [
+        VitSwitch(
+          id: 'notifications',
+          title: 'Enable Notifications',
+          subtitle: 'Receive updates via email',
+        ),
+        VitTermsField(id: 'terms'),
+      ],
+    ),
+  ],
+  onComplete: (data) async {
+    showLoadingDialog(context);
+    try {
+      await submitRegistration(data);
+      Navigator.pop(context);
+      showSuccessMessage();
+    } catch (e) {
+      Navigator.pop(context);
+      showErrorDialog(context, e.toString());
+    }
+  },
+)
+```
+
+## Properties
+
+### VitForm
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `pages` | `List<VitFormPage>` | required | Form pages to display |
+| `onComplete` | `Function(Map)` | required | Callback with collected form data |
+| `initialPage` | `int` | `0` | Starting page index |
+| `showPageIndicator` | `bool` | `false` | Show progress dots |
+| `validateOnPageChange` | `bool` | `true` | Validate before advancing |
+| `continueButtonText` | `String?` | `'Continue'` | Continue button label |
+| `finishButtonText` | `String?` | `'Finish'` | Final page button label |
+| `backButtonText` | `String?` | `'Back'` | Back button label |
+| `showBackButton` | `bool` | `true` | Show back navigation |
+| `autoFocus` | `bool` | `true` | Auto-focus first field |
+| `onPageChanged` | `Function(int)?` | `null` | Page change callback |
+| `canGoBack` | `bool Function(int)?` | `null` | Custom back navigation logic |
+| `scrollPhysics` | `ScrollPhysics?` | `NeverScrollable` | Page swipe physics |
+
+### VitFormPage
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `String?` | `null` | Page title |
+| `subtitle` | `String?` | `null` | Page subtitle |
+| `children` | `List<Widget>` | required | Form fields |
+| `showTitle` | `bool` | `true` | Display title |
+| `spacing` | `double?` | `null` | Spacing between fields |
+| `customValidator` | `bool Function()?` | `null` | Custom page validation |
+| `continueButtonText` | `String?` | `null` | Override continue text |
+| `backButtonText` | `String?` | `null` | Override back text |
+| `padding` | `EdgeInsets?` | `EdgeInsets.all(16)` | Content padding |
+
+## Modal Forms
+
+Display forms in a modal dialog for quick data entry without navigating away from the current screen. Perfect for small forms or editing existing data.
+
+```dart
+final result = await VitForm.show(
+  context,
+  pages: [
+    VitFormPage(
+      title: 'Edit Profile',
+      children: [
+        VitNameField(
+          id: 'name',
+          initialValue: user.name,
+        ),
+        VitEmailField(
+          id: 'email',
+          initialValue: user.email,
+        ),
+        VitPhoneField(
+          id: 'phone',
+          initialValue: user.phone,
+        ),
+      ],
+    ),
+  ],
+);
+
+if (result != null) {
+  await updateUserProfile(result);
+  showSuccessMessage('Profile updated');
+}
+```
+
+## Validation
+
+VitForm provides comprehensive validation at both field and page levels.
+
+### Field Validation
+
+Each field can have its own validator that runs when the page is validated. Validators return an error message string or `null` if valid.
+
+```dart
+VitFormPage(
+  title: 'Login',
+  children: [
+    VitInput(
+      id: 'username',
+      label: 'Username',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Username is required';
+        }
+        if (value.length < 3) {
+          return 'Username must be at least 3 characters';
+        }
+        if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+          return 'Username can only contain letters, numbers, and underscores';
+        }
+        return null;
+      },
+    ),
+    VitPasswordField(
+      id: 'password',
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Password is required';
+        }
+        if (value.length < 8) {
+          return 'Password must be at least 8 characters';
+        }
+        if (!value.contains(RegExp(r'[A-Z]'))) {
+          return 'Must contain at least one uppercase letter';
+        }
+        if (!value.contains(RegExp(r'[0-9]'))) {
+          return 'Must contain at least one number';
+        }
+        return null;
+      },
+    ),
+  ],
+)
+```
+
+### Page-Level Validation
+
+Use `customValidator` on a page for validation logic that spans multiple fields or requires complex checks.
+
+```dart
+VitFormPage(
+  title: 'Shipping Address',
+  children: [
+    VitCountryField(id: 'country'),
+    VitInput(id: 'postalCode', label: 'Postal Code'),
+  ],
+  customValidator: () {
+    final formController = VitFormProvider.of(context);
+    final country = formController.getValue('country');
+    final postalCode = formController.getValue('postalCode');
+    
+    if (country == 'US' && !RegExp(r'^\d{5}(-\d{4})?$').hasMatch(postalCode)) {
+      showError('Invalid US postal code format');
+      return false;
+    }
+    
+    return true;
+  },
+)
+```
+
+### Validation Timing
+
+Control when validation occurs:
+- **On page change** (default): Validates current page before allowing navigation to next page
+- **On submit**: Validates all pages when user completes the form
+- **Manual**: Programmatic validation via controller
+
+```dart
+VitForm(
+  validateOnPageChange: true,
+  pages: [...],
+  onComplete: (data) {
+  },
+)
+```
+
+## Building Custom Fields
+
+You can create your own custom input widgets that integrate seamlessly with `VitForm`. By wrapping your widget's built-in state in a standard Flutter `FormField` and using the `VitFormProvider`, your field can take advantage of the same validation and data collection behaviors as native Vit components.
+
+Here is an example inspired by the internal `VitCheckbox` component logic:
+
+```dart
+class MyCustomField extends StatefulWidget {
+  final String? id;
+  final bool initialValue;
+  final String? Function(bool?)? validator;
+
+  const MyCustomField({
+    super.key,
+    this.id,
+    this.initialValue = false,
+    this.validator,
+  });
+
+  @override
+  State<MyCustomField> createState() => _MyCustomFieldState();
+}
+
+class _MyCustomFieldState extends State<MyCustomField> {
+  late bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.initialValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Wrap your custom component in a FormField
+    return FormField<bool>(
+      initialValue: _value,
+      validator: widget.validator,
+      // 2. Access VitFormProvider to save the value to the form state
+      onSaved: (value) {
+        if (widget.id != null) {
+          final form = VitFormProvider.maybeOf(context);
+          form?.save(widget.id!, _value);
+        }
+      },
+      // 3. Access field state (like validation errors) inside the builder
+      builder: (field) {
+        final hasError = field.errorText != null && field.errorText!.isNotEmpty;
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Your custom interactive UI
+            CheckboxListTile(
+              value: _value,
+              title: const Text('Custom Checkbox'),
+              onChanged: (newValue) {
+                setState(() => _value = newValue ?? false);
+                field.didChange(_value); // Trigger re-validation
+              },
+            ),
+            // 4. Display validation errors if necessary
+            if (hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  field.errorText!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+```
+
+**Key Integration Steps:**
+1. **`FormField<T>` Wrapper**: Use a standard `FormField` so the internal `Form` can trigger validation.
+2. **Access `VitFormProvider`**: Inside the `onSaved` callback, access the provider with `VitFormProvider.maybeOf(context)`.
+3. **Save Data**: Call `form?.save(id, value)` to register the final value with `VitForm` when the form completes.
+4. **Error State**: Check `field.errorText` inside the `builder` to visually update your component if it fails validation.
+
+## Form Controller
+
+Access and control form state programmatically using the VitFormProvider. The provider gives you access to form data, navigation methods, and validation functions.
+
+### Accessing the Controller
+
+```dart
+class CustomFormPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final formController = VitFormProvider.of(context);
+
+    return Column(
+      children: [
+        VitEmailField(id: 'email'),
+        const SizedBox(height: 16),
+        VitButton(
+          text: 'Verify Email',
+          onPressed: () async {
+            final email = formController.getValue('email');
+            if (email != null && email.isNotEmpty) {
+              final isValid = await verifyEmail(email);
+              if (!isValid) {
+                showError('Email verification failed');
+              }
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+
+### Controller Methods
+
+The form controller provides methods for programmatic control:
+
+```dart
+final controller = VitFormProvider.of(context);
+
+dynamic value = controller.getValue('fieldId');
+
+controller.setValue('fieldId', 'newValue');
+
+controller.nextPage();
+
+controller.previousPage();
+
+controller.jumpToPage(2);
+
+bool isValid = controller.validateCurrentPage();
+
+Map<String, dynamic> data = controller.getFormData();
+
+bool isFirst = controller.isFirstPage();
+
+bool isLast = controller.isLastPage();
+
+int current = controller.currentPage();
+
+int total = controller.totalPages();
+```
+
+### Conditional Navigation
+
+Control page navigation based on form data or external conditions.
+
+```dart
+VitForm(
+  canGoBack: (currentPage) {
+    if (currentPage == 2 && hasUnsavedChanges) {
+      showConfirmDialog('Discard changes?');
+      return false;
+    }
+    return true;
+  },
+  pages: [...],
+  onComplete: (data) {},
+)
+```
+
+### Programmatic Value Updates
+
+Update field values from code, useful for dependent fields or external data sources.
+
+```dart
+class AddressForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = VitFormProvider.of(context);
+
+    return Column(
+      children: [
+        VitInput(
+          id: 'zipCode',
+          label: 'ZIP Code',
+          onChanged: (value) async {
+            if (value.length == 5) {
+              final cityState = await lookupCityState(value);
+              controller.setValue('city', cityState.city);
+              controller.setValue('state', cityState.state);
+            }
+          },
+        ),
+        VitInput(id: 'city', label: 'City'),
+        VitInput(id: 'state', label: 'State'),
+      ],
+    );
+  }
+}
+```
+
+## Complete Example
+
+```dart
+class RegistrationForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return VitForm(
+      showPageIndicator: true,
+      validateOnPageChange: true,
+      finishButtonText: 'Create Account',
+      pages: [
+        VitFormPage(
+          title: 'Account Info',
+          subtitle: 'Create your account',
+          children: [
+            VitEmailField(id: 'email'),
+            VitUsernameField(id: 'username'),
+            VitPasswordField(id: 'password'),
+            VitConfirmPasswordField(
+              id: 'confirmPassword',
+              passwordFieldId: 'password',
+            ),
+          ],
+        ),
+        VitFormPage(
+          title: 'Personal Info',
+          subtitle: 'Tell us about yourself',
+          children: [
+            VitNameField(id: 'fullName'),
+            VitBirthdayField(id: 'birthday'),
+            VitGenderField(id: 'gender'),
+            VitCountryField(id: 'country'),
+          ],
+        ),
+        VitFormPage(
+          title: 'Preferences',
+          subtitle: 'Customize your experience',
+          children: [
+            VitSwitch(
+              id: 'notifications',
+              title: 'Email Notifications',
+              subtitle: 'Receive updates and news',
+            ),
+            VitSwitch(
+              id: 'marketing',
+              title: 'Marketing Emails',
+              subtitle: 'Special offers and promotions',
+            ),
+            VitTermsField(id: 'terms'),
+          ],
+        ),
+      ],
+      onComplete: (data) async {
+        try {
+          await createAccount(data);
+          VitToast.success(context, message: 'Account created!');
+          Navigator.pushReplacement(context, HomePage());
+        } catch (e) {
+          VitToast.error(context, message: 'Error: $e');
+        }
+      },
+    );
+  }
+}
+```
+
+## Best Practices
+
+- **Organize logically** - Group related fields into meaningful pages (e.g., "Account Info", "Personal Details")
+- **Keep pages focused** - Limit each page to 3-7 fields to avoid overwhelming users
+- **Use page indicators** - Enable `showPageIndicator` for multi-page forms so users know their progress
+- **Validate early** - Keep `validateOnPageChange` enabled to catch errors before form submission
+- **Provide clear titles** - Give each page a descriptive title and subtitle explaining what's needed
+- **Use specialized fields** - Prefer VitEmailField, VitPasswordField, etc. over generic inputs
+- **Handle async operations** - Show loading states during `onComplete` callback execution
+- **Save state** - Forms automatically maintain state when navigating between pages (keep-alive)
+- **Test navigation** - Verify back button works correctly and doesn't lose user data
+- **Consider mobile** - Test on mobile devices to ensure keyboard types and scrolling work well
+- **Provide feedback** - Show success/error messages after form submission
+- **Support cancellation** - Allow users to cancel multi-page forms without losing progress unexpectedly
+
+## Advanced Features
+
+### Custom Page Spacing
+
+Control spacing between fields on individual pages.
+
+```dart
+VitFormPage(
+  title: 'Contact Info',
+  spacing: 20.0,
+  children: [
+    VitPhoneField(id: 'phone'),
+    VitEmailField(id: 'email'),
+    VitInput(id: 'website', label: 'Website'),
+  ],
+)
+```
+
+### Page Change Callbacks
+
+Track user progress through the form.
+
+```dart
+VitForm(
+  pages: [...],
+  onPageChanged: (pageIndex) {
+    analytics.trackEvent('form_page_view', {
+      'page': pageIndex,
+      'page_name': pages[pageIndex].title,
+    });
+  },
+  onComplete: (data) {},
+)
+```
+
+### Conditional Pages
+
+Skip pages based on earlier answers (implement in onPageChanged).
+
+```dart
+VitForm(
+  onPageChanged: (pageIndex) {
+    if (pageIndex == 1) {
+      final accountType = formController.getValue('accountType');
+      if (accountType == 'personal') {
+      }
+    }
+  },
+  pages: [...],
+  onComplete: (data) {},
+)
+```
+
+## Related Components
+
+- [Input](./input.md) - Base input component for form fields
+- [Fields](./fields.md) - Specialized pre-configured form fields
+- [Button](./button.md) - Action buttons for form navigation
+- [Checkbox](./checkbox.md) - Checkbox inputs for agreements
+- [Switch](./switch.md) - Toggle switches for boolean options
+- [Select](./select.md) - Dropdown selection fields
+- [Date](./date.md) - Date picker components

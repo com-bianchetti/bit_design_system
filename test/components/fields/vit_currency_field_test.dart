@@ -11,14 +11,22 @@ void main() {
         home: Scaffold(
           body: VitApp(
             theme: VitTheme(),
-            home: const VitCurrencyField(),
+            home: const Column(
+              children: [
+                VitCurrencyField(
+                  expand: false,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
 
+    await tester.pumpAndSettle();
+
     expect(find.byType(VitCurrencyField), findsOneWidget);
-    expect(find.byType(VitInput), findsOneWidget);
-    expect(find.text('\$'), findsOneWidget);
+    expect(find.byType(VitRawInput), findsOneWidget);
+    expect(find.text('\$0,00'), findsOneWidget);
   });
 }

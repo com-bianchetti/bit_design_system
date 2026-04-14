@@ -1,0 +1,415 @@
+---
+sidebar_position: 23
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Toast
+
+Lightweight notification messages.
+
+<FlutterPreview story="VitToast" />
+
+## Overview
+
+VitToast provides an elegant way to display temporary notifications that inform users about actions, events, or system states. Toasts appear with smooth animations, automatically dismiss after a set duration, and can include actions for user interaction.
+
+**Key Features:**
+- **Automatic Dismissal**: Configurable duration with automatic fade-out
+- **Multiple Variants**: Pre-styled success, error, warning, and info toasts
+- **Flexible Positioning**: Show toasts from top or bottom of the screen
+- **Interactive Actions**: Add action buttons for user interaction
+- **Dismissible**: Swipe to dismiss or close button support
+- **Custom Content**: Full control over toast appearance and content
+- **Responsive Width**: Adapts to screen size with maximum width constraints
+- **Smooth Animations**: Slide and fade animations for polished UX
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Toast
+
+The most basic toast requires just a context and message. It will appear from the top, stay for 3 seconds, and automatically dismiss.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Action completed',
+)
+```
+
+## Pre-Styled Variants
+
+VitToast provides four pre-styled variants for common notification types. These variants automatically include appropriate icons and color schemes.
+
+### Success Toast
+
+Use for successful operations like saving, submitting, or completing actions.
+
+```dart
+VitToast.success(
+  context,
+  message: 'Item saved successfully!',
+)
+```
+
+Success toasts use a green color scheme with a check circle icon.
+
+### Error Toast
+
+Use for failed operations, validation errors, or system failures.
+
+```dart
+VitToast.error(
+  context,
+  message: 'Failed to save. Please try again.',
+)
+```
+
+Error toasts use a red color scheme with an error icon.
+
+### Warning Toast
+
+Use for non-critical issues that need user attention.
+
+```dart
+VitToast.warning(
+  context,
+  message: 'Your session will expire in 5 minutes',
+)
+```
+
+Warning toasts use an orange color scheme with a warning icon.
+
+### Info Toast
+
+Use for general information, tips, or neutral system messages.
+
+```dart
+VitToast.info(
+  context,
+  message: 'New features are now available',
+)
+```
+
+Info toasts use a blue color scheme with an info icon.
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `message` | `String?` | null | Toast message text (required if content is null) |
+| `content` | `Widget?` | null | Custom content widget (replaces message layout) |
+| `icon` | `IconData?` | null | Icon displayed on the left side |
+| `iconColor` | `Color?` | null | Color of the icon |
+| `iconSize` | `double` | 24 | Size of the icon |
+| `backgroundColor` | `Color?` | theme | Background color of the toast |
+| `textColor` | `Color?` | theme | Text color for the message |
+| `position` | `VitToastPosition` | top | Position on screen (top or bottom) |
+| `duration` | `Duration` | 3s | Visibility duration (0 for no auto-dismiss) |
+| `isDismissible` | `bool` | true | Allow swipe to dismiss |
+| `showCloseButton` | `bool` | false | Show close button |
+| `actionLabel` | `String?` | null | Label for action button |
+| `onActionPressed` | `VoidCallback?` | null | Callback for action button |
+| `actionColor` | `Color?` | primary | Color of action button text |
+| `maxWidth` | `double?` | auto | Maximum width constraint |
+| `padding` | `EdgeInsets?` | density | Padding inside the toast |
+| `margin` | `EdgeInsets?` | density | Margin around the toast |
+| `density` | `VisualDensity?` | theme | Visual density for sizing |
+| `elevation` | `double` | 6 | Shadow elevation |
+| `showBorder` | `bool` | false | Show border around toast |
+| `borderColor` | `Color?` | theme | Border color |
+| `borderWidth` | `double` | 1.0 | Border width |
+| `onDismissed` | `VoidCallback?` | null | Callback when dismissed |
+
+## Advanced Features
+
+### Toast with Action Button
+
+Add an action button to allow users to respond to the notification.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Item deleted',
+  actionLabel: 'Undo',
+  onActionPressed: () {
+    
+  },
+)
+```
+
+### Bottom Position
+
+Display toasts from the bottom instead of the top.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Download complete',
+  position: VitToastPosition.bottom,
+)
+```
+
+### Custom Duration
+
+Control how long the toast stays visible. Use `Duration.zero` to prevent auto-dismiss.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Processing your request...',
+  duration: Duration(seconds: 5),
+)
+
+
+VitToast.show(
+  context,
+  message: 'Manual dismiss required',
+  duration: Duration.zero,
+  showCloseButton: true,
+)
+```
+
+### Custom Icon and Colors
+
+Create custom toast styles for your specific needs.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Premium feature unlocked!',
+  icon: Icons.star,
+  backgroundColor: Colors.purple,
+  textColor: Colors.white,
+  iconColor: Colors.amber,
+)
+```
+
+### Custom Content
+
+For complete control over the toast appearance, provide custom content.
+
+```dart
+VitToast.show(
+  context,
+  content: Row(
+    children: [
+      CircleAvatar(
+        backgroundImage: NetworkImage(userAvatar),
+      ),
+      SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'New Message',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text('${userName} sent you a message'),
+          ],
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+### Non-Dismissible Toast
+
+Prevent users from dismissing the toast until an action completes.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Syncing data...',
+  isDismissible: false,
+  showCloseButton: false,
+  duration: Duration.zero,
+)
+
+
+await syncData();
+
+
+Navigator.of(context).overlay?.dispose();
+```
+
+### Toast with Border
+
+Add a border for additional visual emphasis.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Important notification',
+  showBorder: true,
+  borderColor: Colors.orange,
+  borderWidth: 2.0,
+)
+```
+
+### Visual Density
+
+Adjust padding and spacing for compact or comfortable layouts.
+
+```dart
+VitToast.show(
+  context,
+  message: 'Compact toast',
+  density: VisualDensity.compact,
+)
+```
+
+## Practical Examples
+
+### Form Submission
+
+```dart
+Future<void> handleSubmit() async {
+  try {
+    await submitForm(formData);
+    VitToast.success(
+      context,
+      message: 'Form submitted successfully!',
+    );
+    Navigator.pop(context);
+  } catch (e) {
+    VitToast.error(
+      context,
+      message: 'Failed to submit form: ${e.toString()}',
+      duration: Duration(seconds: 5),
+    );
+  }
+}
+```
+
+### File Operations
+
+```dart
+void deleteFile(String fileId) async {
+  VitToast.show(
+    context,
+    message: 'File deleted',
+    actionLabel: 'Undo',
+    onActionPressed: () async {
+      await restoreFile(fileId);
+      VitToast.success(context, message: 'File restored');
+    },
+  );
+  
+  await Future.delayed(Duration(seconds: 3));
+  await permanentlyDeleteFile(fileId);
+}
+```
+
+### Network Status
+
+```dart
+void checkConnection() {
+  final hasConnection = await checkNetworkStatus();
+  
+  if (hasConnection) {
+    VitToast.success(
+      context,
+      message: 'Connected to internet',
+    );
+  } else {
+    VitToast.warning(
+      context,
+      message: 'No internet connection',
+      duration: Duration(seconds: 5),
+    );
+  }
+}
+```
+
+### Progress Updates
+
+```dart
+void uploadFile() async {
+  VitToast.show(
+    context,
+    message: 'Starting upload...',
+    icon: Icons.upload,
+  );
+  
+  await performUpload();
+  
+  VitToast.success(
+    context,
+    message: 'Upload complete!',
+  );
+}
+```
+
+## Best Practices
+
+### Choose the Right Duration
+
+- Quick confirmations: 2-3 seconds
+- Important information: 4-5 seconds
+- With action buttons: 5+ seconds
+- Critical actions: Use `Duration.zero` with close button
+
+### Use Appropriate Variants
+
+- ✅ Success: Completed actions, saved data, successful submissions
+- ❌ Error: Failed operations, validation errors, system failures
+- ⚠️ Warning: Non-critical issues, expiring sessions, quota warnings
+- ℹ️ Info: New features, tips, neutral system messages
+
+### Keep Messages Concise
+
+Toasts should be brief and scannable. Avoid long sentences or complex information.
+
+```dart
+
+VitToast.show(context, message: 'Saved')
+
+
+VitToast.show(
+  context,
+  message: 'Your profile information has been successfully saved to the database and will now be visible to other users.',
+)
+```
+
+### Avoid Toast Spam
+
+Don't show multiple toasts in quick succession. Consider consolidating messages.
+
+```dart
+
+VitToast.show(context, message: '3 items updated successfully')
+
+
+for (var item in items) {
+  VitToast.show(context, message: 'Item ${item.id} updated')
+}
+```
+
+### Position Consideration
+
+- **Top**: General notifications, status updates
+- **Bottom**: Actions near the bottom of the screen, keyboard-related messages
+
+### Accessibility
+
+Toasts automatically dismiss, which can be problematic for users who need more time to read. For important information:
+
+- Use longer durations
+- Provide action buttons
+- Consider using a dialog instead for critical information
+
+## Related Components
+
+- [Dialog](./dialog.md) - For important messages requiring user response
+- [Sheet](./sheet.md) - For more complex content and interactions
+- [Modal](./modal.md) - For full-screen overlays and forms

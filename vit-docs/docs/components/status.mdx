@@ -1,0 +1,109 @@
+---
+sidebar_position: 10
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Status
+
+A component used to display a centralized status, mostly for empty states, errors, or success messages.
+
+<FlutterPreview story="VitStatus" />
+
+## Overview
+
+The `VitStatus` component provides a structured, vertically-aligned layout to present status information. This is commonly used for empty states, error screens, success messages, or general full-page blocking notifications.
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+```dart
+VitStatus(
+  icon: const Icon(
+    Icons.wifi_off_rounded,
+    size: 64,
+  ),
+  title: 'No internet connection',
+  text: 'Please check your connection and try again.',
+  actionText: 'Retry',
+  onActionPressed: () {
+    // Retry logic
+  },
+)
+```
+
+## Adding a Secondary Action
+
+You can provide an optional secondary button by setting `secondaryActionText` and `onSecondaryActionPressed`.
+
+```dart
+VitStatus(
+  icon: const Icon(
+    Icons.delete_outline,
+    size: 64,
+  ),
+  title: 'Delete account?',
+  text: 'Are you sure you want to delete your account? This action cannot be undone.',
+  actionText: 'Delete',
+  onActionPressed: () {
+    // Delete logic
+  },
+  secondaryActionText: 'Cancel',
+  onSecondaryActionPressed: () {
+    // Cancel logic
+  },
+)
+```
+
+## Expanding Buttons
+
+By default, buttons take only the space they need. You can make the buttons expand to fill the available space by setting `expandButtons: true`.
+
+```dart
+VitStatus(
+  icon: const Icon(Icons.cloud_off),
+  title: 'Offline',
+  text: 'You cannot perform this action while offline.',
+  actionText: 'Dismiss',
+  onActionPressed: () {},
+  expandButtons: true,
+)
+```
+
+## Customizing Typography and Colors
+
+The component defaults to taking values from the `VitTheme`. You can override those by passing custom styles or colors to `titleStyle`, `titleColor`, `textStyle`, and `textColor`.
+
+```dart
+VitStatus(
+  icon: const Icon(Icons.warning, color: Colors.amber),
+  title: 'Warning',
+  titleColor: Colors.amber,
+  text: 'Your subscription is about to expire.',
+  actionText: 'Renew Now',
+  onActionPressed: () {},
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `Widget` | required | The icon widget positioned at the top of the status. |
+| `title` | `String` | required | The main heading title conveying the status intent. |
+| `text` | `String` | required | A descriptive text explaining the status or context to the user. |
+| `actionText` | `String` | required | Text label for the primary action button. |
+| `onActionPressed` | `VoidCallback` | required | Callback executed when the primary action button is pressed. |
+| `secondaryActionText` | `String?` | `null` | Optional text label for the secondary action button. |
+| `onSecondaryActionPressed` | `VoidCallback?` | `null` | Optional callback executed when the secondary action button is pressed. |
+| `mainAxisAlignment` | `MainAxisAlignment` | `MainAxisAlignment.center` | The main alignment of the children within the status column. |
+| `titleColor` | `Color?` | `theme.onBackrgroundColor` | Custom color for the title text. |
+| `textColor` | `Color?` | `theme.onBackgroundVariantColor` | Custom color for the description text. |
+| `titleStyle` | `TextStyle?` | `theme.titleBig` | Text style for the `title`. |
+| `textStyle` | `TextStyle?` | `theme.body` | Text style for the `text`. |
+| `expandButtons` | `bool` | `false` | Determines if the action buttons should expand taking maximum available width. |

@@ -1,0 +1,462 @@
+---
+sidebar_position: 14
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Progress
+
+Customizable progress indicators for showing completion status, loading states, and task progress.
+
+VitProgress provides a flexible linear progress bar component that supports both determinate progress (showing specific completion percentage) and indeterminate progress (showing continuous loading animation). It integrates with VitProgressController for dynamic updates and external control, making it perfect for file uploads, multi-step processes, and loading states.
+
+**Key Features:**
+- Determinate progress with values from 0.0 to 1.0 (0% to 100%)
+- Indeterminate loading mode with continuous animation
+- External control via VitProgressController for dynamic updates
+- Customizable colors, height, and border radius
+- Visibility control (show/hide without removing from widget tree)
+- Progress percentage and label display support
+- Accessibility support with semantic labels
+- Smooth animations between progress values
+- Integrates seamlessly with theme colors
+
+**Use Cases:**
+- File upload/download progress
+- Multi-step form completion
+- Data loading indicators
+- Task completion tracking
+- Installation/update progress
+- Export/import operations
+- Background job monitoring
+
+<FlutterPreview story="VitProgress" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Determinate Progress
+
+Show specific progress values for tasks with known duration or completion percentage.
+
+```dart
+VitProgress(
+  value: 0.7,
+)
+```
+
+### Indeterminate Progress
+
+Display a continuous loading animation when progress cannot be determined.
+
+```dart
+VitProgress(
+  isIndeterminate: true,
+)
+```
+
+### Progress with Custom Styling
+
+Customize appearance to match your design needs.
+
+```dart
+VitProgress(
+  value: 0.45,
+  color: Colors.green,
+  backgroundColor: Colors.grey.shade200,
+  minHeight: 8.0,
+  borderRadius: BorderRadius.circular(4),
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `value` | `double?` | `null` | Progress value (0.0 to 1.0) |
+| `isIndeterminate` | `bool` | `false` | Show continuous loading animation |
+| `isVisible` | `bool` | `true` | Whether progress bar is visible |
+| `color` | `Color?` | primary color | Progress indicator color |
+| `backgroundColor` | `Color?` | border color | Track/background color |
+| `minHeight` | `double?` | `4.0` | Height of progress bar |
+| `borderRadius` | `BorderRadius?` | `circular(2)` | Corner radius |
+| `controller` | `VitProgressController?` | `null` | External controller for updates |
+| `semanticsLabel` | `String?` | `null` | Accessibility label |
+| `semanticsValue` | `String?` | auto | Accessibility value (e.g., "50%") |
+
+## Progress Controller
+
+VitProgressController provides programmatic control over progress state. Use it when you need to update progress dynamically from outside the widget.
+
+### Creating a Controller
+
+```dart
+final controller = VitProgressController(
+  value: 0.0,
+  isIndeterminate: false,
+  isVisible: true,
+);
+
+VitProgress(
+  controller: controller,
+)
+```
+
+### Controller Methods
+
+```dart
+controller.setValue(0.5);
+
+controller.setProgress(50);
+
+controller.setIndeterminate(true);
+
+controller.setVisible(false);
+
+controller.toggleVisibility();
+
+controller.reset();
+
+controller.complete();
+```
+
+### Controller Properties
+
+```dart
+double value = controller.value;
+
+bool isIndeterminate = controller.isIndeterminate;
+
+bool isVisible = controller.isVisible;
+```
+
+## Examples
+
+### File Upload Progress
+
+Track file upload progress with real-time updates and percentage display.
+
+```dart
+class FileUploadWidget extends StatefulWidget {
+  @override
+  _FileUploadWidgetState createState() => _FileUploadWidgetState();
+}
+
+class _FileUploadWidgetState extends State<FileUploadWidget> {
+  final controller = VitProgressController();
+  bool isUploading = false;
+
+  Future<void> uploadFile(File file) async {
+    setState(() => isUploading = true);
+    controller.setVisible(true);
+    controller.setValue(0.0);
+
+    try {
+      await uploadWithProgress(
+        file,
+        onProgress: (progress) {
+          controller.setProgress(progress);
+        },
+      );
+      
+      controller.complete();
+      await Future.delayed(Duration(seconds: 1));
+      showSuccessMessage('File uploaded successfully');
+    } catch (e) {
+      showErrorMessage('Upload failed: $e');
+    } finally {
+      setState(() => isUploading = false);
+      controller.setVisible(false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        VitButton(
+          text: 'Upload File',
+          onPressed: isUploading ? null : () => uploadFile(selectedFile),
+        ),
+        const SizedBox(height: 16),
+        VitProgress(controller: controller),
+        const SizedBox(height: 8),
+        ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) {
+            if (!controller.isVisible) return SizedBox.shrink();
+            return VitText(
+              '${(controller.value * 100).toInt()}% Complete',
+              style: TextStyle(fontSize: 12),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+### Multi-Step Process
+
+Show progress through a multi-step workflow or wizard.
+
+```dart
+class MultiStepProcess extends StatefulWidget {
+  @override
+  _MultiStepProcessState createState() => _MultiStepProcessState();
+}
+
+class _MultiStepProcessState extends State<MultiStepProcess> {
+  int currentStep = 0;
+  final totalSteps = 5;
+
+  double get progress => (currentStep + 1) / totalSteps;
+
+  void nextStep() {
+    if (currentStep < totalSteps - 1) {
+      setState(() => currentStep++);
+    } else {
+      completeProcess();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        VitProgress(
+          value: progress,
+          color: Colors.blue,
+          minHeight: 6.0,
+        ),
+        const SizedBox(height: 8),
+        VitText(
+          'Step ${currentStep + 1} of $totalSteps',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 24),
+        StepContent(step: currentStep),
+        const SizedBox(height: 24),
+        VitButton(
+          text: currentStep == totalSteps - 1 ? 'Finish' : 'Next',
+          onPressed: nextStep,
+        ),
+      ],
+    );
+  }
+}
+```
+
+### Loading Data
+
+Display indeterminate progress while loading data, then hide when complete.
+
+```dart
+class DataLoader extends StatefulWidget {
+  @override
+  _DataLoaderState createState() => _DataLoaderState();
+}
+
+class _DataLoaderState extends State<DataLoader> {
+  final controller = VitProgressController(isIndeterminate: true);
+  List<Item> items = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    controller.setVisible(true);
+    controller.setIndeterminate(true);
+
+    try {
+      final data = await fetchDataFromApi();
+      setState(() {
+        items = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      showError(e.toString());
+    } finally {
+      controller.setVisible(false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        VitProgress(controller: controller),
+        if (isLoading)
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: VitText('Loading...'),
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: items.length,
+            itemBuilder: (context, index) => ItemCard(items[index]),
+          ),
+      ],
+    );
+  }
+}
+```
+
+### Background Task Progress
+
+Monitor long-running background tasks with persistent progress indicator.
+
+```dart
+class BackgroundTaskMonitor extends StatefulWidget {
+  @override
+  _BackgroundTaskMonitorState createState() => _BackgroundTaskMonitorState();
+}
+
+class _BackgroundTaskMonitorState extends State<BackgroundTaskMonitor> {
+  final controller = VitProgressController();
+  StreamSubscription? _taskSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    monitorTask();
+  }
+
+  void monitorTask() {
+    _taskSubscription = TaskService.progressStream.listen((progress) {
+      controller.setValue(progress.percentage);
+      
+      if (progress.isComplete) {
+        controller.complete();
+        Future.delayed(Duration(seconds: 2), () {
+          controller.setVisible(false);
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        if (!controller.isVisible) return SizedBox.shrink();
+        
+        return Card(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    VitSubtitle('Processing...'),
+                    VitText('${(controller.value * 100).toInt()}%'),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                VitProgress(
+                  controller: controller,
+                  color: Colors.green,
+                  minHeight: 6,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _taskSubscription?.cancel();
+    controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+### Animated Progress Simulation
+
+Simulate progress for demonstration or testing purposes.
+
+```dart
+class ProgressSimulation extends StatefulWidget {
+  @override
+  _ProgressSimulationState createState() => _ProgressSimulationState();
+}
+
+class _ProgressSimulationState extends State<ProgressSimulation> {
+  final controller = VitProgressController();
+
+  Future<void> simulateProgress() async {
+    controller.reset();
+    controller.setVisible(true);
+
+    for (int i = 0; i <= 100; i++) {
+      await Future.delayed(Duration(milliseconds: 50));
+      controller.setProgress(i.toDouble());
+    }
+
+    await Future.delayed(Duration(seconds: 1));
+    controller.setVisible(false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        VitProgress(controller: controller),
+        const SizedBox(height: 16),
+        VitButton(
+          text: 'Simulate Progress',
+          onPressed: simulateProgress,
+        ),
+      ],
+    );
+  }
+}
+```
+
+## Best Practices
+
+- **Use determinate when possible** - Show actual progress percentage when duration is known
+- **Choose appropriate colors** - Use theme colors or status colors (green for success, red for errors)
+- **Provide context** - Show labels or descriptions explaining what's loading
+- **Handle errors gracefully** - Reset or hide progress bar on errors with appropriate messaging
+- **Set appropriate height** - Use larger heights (6-8px) for primary progress indicators
+- **Consider visibility** - Hide progress bar when not active instead of showing 0% or 100%
+- **Update smoothly** - Avoid rapid updates; throttle progress updates to ~100ms intervals
+- **Dispose controllers** - Always dispose of controllers in widget dispose method
+- **Use accessibility** - Provide semantic labels for screen readers
+- **Test edge cases** - Verify behavior at 0%, 100%, and during rapid updates
+
+## Related Components
+
+- [Loading](./loading.md) - Circular loading spinners for simple loading states
+- [Skeleton](./skeleton.md) - Skeleton screens for content loading placeholders
+- [Toast](./toast.md) - Brief notifications for completion messages

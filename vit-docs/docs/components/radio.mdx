@@ -1,0 +1,289 @@
+---
+sidebar_position: 15
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Radio
+
+Radio buttons enable users to select a single option from a set of mutually exclusive choices. They're ideal for settings, forms, and any scenario where only one option should be selected at a time.
+
+<FlutterPreview story="VitRadio" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Individual or Group Mode**: Use standalone radio buttons or manage groups with `VitRadioGroup`
+- **Type-Safe Values**: Generic type support for any value type (String, int, enums, objects)
+- **List Item Styling**: Render as styled list items with title, subtitle, and icons
+- **Flexible Positioning**: Place radio buttons on left or right side of list items
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust spacing with compact, standard, or comfortable modes
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Accessibility**: Full semantic label and hint support for screen readers
+- **Customizable Styling**: Control colors, borders, and backgrounds through theme
+
+## Basic Usage
+
+### Simple Radio Group
+
+The most common use case - a group of related radio options with automatic state management.
+
+```dart
+VitRadioGroup<String>(
+  id: 'plan',
+  options: const [
+    VitRadioOption(value: 'free', title: 'Free Plan'),
+    VitRadioOption(value: 'pro', title: 'Pro Plan'),
+    VitRadioOption(value: 'enterprise', title: 'Enterprise Plan'),
+  ],
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+### Radio with Descriptions
+
+Add subtitles to provide additional context or pricing information for each option.
+
+```dart
+VitRadioGroup<String>(
+  id: 'shipping',
+  options: const [
+    VitRadioOption(
+      value: 'standard',
+      title: 'Standard Shipping',
+      subtitle: '5-7 business days',
+    ),
+    VitRadioOption(
+      value: 'express',
+      title: 'Express Shipping',
+      subtitle: '2-3 business days',
+    ),
+    VitRadioOption(
+      value: 'overnight',
+      title: 'Overnight',
+      subtitle: 'Next business day',
+    ),
+  ],
+)
+```
+
+### Controlled Radio Group
+
+Manage the selected value externally for dynamic scenarios and complex state management.
+
+```dart
+String? selectedPlan = 'pro';
+
+VitRadioGroup<String>(
+  id: 'plan',
+  value: selectedPlan,
+  onChanged: (value) {
+    setState(() {
+      selectedPlan = value;
+    });
+  },
+  options: const [
+    VitRadioOption(value: 'free', title: 'Free'),
+    VitRadioOption(value: 'pro', title: 'Pro'),
+  ],
+)
+```
+
+## Advanced Features
+
+### Radio with Icons
+
+Add icons to provide visual context for each option.
+
+```dart
+VitRadioGroup<String>(
+  id: 'theme',
+  options: const [
+    VitRadioOption(
+      value: 'light',
+      title: 'Light Mode',
+      icon: Icon(Icons.light_mode),
+    ),
+    VitRadioOption(
+      value: 'dark',
+      title: 'Dark Mode',
+      icon: Icon(Icons.dark_mode),
+    ),
+  ],
+)
+```
+
+### Type-Safe with Enums
+
+Use enums for type-safe radio selections with compile-time checking.
+
+```dart
+enum PaymentMethod { card, paypal, crypto }
+
+VitRadioGroup<PaymentMethod>(
+  id: 'payment',
+  options: const [
+    VitRadioOption(
+      value: PaymentMethod.card,
+      title: 'Credit Card',
+    ),
+    VitRadioOption(
+      value: PaymentMethod.paypal,
+      title: 'PayPal',
+    ),
+    VitRadioOption(
+      value: PaymentMethod.crypto,
+      title: 'Cryptocurrency',
+    ),
+  ],
+)
+```
+
+### Radio Positioning
+
+Place radio buttons on the left side of list items for different layout styles.
+
+```dart
+VitRadioGroup<String>(
+  id: 'side',
+  radioPosition: VitRadioPosition.left,
+  options: const [
+    VitRadioOption(value: 'left', title: 'Left Radio'),
+    VitRadioOption(value: 'right', title: 'Right Radio'),
+  ],
+)
+```
+
+### Visual Density
+
+Adjust spacing to match your design requirements or space constraints.
+
+```dart
+VitRadioGroup<String>(
+  id: 'compact',
+  visualDensity: VisualDensity.compact,
+  options: const [
+    VitRadioOption(value: '1', title: 'Compact Option 1'),
+    VitRadioOption(value: '2', title: 'Compact Option 2'),
+  ],
+)
+```
+
+## Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `String` | Unique identifier |
+| `options` | `List<VitRadioOption>` | Radio options |
+| `value` | `T?` | Selected value |
+| `onChanged` | `ValueChanged<T>?` | Change callback |
+
+### VitRadioOption
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `value` | `T` | Option value |
+| `title` | `String` | Option label |
+| `subtitle` | `String?` | Optional description |
+
+## Form Integration
+
+Radio groups integrate seamlessly with `VitForm` to collect user selections. The selected value is automatically included in the form data using a type-safe approach.
+
+The form integration provides:
+- **Automatic Data Collection**: Selected values are automatically saved to form data
+- **Type-Safe Values**: Maintains type information throughout the form
+- **Validation Support**: Add validators to ensure required selections are made
+- **Error Display**: Validation errors appear below the radio group
+- **Generic Type Support**: Works with any value type (String, int, enum, custom objects)
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitRadioGroup<String>(
+          id: 'gender',
+          options: const [
+            VitRadioOption(value: 'male', title: 'Male'),
+            VitRadioOption(value: 'female', title: 'Female'),
+            VitRadioOption(value: 'other', title: 'Other'),
+          ],
+          validator: (value) {
+            if (value == null) {
+              return 'Please select your gender';
+            }
+            return null;
+          },
+        ),
+        VitRadioGroup<String>(
+          id: 'subscription',
+          options: const [
+            VitRadioOption(
+              value: 'free',
+              title: 'Free Plan',
+              subtitle: '\$0/month',
+            ),
+            VitRadioOption(
+              value: 'pro',
+              title: 'Pro Plan',
+              subtitle: '\$9/month',
+            ),
+          ],
+          validator: (value) {
+            if (value == null) {
+              return 'Please select a subscription plan';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Gender: ${data['gender']}');
+    print('Subscription: ${data['subscription']}');
+  },
+)
+```
+
+## Examples
+
+### Pricing Options
+
+```dart
+VitRadioGroup<int>(
+  id: 'pricing',
+  options: const [
+    VitRadioOption(
+      value: 0,
+      title: 'Free',
+      subtitle: '$0/month - Basic features',
+    ),
+    VitRadioOption(
+      value: 9,
+      title: 'Pro',
+      subtitle: '$9/month - All features',
+    ),
+    VitRadioOption(
+      value: 29,
+      title: 'Team',
+      subtitle: '$29/month - Unlimited users',
+    ),
+  ],
+)
+```
+
+## Related Components
+
+- [Checkbox](./checkbox.md) - Multi-select
+- [Switch](./switch.md) - Binary toggle
+- [Select](./select.md) - Dropdown selection

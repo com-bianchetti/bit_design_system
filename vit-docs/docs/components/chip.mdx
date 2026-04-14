@@ -1,0 +1,269 @@
+---
+sidebar_position: 6
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Chip
+
+Chips are compact elements that represent an input, attribute, or action. They enable users to enter information, make selections, filter content, or trigger actions in an intuitive and space-efficient way.
+
+<FlutterPreview story="VitChip" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Individual or Group Mode**: Use standalone chips or manage multiple chips with `VitChipGroup`
+- **Single & Multi-Selection**: Support both single-select and multi-select modes in groups
+- **Deletable Chips**: Add close icons to enable chip removal
+- **Icons & Avatars**: Enhance chips with leading icons or avatar widgets
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust chip size with compact, standard, or comfortable modes
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Customizable Styling**: Control colors, borders, padding, and background opacity
+- **Accessibility**: Full semantic label and hint support for screen readers
+
+## Basic Usage
+
+### Simple Chip
+
+A minimal chip displaying text, perfect for tags or categories.
+
+```dart
+VitChip(
+  label: 'Technology',
+)
+```
+
+### Deletable Chip
+
+Add a delete handler to allow users to remove chips dynamically.
+
+```dart
+VitChip(
+  label: 'Flutter',
+  onDeleted: () {
+    print('Chip deleted');
+  },
+)
+```
+
+### Chip with Icon
+
+Enhance chips with icons to provide visual context or category indicators.
+
+```dart
+VitChip(
+  label: 'Favorite',
+  icon: Icon(Icons.star),
+)
+```
+
+### Chip with Avatar
+
+Use avatar widgets for user-related chips or profile tags.
+
+```dart
+VitChip(
+  label: 'John Doe',
+  avatar: CircleAvatar(
+    child: Text('JD'),
+  ),
+)
+```
+
+## Chip Group
+
+### Multiple Chips (Single Selection)
+
+Use `VitChipGroup` to manage related options where only one can be selected at a time.
+
+```dart
+VitChipGroup(
+  id: 'category',
+  options: [
+    VitChipOption(value: 'all', label: 'All'),
+    VitChipOption(value: 'active', label: 'Active'),
+    VitChipOption(value: 'completed', label: 'Completed'),
+  ],
+  onChanged: (value) {
+    print('Selected: $value');
+  },
+)
+```
+
+### Selectable Chips (Multi-Selection)
+
+Enable multi-selection for scenarios where users can choose multiple options.
+
+```dart
+VitChipGroup(
+  id: 'interests',
+  multiSelect: true,
+  options: [
+    VitChipOption(value: 'sports', label: 'Sports'),
+    VitChipOption(value: 'music', label: 'Music'),
+    VitChipOption(value: 'travel', label: 'Travel'),
+    VitChipOption(value: 'food', label: 'Food'),
+  ],
+  onMultiChanged: (values) {
+    print('Selected: $values');
+  },
+)
+```
+
+## Advanced Features
+
+### Chip with Custom Styling
+
+Control appearance with custom colors and transparency settings.
+
+```dart
+VitChip(
+  label: 'Custom',
+  selected: true,
+  selectedColor: Colors.purple,
+  solidBackground: false,
+)
+```
+
+### Disabled Chips
+
+Disable chips to prevent interaction while maintaining visibility.
+
+```dart
+VitChip(
+  label: 'Disabled',
+  enabled: false,
+)
+```
+
+### Visual Density
+
+Adjust chip size to match your design requirements.
+
+```dart
+VitChipGroup(
+  id: 'compact_chips',
+  visualDensity: VisualDensity.compact,
+  options: [
+    VitChipOption(value: '1', label: 'Option 1'),
+    VitChipOption(value: '2', label: 'Option 2'),
+  ],
+)
+```
+
+### Chip with Delete Icon
+
+Individual chips in a group can have their own delete handlers.
+
+```dart
+VitChipGroup(
+  id: 'tags',
+  options: [
+    VitChipOption(
+      value: 'tag1',
+      label: 'Tag 1',
+      showDeleteIcon: true,
+      onDeleted: () => print('Tag 1 deleted'),
+    ),
+  ],
+)
+```
+
+## Properties
+
+### VitChip
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `label` | `String` | Chip text |
+| `icon` | `Widget?` | Leading icon |
+| `onDeleted` | `VoidCallback?` | Delete handler |
+| `selected` | `bool` | Selection state |
+| `onTap` | `VoidCallback?` | Tap handler |
+
+### VitChipGroup
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `String` | Unique identifier |
+| `chips` | `List<String>` | Chip labels |
+| `multiSelection` | `bool` | Allow multiple |
+| `onChanged` | `ValueChanged?` | Change callback |
+
+## Examples
+
+### Tags
+
+```dart
+Wrap(
+  spacing: 8,
+  children: [
+    VitChip(label: 'Flutter'),
+    VitChip(label: 'Dart'),
+    VitChip(label: 'Mobile'),
+    VitChip(label: 'Design System'),
+  ],
+)
+```
+
+### Filter Chips
+
+```dart
+VitChipGroup(
+  id: 'filters',
+  multiSelection: true,
+  chips: ['All', 'Active', 'Completed', 'Archived'],
+)
+```
+
+## Form Integration
+
+Chips integrate seamlessly with `VitForm` to collect user selections. Both single and multi-select modes are supported with automatic data collection and validation.
+
+The form integration provides:
+- **Automatic Data Collection**: Selected values are automatically saved to form data
+- **Single or Multi-Select**: Choose between single value or list of values
+- **Validation Support**: Add validators to ensure required selections are made
+- **Error Display**: Validation errors appear below the chip group
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitChipGroup(
+          id: 'skills',
+          multiSelect: true,
+          options: [
+            VitChipOption(value: 'flutter', label: 'Flutter'),
+            VitChipOption(value: 'react', label: 'React'),
+            VitChipOption(value: 'vue', label: 'Vue'),
+            VitChipOption(value: 'angular', label: 'Angular'),
+          ],
+          validator: (values) {
+            if (values == null || values.isEmpty) {
+              return 'Please select at least one skill';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Skills: ${data['skills']}');
+  },
+)
+```
+
+## Related Components
+
+- [Badge](./badge.md) - Status indicators
+- [Button](./button.md) - Action buttons

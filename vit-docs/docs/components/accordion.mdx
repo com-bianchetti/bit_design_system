@@ -1,0 +1,622 @@
+---
+sidebar_position: 1
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Accordion
+
+An expandable and collapsible widget that reveals content when users interact with the header. The Accordion component is perfect for organizing large amounts of information into manageable sections, making it ideal for FAQs, settings panels, and hierarchical content displays.
+
+<FlutterPreview story="VitAccordion" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Overview
+
+The `VitAccordion` component provides a flexible way to display collapsible content panels. Each panel consists of a header and a body section that can be expanded or collapsed by tapping on the header. The component supports multiple customization options including custom headers, icons, styling, and expansion behavior.
+
+## Basic Usage
+
+### Simple Accordion
+
+The most basic accordion requires a list of `VitAccordionItem` objects, each containing a header and body content. This example shows a simple accordion with text headers.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerText: 'Section 1',
+      body: VitText('Content for section 1'),
+    ),
+    VitAccordionItem(
+      headerText: 'Section 2',
+      body: VitText('Content for section 2'),
+    ),
+  ],
+)
+```
+
+### Accordion with Icons
+
+Enhance your accordion headers with icons to provide visual context. The icon appears before the header text and can be customized with size and color properties.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerText: 'Account Settings',
+      icon: Icons.person,
+      iconColor: Colors.blue,
+      iconSize: 24,
+      body: VitText('Manage your account preferences'),
+    ),
+    VitAccordionItem(
+      headerText: 'Privacy Settings',
+      icon: Icons.lock,
+      iconColor: Colors.green,
+      body: VitText('Control your privacy options'),
+    ),
+  ],
+)
+```
+
+### Initially Expanded Items
+
+Control which sections are expanded by default using the `isExpanded` property. This is useful for highlighting important content or maintaining user context when rebuilding the widget.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerText: 'Important Information',
+      isExpanded: true,
+      body: VitText('This content is visible by default'),
+    ),
+    VitAccordionItem(
+      headerText: 'Additional Details',
+      body: VitText('This section starts collapsed'),
+    ),
+  ],
+)
+```
+
+### Custom Header Builder
+
+For complete control over header appearance, use the `headerBuilder` function. This gives you access to the current expansion state, allowing you to create dynamic headers that change based on whether the panel is open or closed.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerBuilder: (context, isExpanded) => Row(
+        children: [
+          Icon(
+            isExpanded ? Icons.folder_open : Icons.folder,
+            color: isExpanded ? Colors.blue : Colors.grey,
+          ),
+          SizedBox(width: 12),
+          VitText(
+            isExpanded ? 'Folder (Open)' : 'Folder (Closed)',
+            bold: true,
+          ),
+        ],
+      ),
+      body: VitText('Custom header content'),
+    ),
+  ],
+)
+```
+
+## Expansion Control
+
+### Single Expansion Mode
+
+By default, only one panel can be expanded at a time. When a user opens a new panel, any previously opened panel automatically closes. This behavior helps maintain focus and reduces cognitive load.
+
+```dart
+VitAccordion(
+  allowMultipleExpanded: false,
+  items: [
+    VitAccordionItem(
+      headerText: 'Panel 1',
+      body: VitText('Only one panel can be open at a time'),
+    ),
+    VitAccordionItem(
+      headerText: 'Panel 2',
+      body: VitText('Opening this closes Panel 1'),
+    ),
+  ],
+)
+```
+
+### Multiple Expansion Mode
+
+Enable multiple panels to be expanded simultaneously by setting `allowMultipleExpanded` to true. This is useful for comparison tasks or when users need to reference multiple sections at once.
+
+```dart
+VitAccordion(
+  allowMultipleExpanded: true,
+  items: [
+    VitAccordionItem(
+      headerText: 'Panel 1',
+      body: VitText('This panel can stay open'),
+    ),
+    VitAccordionItem(
+      headerText: 'Panel 2',
+      body: VitText('While this one is also open'),
+    ),
+  ],
+)
+```
+
+### Expansion Callback
+
+Monitor expansion state changes with the `onExpansionChanged` callback. This is useful for analytics, saving user preferences, or triggering side effects when panels open or close.
+
+```dart
+VitAccordion(
+  onExpansionChanged: (index, isExpanded) {
+    print('Panel $index is now ${isExpanded ? 'expanded' : 'collapsed'}');
+  },
+  items: [
+    VitAccordionItem(
+      headerText: 'Tracked Panel',
+      body: VitText('Expansion state is monitored'),
+    ),
+  ],
+)
+```
+
+### Disabled Items
+
+Prevent specific items from being expanded by setting `canTapOnHeader` to false. This is useful for displaying static information or indicating unavailable features.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerText: 'Coming Soon',
+      canTapOnHeader: false,
+      body: VitText('This feature is not yet available'),
+    ),
+  ],
+)
+```
+
+## Styling
+
+### Background Colors
+
+Customize the appearance of your accordion with different background colors for headers and body sections. You can also specify different colors for expanded headers to provide visual feedback.
+
+```dart
+VitAccordion(
+  backgroundColor: Colors.grey[100],
+  headerBackgroundColor: Colors.white,
+  expandedHeaderColor: Colors.blue[50],
+  items: [
+    VitAccordionItem(
+      headerText: 'Styled Section',
+      body: VitText('Content with custom colors'),
+    ),
+  ],
+)
+```
+
+### Per-Item Styling
+
+Override global styling on individual items for special emphasis or categorization.
+
+```dart
+VitAccordion(
+  items: [
+    VitAccordionItem(
+      headerText: 'Standard Section',
+      body: VitText('Uses default styling'),
+    ),
+    VitAccordionItem(
+      headerText: 'Highlighted Section',
+      headerBackgroundColor: Colors.amber[100],
+      bodyBackgroundColor: Colors.amber[50],
+      body: VitText('Uses custom styling'),
+    ),
+  ],
+)
+```
+
+### Border and Divider Customization
+
+Control the visual separation between accordion items and the overall border appearance.
+
+```dart
+VitAccordion(
+  showBorder: true,
+  borderColor: Colors.grey[300],
+  borderWidth: 2.0,
+  dividerColor: Colors.grey[200],
+  dividerThickness: 1.5,
+  items: [
+    VitAccordionItem(
+      headerText: 'Section 1',
+      body: VitText('Custom borders and dividers'),
+    ),
+    VitAccordionItem(
+      headerText: 'Section 2',
+      body: VitText('Visually separated sections'),
+    ),
+  ],
+)
+```
+
+### Border Radius and Elevation
+
+Add rounded corners and elevation to create depth and match your app's design language.
+
+```dart
+VitAccordion(
+  borderRadius: BorderRadius.circular(16),
+  elevation: 4,
+  items: [
+    VitAccordionItem(
+      headerText: 'Elevated Section',
+      body: VitText('Accordion with shadow and rounded corners'),
+    ),
+  ],
+)
+```
+
+### Visual Density
+
+Adjust the spacing and size of accordion elements to match different contexts. Use compact mode for dense layouts, standard for general use, and comfortable for touch-optimized interfaces.
+
+```dart
+VitAccordion(
+  visualDensity: VisualDensity.comfortable,
+  items: [
+    VitAccordionItem(
+      headerText: 'Comfortable Spacing',
+      body: VitText('Larger padding for better touch targets'),
+    ),
+  ],
+)
+```
+
+### Custom Padding
+
+Fine-tune spacing with custom padding values for the entire accordion, headers, and body sections.
+
+```dart
+VitAccordion(
+  padding: EdgeInsets.all(16),
+  headerPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+  bodyPadding: EdgeInsets.all(24),
+  items: [
+    VitAccordionItem(
+      headerText: 'Custom Padding',
+      body: VitText('Precisely controlled spacing'),
+    ),
+  ],
+)
+```
+
+### Expand Icon Color
+
+Customize the color of the expand/collapse arrow icon to match your theme or provide visual cues.
+
+```dart
+VitAccordion(
+  expandIconColor: Colors.blue,
+  items: [
+    VitAccordionItem(
+      headerText: 'Section with Blue Arrow',
+      body: VitText('Custom icon color'),
+    ),
+  ],
+)
+```
+
+### Animation Duration
+
+Control the speed of the expand and collapse animations. Faster animations feel snappier, while slower animations appear more deliberate.
+
+```dart
+VitAccordion(
+  animationDuration: Duration(milliseconds: 300),
+  items: [
+    VitAccordionItem(
+      headerText: 'Smooth Animation',
+      body: VitText('Custom animation timing'),
+    ),
+  ],
+)
+```
+
+## Complete Examples
+
+### FAQ Section
+
+A common use case for accordions is displaying frequently asked questions. This example shows how to create a clean, readable FAQ section with multiple questions.
+
+```dart
+VitAccordion(
+  allowMultipleExpanded: true,
+  borderRadius: BorderRadius.circular(12),
+  elevation: 2,
+  items: [
+    VitAccordionItem(
+      headerText: 'What is Vit Design System?',
+      icon: Icons.help_outline,
+      body: Padding(
+        padding: EdgeInsets.only(bottom: 8),
+        child: VitBody(
+          'Vit Design System is a comprehensive Flutter UI library '
+          'that provides a collection of customizable components '
+          'following modern design principles.',
+        ),
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'How do I install it?',
+      icon: Icons.download,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          VitBody('Add vit_design_system to your pubspec.yaml:'),
+          SizedBox(height: 8),
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: VitBody(
+              'dependencies:\n  vit_design_system: ^1.0.0',
+              style: TextStyle(fontFamily: 'monospace'),
+            ),
+          ),
+        ],
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Is it free to use?',
+      icon: Icons.verified,
+      body: VitBody(
+        'Yes, Vit Design System is available under the MPL-2.0 License '
+        'and is completely free to use in your projects.',
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Where can I find documentation?',
+      icon: Icons.book,
+      body: VitBody(
+        'Complete documentation is available at the official website, '
+        'including component APIs, theming guides, and examples.',
+      ),
+    ),
+  ],
+)
+```
+
+### Settings Panel
+
+Accordions work well for organizing settings into logical groups. This example demonstrates an interactive settings interface with various controls.
+
+```dart
+VitAccordion(
+  backgroundColor: Colors.grey[50],
+  headerBackgroundColor: Colors.white,
+  expandedHeaderColor: Colors.blue[50],
+  dividerThickness: 0.5,
+  items: [
+    VitAccordionItem(
+      headerText: 'Notification Preferences',
+      icon: Icons.notifications,
+      isExpanded: true,
+      body: Column(
+        children: [
+          VitSwitch(
+            id: 'email',
+            title: 'Email Notifications',
+            subtitle: 'Receive updates via email',
+          ),
+          VitSwitch(
+            id: 'push',
+            title: 'Push Notifications',
+            subtitle: 'Get instant notifications',
+          ),
+          VitSwitch(
+            id: 'sms',
+            title: 'SMS Notifications',
+            subtitle: 'Text message alerts',
+          ),
+        ],
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Privacy Settings',
+      icon: Icons.security,
+      body: Column(
+        children: [
+          VitSwitch(
+            id: 'profile_public',
+            title: 'Public Profile',
+            subtitle: 'Make your profile visible to others',
+          ),
+          VitSwitch(
+            id: 'show_email',
+            title: 'Show Email Address',
+          ),
+        ],
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Account Settings',
+      icon: Icons.person,
+      body: VitText('Account management options'),
+    ),
+  ],
+)
+```
+
+### Product Information
+
+Display detailed product specifications organized by category using accordions with custom headers.
+
+```dart
+VitAccordion(
+  allowMultipleExpanded: true,
+  borderRadius: BorderRadius.circular(8),
+  items: [
+    VitAccordionItem(
+      headerBuilder: (context, isExpanded) => Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.blue[100],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.info, color: Colors.blue[700], size: 20),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                VitText('Technical Specifications', bold: true),
+                VitText(
+                  'View detailed specs',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _specRow('Processor', 'Quad-core 2.4 GHz'),
+          _specRow('Memory', '8GB RAM'),
+          _specRow('Storage', '256GB SSD'),
+          _specRow('Display', '15.6" Full HD'),
+        ],
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Shipping Information',
+      icon: Icons.local_shipping,
+      body: VitText(
+        'Free shipping on orders over \$50. '
+        'Standard delivery takes 3-5 business days.',
+      ),
+    ),
+    VitAccordionItem(
+      headerText: 'Return Policy',
+      icon: Icons.assignment_return,
+      body: VitText(
+        '30-day money-back guarantee. '
+        'Item must be in original condition.',
+      ),
+    ),
+  ],
+)
+
+Widget _specRow(String label, String value) {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        VitText(label, style: TextStyle(color: Colors.grey[600])),
+        VitText(value, bold: true),
+      ],
+    ),
+  );
+}
+```
+
+## API Reference
+
+### VitAccordion Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `items` | `List<VitAccordionItem>` | required | List of accordion items to display |
+| `backgroundColor` | `Color?` | theme card color | Background color of body sections |
+| `headerBackgroundColor` | `Color?` | theme card color | Background color of headers when collapsed |
+| `expandedHeaderColor` | `Color?` | header background | Background color of headers when expanded |
+| `expandIconColor` | `Color?` | theme on-background | Color of expand/collapse icon |
+| `borderRadius` | `BorderRadius?` | theme border radius | Corner rounding for the accordion |
+| `elevation` | `double` | `0` | Shadow elevation of the accordion |
+| `dividerColor` | `Color?` | theme border color | Color of dividers between items |
+| `dividerThickness` | `double` | `1.0` | Thickness of dividers |
+| `visualDensity` | `VisualDensity?` | theme visual density | Controls spacing and size |
+| `allowMultipleExpanded` | `bool` | `false` | Allow multiple panels to be expanded |
+| `animationDuration` | `Duration` | `200ms` | Duration of expand/collapse animation |
+| `onExpansionChanged` | `Function(int, bool)?` | `null` | Callback when expansion state changes |
+| `padding` | `EdgeInsets` | `EdgeInsets.zero` | Padding around the entire accordion |
+| `headerPadding` | `EdgeInsets?` | based on density | Padding inside headers |
+| `bodyPadding` | `EdgeInsets?` | based on density | Padding inside body sections |
+| `showBorder` | `bool` | `true` | Whether to show border around accordion |
+| `borderColor` | `Color?` | theme border color | Border color |
+| `borderWidth` | `double` | `1.0` | Border width |
+| `semanticLabel` | `String?` | `'Accordion'` | Accessibility label |
+
+### VitAccordionItem Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `headerText` | `String?` | `null` | Text to display in header |
+| `headerBuilder` | `Widget Function(BuildContext, bool)?` | `null` | Custom header widget builder |
+| `body` | `Widget` | required | Content to display when expanded |
+| `isExpanded` | `bool` | `false` | Whether item starts expanded |
+| `icon` | `IconData?` | `null` | Icon to display in header |
+| `iconColor` | `Color?` | theme on-background | Color of header icon |
+| `iconSize` | `double` | `24` | Size of header icon |
+| `headerStyle` | `TextStyle?` | `null` | Custom text style for header |
+| `headerBackgroundColor` | `Color?` | accordion header color | Background color for this item's header |
+| `bodyBackgroundColor` | `Color?` | accordion background | Background color for this item's body |
+| `canTapOnHeader` | `bool` | `true` | Whether header can be tapped to expand |
+| `value` | `Object?` | `null` | Unique identifier for tracking state |
+
+## Accessibility
+
+The accordion component includes built-in accessibility support with semantic labels. For better accessibility, ensure your content is descriptive and consider providing meaningful header text that clearly indicates what each section contains.
+
+```dart
+VitAccordion(
+  semanticLabel: 'Account settings accordion',
+  items: [
+    VitAccordionItem(
+      headerText: 'Profile settings',
+      body: VitText('Configure your profile information'),
+    ),
+  ],
+)
+```
+
+## Best Practices
+
+- Use clear, descriptive header text that indicates what content users will find when they expand the section
+- Keep the number of accordion items reasonable to avoid overwhelming users
+- Consider using icons to provide visual cues about content categories
+- Use `allowMultipleExpanded: true` when users might need to compare content across sections
+- Set `allowMultipleExpanded: false` to maintain focus and reduce visual clutter
+- Use initially expanded items sparingly, only for critical information
+- Provide adequate padding in body sections for comfortable reading
+- Consider using visual density modes appropriate for your target device
+- Avoid nesting accordions too deeply as it can make navigation difficult
+
+## Related Components
+
+- [Card](./card.md) - Content containers for displaying related information
+- [Sheet](./sheet.md) - Bottom sheets for temporary content overlays

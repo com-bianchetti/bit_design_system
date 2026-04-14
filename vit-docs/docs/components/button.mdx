@@ -1,0 +1,897 @@
+---
+sidebar_position: 1
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Button
+
+Buttons are interactive elements that allow users to take actions and make choices with a single tap. They are one of the most fundamental UI components in any application, serving as the primary means of user interaction.
+
+The Vit Design System provides a comprehensive suite of button variants designed to create clear visual hierarchies and guide users through different interaction patterns. Each button type serves a specific purpose in your interface, from primary actions to subtle tertiary options.
+
+<FlutterPreview story="VitButton" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Button Variants
+
+The Vit Design System provides six distinct button variants, each designed for specific use cases. Understanding when to use each variant helps create a clear visual hierarchy and improves user experience.
+
+### VitButton (Primary)
+
+The primary button is your main call-to-action. It features a filled background with high contrast and should be used for the most important action on a screen. Use this button sparingly to draw attention to critical actions like "Save", "Submit", "Continue", or "Purchase".
+
+The primary button uses your theme's primary color by default and includes built-in press animations that darken the button slightly when tapped, providing immediate visual feedback to users.
+
+```dart
+VitButton(
+  text: 'Primary Button',
+  onPressed: () {
+    print('Button pressed');
+  },
+)
+```
+
+### VitOutlinedButton
+
+Outlined buttons provide a middle ground between primary and tertiary actions. They feature a border with a transparent background, making them less prominent than primary buttons but more visible than link buttons. Use outlined buttons for secondary actions like "Cancel", "Go Back", or alternative options that users might choose.
+
+The outlined button adapts to your theme automatically, using the theme's border color while maintaining readability across light and dark modes.
+
+```dart
+VitOutlinedButton(
+  text: 'Outlined Button',
+  onPressed: () {
+    print('Button pressed');
+  },
+)
+```
+
+### VitSecondaryButton
+
+Secondary buttons offer an alternative styling option with a subtle elevated background color. Unlike outlined buttons, they have a filled appearance but use a more muted color than primary buttons. This makes them ideal for actions that are important but not critical, such as "Add to Cart" when "Buy Now" is the primary action.
+
+The secondary button uses the theme's elevated card variant color, providing visual distinction without overwhelming the primary action.
+
+```dart
+VitSecondaryButton(
+  text: 'Secondary Button',
+  onPressed: () {
+    print('Button pressed');
+  },
+)
+```
+
+### VitLinkButton
+
+Link buttons are the most subtle button variant, appearing as styled text with minimal visual weight. They're perfect for tertiary actions, navigation links, or actions that shouldn't distract from the main content. Common use cases include "Learn More", "Skip", "View Details", or in-text navigation.
+
+The link button defaults to a compact visual density and transparent background, making it blend naturally with surrounding text while remaining interactive. You can optionally add an underline decoration to make the button resemble a traditional hyperlink, which can improve recognition for users familiar with web conventions.
+
+```dart
+VitLinkButton(
+  text: 'Link Button',
+  onPressed: () {
+    print('Button pressed');
+  },
+)
+
+VitLinkButton(
+  text: 'Underlined Link',
+  underlined: true,
+  onPressed: () {
+    print('Button pressed');
+  },
+)
+```
+
+### VitSocialButton
+
+Social buttons are specialized button variants pre-configured for social authentication flows. Each variant comes with the appropriate branding colors and logos for popular identity providers. These buttons handle the complex styling requirements of social login buttons automatically, ensuring brand consistency and recognition.
+
+Available variants include Google, Facebook, and Apple, each with their official brand colors and logos embedded in the design system.
+
+```dart
+VitSocialButton.google(
+  text: 'Sign in with Google',
+  onPressed: () {
+    print('Sign in with Google');
+  },
+)
+
+VitSocialButton.facebook(
+  text: 'Continue with Facebook',
+  onPressed: () {},
+)
+
+VitSocialButton.apple(
+  text: 'Sign in with Apple',
+  onPressed: () {},
+)
+```
+
+### VitIconButton
+
+The icon button is designed for actions represented solely by an icon, without text labels. It handles press animations, sizing, and accessibility features automatically while adapting to your theme. It's ideal for actions in constrained spaces like app bars, cards, or list tiles where a full text button would be overwhelming.
+
+The icon button automatically manages its size based on visual density, similar to other buttons, but maintains a perfectly square aspect ratio, and responds to loading states with a specific shimmer.
+
+```dart
+VitIconButton(
+  icon: Icon(Icons.add),
+  onPressed: () {
+    print('Icon button pressed');
+  },
+)
+```
+
+## Basic Usage
+
+### Simple Button
+
+The most basic button configuration requires only text and an onPressed callback. The button will automatically adapt its size to fit the text content and provide appropriate touch targets for accessibility.
+
+```dart
+VitButton(
+  text: 'Click Me',
+  onPressed: () {
+    VitToast.success(context, message: 'Button clicked!');
+  },
+)
+```
+
+### Button with Icon
+
+Icons help users quickly identify button actions and make interfaces more scannable. When you add an icon to a button, it's automatically positioned to the left of the text with appropriate spacing. Icons are particularly useful for common actions like save, delete, download, or upload.
+
+```dart
+VitButton(
+  text: 'Add Item',
+  icon: Icon(Icons.add),
+  onPressed: () {},
+)
+```
+
+### Disabled Button
+
+Disabled buttons indicate actions that are currently unavailable but may become available based on context. The button automatically displays with reduced opacity and doesn't respond to touch events. This helps prevent user errors while maintaining visual layout consistency.
+
+Always provide context about why a button is disabled when possible, either through surrounding UI elements or helper text.
+
+```dart
+VitButton(
+  text: 'Disabled',
+  onPressed: () {},
+  isDisabled: true,
+)
+```
+
+### Loading Button
+
+Loading states provide crucial feedback during asynchronous operations. The `isLoadingState` property replaces the button content with a spinner, indicating that an action is in progress. The button remains interactive in appearance but should be disabled during loading to prevent multiple submissions.
+
+This is essential for operations like form submissions, API calls, or any action that takes time to complete.
+
+```dart
+VitButton(
+  text: 'Submit',
+  onPressed: () {},
+  isLoadingState: true,
+)
+```
+
+## Properties
+
+### Common Properties
+
+All button variants share these core properties, providing consistent customization options across the entire button system. Understanding these properties allows you to fine-tune button behavior and appearance for any use case.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `text` | `String` | required | The button's label text displayed to users |
+| `onPressed` | `VoidCallback` | required | Callback function invoked when button is tapped (debounced to 500ms) |
+| `icon` | `Widget?` | `null` | Optional icon widget displayed before text with automatic spacing |
+| `isDisabled` | `bool` | `false` | When true, button is non-interactive and visually muted |
+| `isLoading` | `bool` | `false` | Shows skeleton shimmer loading state (responds to VitLoadingScope) |
+| `isLoadingState` | `bool` | `false` | Shows internal circular progress indicator instead of content |
+| `visualDensity` | `VisualDensity?` | theme | Controls button height: comfortable (55px), standard (46px), compact (38px) |
+| `width` | `double?` | `null` | Explicit button width (overrides automatic width calculation) |
+| `height` | `double?` | `null` | Explicit button height (overrides visualDensity) |
+| `padding` | `EdgeInsetsGeometry?` | horizontal: 10 | Internal padding around button content |
+| `borderRadius` | `BorderRadius?` | theme | Corner roundness (uses theme value if not specified) |
+| `textStyle` | `TextStyle?` | theme | Custom text styling (defaults to bold body text) |
+| `expand` | `bool` | `true` | Whether button should expand to fill available space |
+| `minWidth` | `double` | `0.0` | Minimum width constraint for the button |
+| `maxWidth` | `double?` | theme | Maximum width constraint (uses theme buttonMaxWidth if null) |
+| `flex` | `int` | `1` | Flex factor when button is placed in a Row widget |
+| `semanticLabel` | `String?` | text value | Accessibility label for screen readers (defaults to text value) |
+| `hint` | `String?` | `null` | Accessibility hint describing what happens when pressed |
+| `borderColor` | `Color?` | `null` | Border color (only visible if borderWidth > 0) |
+| `borderWidth` | `double` | `1.0` | Border thickness in logical pixels |
+| `disabledColor` | `Color?` | theme | Background color when button is disabled |
+| `disabledForegroundColor` | `Color?` | theme | Text/icon color when button is disabled |
+| `iconColor` | `Color?` | theme | Color for the icon widget |
+| `imageAsset` | `String?` | `null` | Asset path for image to display (replaces icon if provided) |
+| `package` | `String?` | `null` | Package name for image asset (used for package-bundled assets) |
+
+### VitButton Specific
+
+Additional properties available only on the primary VitButton variant:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `backgroundColor` | `Color?` | theme primary | Button fill color (automatically darkens on press) |
+| `foregroundColor` | `Color?` | theme onPrimary | Text and icon color (ensures contrast with background) |
+| `darkenFactor` | `double` | `0.2` | Press animation intensity (0.0 = no change, 1.0 = black) |
+
+### VitIconButton Specific
+
+Properties available specifically for the icon button variant:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `Widget` | required | The primay visual element shown to the user |
+| `iconColor` | `Color?` | theme | Foreground color of the icon |
+| `backgroundColor` | `Color?` | theme | Button fill color |
+| `disabledIconColor` | `Color?` | theme | Icon color when button is disabled |
+| `padding` | `EdgeInsetsGeometry`| `zero` | Internal padding for the icon content |
+| `tooltip` | `String?` | `null` | Tooltip text to show on long press or hover |
+| `darkenFactor` | `double` | `0.2` | Press animation intensity (0.0 = no change, 1.0 = black) |
+
+### VitOutlinedButton Specific
+
+Additional properties for the outlined button variant:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `borderColor` | `Color?` | theme border | Border color (uses theme borderColor if not specified) |
+| `backgroundColor` | `Color?` | transparent | Background fill color (default transparent for outlined appearance) |
+| `foregroundColor` | `Color?` | theme primary | Text and icon color |
+| `borderWidth` | `double` | `1.0` | Border thickness in logical pixels |
+
+### VitLinkButton Specific
+
+Additional properties for the link button variant:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `underlined` | `bool` | `false` | Whether to show underline decoration (makes button resemble hyperlink) |
+
+### VitSecondaryButton Specific
+
+The secondary button uses the same properties as VitButton but with pre-configured colors:
+- Background: `theme.elevatedCardVariantColor`
+- Foreground: `theme.onBackgroundColor`
+
+## Advanced Usage
+
+### Custom Colors
+
+Override the default theme colors to create custom button styles for specific use cases. This is useful for status-specific buttons (success, error, warning) or when you need to match specific brand colors. The `backgroundColor` property controls the fill color, while `foregroundColor` controls the text and icon color.
+
+Ensure sufficient contrast between background and foreground colors for accessibility.
+
+```dart
+VitButton(
+  text: 'Custom Colors',
+  backgroundColor: Colors.purple,
+  foregroundColor: Colors.white,
+  onPressed: () {},
+)
+```
+
+### Custom Size
+
+Explicit width and height properties give you precise control over button dimensions. This is particularly useful for creating buttons that need to match specific layout requirements, such as filling a sidebar or maintaining consistent sizing in a grid.
+
+When setting custom sizes, consider touch target sizes for mobile devices (minimum 44x44 points recommended).
+
+```dart
+VitButton(
+  text: 'Large Button',
+  width: 300,
+  height: 60,
+  onPressed: () {},
+)
+```
+
+### Custom Padding
+
+Adjust the internal spacing of buttons to accommodate different design requirements. Custom padding is useful when you need tighter or looser spacing around button text, or when working with icon-only buttons that need balanced spacing.
+
+```dart
+VitButton(
+  text: 'Custom Padding',
+  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+  onPressed: () {},
+)
+```
+
+### Custom Border Radius
+
+Border radius controls the roundness of button corners. Adjust this to match your overall design language, from sharp rectangular buttons to fully rounded pill-shaped buttons. The border radius should be consistent across your application for a cohesive look.
+
+```dart
+VitButton(
+  text: 'Rounded',
+  borderRadius: BorderRadius.circular(30),
+  onPressed: () {},
+)
+```
+
+### Icon Position
+
+By default, icons appear on the left side of button text. While the current implementation positions icons on the left, you can control icon placement to create different visual hierarchies or match specific design patterns.
+
+```dart
+VitButton(
+  text: 'Download',
+  icon: Icon(Icons.download),
+  iconPosition: IconPosition.right,
+  onPressed: () {},
+)
+```
+
+### Visual Density
+
+Visual density is a powerful feature for creating size variants of your buttons while maintaining consistent proportions. It's particularly useful for responsive designs where you need different button sizes for different screen sizes or contexts.
+
+Compact buttons work well in dense UIs like data tables, standard buttons are ideal for most interfaces, and comfortable buttons provide extra space for accessibility or prominent actions.
+
+```dart
+VitButton(
+  text: 'Compact',
+  visualDensity: VisualDensity.compact,
+  onPressed: () {},
+)
+
+VitButton(
+  text: 'Standard',
+  visualDensity: VisualDensity.standard,
+  onPressed: () {},
+)
+
+VitButton(
+  text: 'Comfortable',
+  visualDensity: VisualDensity.comfortable,
+  onPressed: () {},
+)
+```
+
+### Flexible Width
+
+The `flex` property enables proportional button sizing when placed in Row layouts. This is incredibly useful for creating responsive button groups where buttons should distribute available space according to their importance or content.
+
+Buttons with higher flex values take up more space, allowing you to emphasize certain actions over others.
+
+```dart
+Row(
+  children: [
+    VitButton(
+      text: 'Flex 1',
+      flex: 1,
+      onPressed: () {},
+    ),
+    SizedBox(width: 8),
+    VitButton(
+      text: 'Flex 2',
+      flex: 2,
+      onPressed: () {},
+    ),
+  ],
+)
+```
+
+### Press Animations
+
+All Vit buttons include a sophisticated press animation that provides immediate tactile feedback to users. When pressed, the button automatically darkens slightly, creating a visual depression effect that mimics physical button behavior.
+
+The `darkenFactor` property controls the intensity of this effect, ranging from 0.0 (no darkening) to 1.0 (completely black). The default value of 0.2 provides a subtle but noticeable effect that works well for most designs.
+
+```dart
+VitButton(
+  text: 'Custom Press Effect',
+  darkenFactor: 0.3,
+  onPressed: () {},
+)
+```
+
+### Automatic Debouncing
+
+To prevent accidental double-submissions and rapid repeated taps, all buttons include built-in debouncing with a 500-millisecond window. This means that even if a user rapidly taps a button multiple times, the `onPressed` callback will only fire once per half-second.
+
+This feature is particularly important for:
+- Form submissions that trigger API calls
+- Navigation actions that push new routes
+- Actions that modify state or data
+- Any operation where duplicate executions would cause problems
+
+The debouncing is handled automatically, so you don't need to implement your own debounce logic. Combined with loading states, this provides robust protection against user errors and network issues.
+
+### Responsive Width Behavior
+
+Buttons in the Vit Design System intelligently adapt their width based on their parent container and context. This sophisticated behavior ensures buttons look great in any layout without requiring manual width calculations.
+
+The button's width calculation follows these rules:
+1. **Explicit width**: If you provide a `width` property, that value is used
+2. **Constrained container**: If the button is in a container with a defined width, it expands to fill that width
+3. **Row layout**: If the button is in a Row widget, it uses the `flex` property for proportional sizing
+4. **Scrollable context**: In scrollable views, the button calculates its width based on text content to prevent overflow
+5. **Unconstrained layout**: The button calculates minimum width needed for text and padding
+
+This automatic behavior means you rarely need to specify explicit widths. The `expand` property (default: true) controls whether the button should expand to fill available space or hug its content.
+
+```dart
+VitButton(
+  text: 'Hugs Content',
+  expand: false,
+  onPressed: () {},
+)
+
+VitButton(
+  text: 'Expands to Fill',
+  expand: true,
+  onPressed: () {},
+)
+```
+
+### Maximum Width Constraint
+
+To prevent buttons from becoming too wide on large screens or in flexible layouts, use the `maxWidth` property. This is particularly useful for maintaining button proportions on tablets or desktop views.
+
+By default, buttons use the theme's `buttonMaxWidth` value, but you can override this for specific buttons that need different constraints.
+
+```dart
+VitButton(
+  text: 'Constrained Width',
+  maxWidth: 300,
+  onPressed: () {},
+)
+```
+
+## Theming and Customization
+
+All button components in the Vit Design System are deeply integrated with the theme system, automatically adapting to your application's design language. This ensures visual consistency while allowing for extensive customization when needed.
+
+### Theme Integration
+
+Buttons automatically inherit these values from your theme:
+- **Primary color**: Used for VitButton background
+- **On-primary color**: Used for VitButton text and icons
+- **Border color**: Used for VitOutlinedButton borders
+- **Card variant color**: Used for VitSecondaryButton background
+- **Disabled color**: Used for disabled button backgrounds
+- **Border radius**: Applied to all button corners
+- **Visual density**: Determines default button heights
+- **Typography**: Body text style for button labels
+
+This theme integration means buttons automatically adapt to light and dark modes, respond to theme changes, and maintain consistency across your application without manual color management.
+
+### Global Button Customization
+
+To customize button appearance globally, modify your theme configuration:
+
+```dart
+VitTheme(
+  primaryColor: Colors.blue,
+  borderRadius: BorderRadius.circular(8),
+  visualDensity: VisualDensity.comfortable,
+  buttonMaxWidth: 400,
+  values: VitThemeValues(
+    buttonComfortableHeight: 55,
+    buttonStandardHeight: 46,
+    buttonCompactHeight: 38,
+  ),
+  child: YourApp(),
+)
+```
+
+### Per-Instance Customization
+
+For one-off customizations, override theme values directly on individual buttons:
+
+```dart
+VitButton(
+  text: 'Custom Styled Button',
+  backgroundColor: Colors.deepPurple,
+  foregroundColor: Colors.white,
+  borderRadius: BorderRadius.circular(25),
+  textStyle: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.5,
+  ),
+  onPressed: () {},
+)
+```
+
+### Creating Custom Button Variants
+
+For frequently used custom styles, create wrapper widgets:
+
+```dart
+class WarningButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  
+  const WarningButton({
+    required this.text,
+    required this.onPressed,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return VitButton(
+      text: text,
+      onPressed: onPressed,
+      backgroundColor: Colors.orange,
+      foregroundColor: Colors.white,
+      icon: Icon(Icons.warning_amber),
+    );
+  }
+}
+```
+
+## Button Dock
+
+The `VitButtonDock` is a specialized container component designed to organize multiple buttons in a consistent, responsive layout. It handles spacing, alignment, and responsive behavior automatically, making it ideal for form actions, dialog controls, or any scenario where you need to present multiple button options together.
+
+The dock automatically adapts to different screen sizes and can be configured for horizontal or vertical layouts. All buttons within a dock are automatically expanded to fill available space, creating a uniform appearance.
+
+```dart
+VitButtonDock(
+  children: [
+    VitOutlinedButton(
+      text: 'Cancel',
+      onPressed: () {},
+    ),
+    VitButton(
+      text: 'Confirm',
+      onPressed: () {},
+    ),
+  ],
+)
+```
+
+### VitButtonDock Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `children` | `List<Widget>` | required | List of button widgets to arrange in the dock |
+| `direction` | `Axis?` | horizontal | Layout direction: Axis.horizontal or Axis.vertical |
+| `spacing` | `double?` | varies | Gap between buttons (default: 12px for rows, 8px for columns) |
+| `padding` | `EdgeInsets?` | `null` | Overall container padding (overrides specific padding properties) |
+| `horizontalPadding` | `double?` | `0` | Horizontal padding when padding is null |
+| `verticalPadding` | `double?` | `0` | Vertical padding when padding is null |
+
+### Vertical Dock
+
+When vertical space is constrained or when you want to stack actions, use the vertical direction. This is particularly useful for mobile interfaces where horizontal space is limited, or when you want to present a list of action options.
+
+Vertical docks ensure all buttons have the same width, creating a clean, aligned appearance.
+
+```dart
+VitButtonDock(
+  direction: Axis.vertical,
+  children: [
+    VitButton(text: 'Option 1', onPressed: () {}),
+    VitButton(text: 'Option 2', onPressed: () {}),
+    VitButton(text: 'Option 3', onPressed: () {}),
+  ],
+)
+```
+
+### Custom Spacing
+
+The spacing property controls the gap between buttons in the dock. Adjust this to create tighter or looser groupings based on your design requirements. Default spacing is optimized for most use cases, but custom spacing can help align with your overall design system.
+
+```dart
+VitButtonDock(
+  spacing: 16,
+  children: [
+    VitButton(text: 'Button 1', onPressed: () {}),
+    VitButton(text: 'Button 2', onPressed: () {}),
+  ],
+)
+```
+
+### Custom Padding
+
+Add padding around the entire button dock to control spacing from surrounding elements. You can use the general `padding` property or separate `horizontalPadding` and `verticalPadding` for more granular control.
+
+```dart
+VitButtonDock(
+  padding: EdgeInsets.all(16),
+  children: [
+    VitOutlinedButton(text: 'Cancel', onPressed: () {}),
+    VitButton(text: 'Save', onPressed: () {}),
+  ],
+)
+
+VitButtonDock(
+  horizontalPadding: 20,
+  verticalPadding: 12,
+  children: [
+    VitButton(text: 'Action 1', onPressed: () {}),
+    VitButton(text: 'Action 2', onPressed: () {}),
+  ],
+)
+```
+
+## Loading States
+
+Loading states are critical for providing feedback during asynchronous operations. They prevent user confusion and multiple submissions while maintaining the interface's visual structure. The Vit Design System provides two distinct loading patterns for different use cases.
+
+### Spinner Loading
+
+The spinner loading state (`isLoadingState`) replaces the button's content with a circular progress indicator. This is ideal for actions that require server communication or processing time, such as form submissions, data fetching, or file uploads.
+
+When implementing spinner loading, disable the button or provide an empty callback to prevent multiple submissions. The loading state should be managed by your component's state management solution.
+
+Key benefits of spinner loading:
+- Maintains button dimensions and layout
+- Provides clear visual feedback that processing is occurring
+- Prevents accidental double-submissions
+- Keeps users informed during asynchronous operations
+
+```dart
+class SubmitButton extends StatefulWidget {
+  @override
+  _SubmitButtonState createState() => _SubmitButtonState();
+}
+
+class _SubmitButtonState extends State<SubmitButton> {
+  bool _isLoading = false;
+
+  Future<void> _handleSubmit() async {
+    setState(() => _isLoading = true);
+    
+    await Future.delayed(Duration(seconds: 2));
+    
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VitButton(
+      text: 'Submit',
+      isLoadingState: _isLoading,
+      onPressed: _isLoading ? () {} : _handleSubmit,
+    );
+  }
+}
+```
+
+### Skeleton Loading
+
+Skeleton loading (`isLoading`) provides a shimmer effect that indicates the entire button and surrounding content is loading. This is different from spinner loading and is typically used when the button itself is being loaded as part of initial page load or when you're using the `VitLoadingScope` to manage loading states across multiple components.
+
+The skeleton loader maintains the button's shape and size while displaying an animated shimmer, creating a smooth loading experience that feels more integrated with the overall design.
+
+Use skeleton loading when:
+- The page or section is initially loading
+- Multiple components are loading simultaneously
+- You want a more subtle loading indication
+- The button content is being dynamically fetched
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: VitButton(
+    text: 'Button',
+    onPressed: () {},
+  ),
+)
+```
+
+## Social Authentication
+
+Social authentication buttons simplify the login experience by allowing users to sign in using existing accounts from trusted providers. The Vit Design System provides pre-styled social buttons that automatically handle branding requirements and visual consistency.
+
+Each social button variant includes the official logo and brand colors, ensuring your authentication flow maintains professional standards and user recognition. These buttons are specifically designed to meet the branding guidelines of each provider.
+
+### Google Sign In
+
+Google's sign-in button features a light background with the official Google logo. This variant follows Google's brand guidelines for sign-in buttons, providing a familiar and trustworthy authentication option.
+
+```dart
+VitSocialButton.google(
+  text: 'Sign in with Google',
+  onPressed: () async {
+    final result = await signInWithGoogle();
+  },
+)
+```
+
+### Facebook Sign In
+
+The Facebook button uses the platform's signature blue color with the Facebook logo. This creates immediate recognition and trust for users familiar with Facebook authentication.
+
+```dart
+VitSocialButton.facebook(
+  text: 'Continue with Facebook',
+  onPressed: () async {
+    final result = await signInWithFacebook();
+  },
+)
+```
+
+### Apple Sign In
+
+Apple's sign-in button follows Apple's strict design guidelines with a dark background and the Apple logo. This is particularly important for iOS apps where Sign in with Apple may be required for apps that offer other social login options.
+
+```dart
+VitSocialButton.apple(
+  text: 'Sign in with Apple',
+  onPressed: () async {
+    final result = await signInWithApple();
+  },
+)
+```
+
+## Best Practices
+
+### Do's
+
+- **Use primary buttons for main actions**: Reserve `VitButton` for the single most important action on a screen to create clear visual hierarchy.
+- **Use outlined buttons for secondary actions**: `VitOutlinedButton` works well for alternative or cancellation actions that users might need but aren't the primary path.
+- **Use link buttons for tertiary actions**: `VitLinkButton` is perfect for less critical actions like "Learn More" or "Skip" that shouldn't distract from main content.
+- **Provide clear, action-oriented labels**: Use verbs that describe what will happen when pressed, like "Save Changes" instead of just "Save".
+- **Show loading states during async operations**: Always provide feedback when an action takes time to complete to prevent user confusion and multiple submissions.
+- **Disable buttons when action is not available**: Use the `isDisabled` property to prevent actions that can't currently be performed, such as submitting an incomplete form.
+- **Use consistent button placement**: Place primary actions in consistent locations (typically bottom-right or center) to build muscle memory.
+- **Maintain adequate spacing**: Use `VitButtonDock` or proper spacing between buttons to prevent accidental taps.
+
+### Don'ts
+
+- **Don't use multiple primary buttons in the same context**: Having multiple high-emphasis buttons confuses users about which action is most important. Use button variants to create hierarchy.
+- **Don't make buttons too small**: Maintain minimum touch target sizes of 44x44 points for accessibility and usability, especially on mobile devices.
+- **Don't use ambiguous labels**: Avoid generic labels like "OK", "Submit", or "Click Here" that don't clearly communicate the action's result.
+- **Don't nest buttons inside buttons**: This creates confusing interaction patterns and accessibility issues.
+- **Don't forget to handle disabled states visually**: Ensure disabled buttons are clearly distinguishable from enabled buttons through color and cursor changes.
+- **Don't ignore loading states**: Users need feedback for operations that take time. Implement appropriate loading indicators for all asynchronous actions.
+- **Don't override accessibility features unnecessarily**: The default button implementation includes proper touch targets, contrast ratios, and screen reader support.
+
+## Accessibility
+
+The Vit Design System's button components are built with accessibility as a core principle. All button variants automatically include features that make them usable for everyone, including users with disabilities who rely on assistive technologies.
+
+### Built-in Accessibility Features
+
+- **Minimum touch target size**: All buttons meet or exceed the recommended 44x44 point minimum touch target size, making them easy to tap even for users with motor impairments.
+- **Clear visual feedback**: Press animations provide immediate visual feedback that a button has been activated, helping users with cognitive disabilities understand their actions.
+- **Semantic button role**: Buttons are properly marked with semantic information, allowing screen readers to correctly announce them as interactive buttons.
+- **Proper contrast ratios**: Default color combinations meet WCAG AA standards for contrast, ensuring text is readable for users with visual impairments.
+- **Disabled state communication**: When a button is disabled, it's clearly communicated both visually (through reduced opacity) and semantically (through ARIA attributes).
+- **Keyboard navigation**: Buttons can be focused and activated using keyboard input, essential for users who can't use a mouse or touch screen.
+- **Focus indicators**: When navigating with a keyboard, buttons show clear focus states so users know which element will be activated.
+
+### Custom Semantics
+
+For enhanced accessibility, you can provide custom semantic labels and hints that give screen reader users additional context about what a button does and what will happen when they activate it.
+
+The `semanticLabel` property allows you to provide alternative text that describes the button's purpose more clearly than the visible text. The `hint` property provides additional information about the result of pressing the button.
+
+```dart
+VitButton(
+  text: 'Submit',
+  onPressed: () {},
+  semanticLabel: 'Submit form',
+  tooltip: 'Submit the registration form',
+)
+```
+
+### Testing for Accessibility
+
+When implementing buttons, consider testing with:
+- Screen readers (VoiceOver on iOS, TalkBack on Android)
+- Keyboard navigation
+- Different text sizes and display scaling
+- High contrast modes
+- Color blindness simulators
+
+Ensure your custom colors maintain sufficient contrast ratios and that button states are distinguishable without relying solely on color.
+
+## Examples
+
+These real-world examples demonstrate how to combine button variants effectively in common UI patterns. Each example follows best practices for visual hierarchy and user experience.
+
+### Form Actions
+
+Form action buttons typically require a clear distinction between the primary action (save/submit) and secondary action (cancel/back). This example demonstrates proper button hierarchy using `VitButtonDock` to create a consistent, responsive layout.
+
+The Cancel button uses the outlined variant to be less prominent, while the Save button uses the primary variant with an icon to draw attention to the main action.
+
+```dart
+Column(
+  children: [
+    VitInput(id: 'name', label: 'Name'),
+    VitInput(id: 'email', label: 'Email'),
+    SizedBox(height: 20),
+    VitButtonDock(
+      children: [
+        VitOutlinedButton(
+          text: 'Cancel',
+          onPressed: () => Navigator.pop(context),
+        ),
+        VitButton(
+          text: 'Save',
+          icon: Icon(Icons.save),
+          onPressed: () {},
+        ),
+      ],
+    ),
+  ],
+)
+```
+
+### Confirmation Dialog
+
+Confirmation dialogs require careful attention to button hierarchy because the actions have significant consequences. This example demonstrates using color to reinforce the destructive nature of an action while maintaining clear visual distinction between cancel and confirm actions.
+
+Notice how the Delete button uses a custom error color to visually communicate danger, while the Cancel button remains neutral with the outlined variant.
+
+```dart
+VitDialog.show(
+  context,
+  title: 'Delete Item',
+  message: 'Are you sure you want to delete this item?',
+  actions: [
+    VitOutlinedButton(
+      text: 'Cancel',
+      onPressed: () => Navigator.pop(context),
+    ),
+    VitButton(
+      text: 'Delete',
+      backgroundColor: theme.errorColor,
+      onPressed: () {
+        deleteItem();
+        Navigator.pop(context);
+      },
+    ),
+  ],
+)
+```
+
+### Icon Buttons Grid
+
+When presenting multiple action options, icon buttons in a grid layout help users quickly scan and identify actions. Each button combines an icon with descriptive text to be both visually recognizable and clearly labeled.
+
+This pattern works well for file selection, media upload options, or any scenario where users choose between multiple similar actions.
+
+```dart
+GridView.count(
+  crossAxisCount: 3,
+  mainAxisSpacing: 8,
+  crossAxisSpacing: 8,
+  children: [
+    VitButton(
+      text: 'Camera',
+      icon: Icon(Icons.camera_alt),
+      onPressed: () {},
+    ),
+    VitButton(
+      text: 'Gallery',
+      icon: Icon(Icons.photo_library),
+      onPressed: () {},
+    ),
+    VitButton(
+      text: 'Files',
+      icon: Icon(Icons.folder),
+      onPressed: () {},
+    ),
+  ],
+)
+```
+
+## Related Components
+
+- [Input](./input.md) - Text input fields
+- [Form](./form.md) - Form management
+- [Dialog](./dialog.md) - Modal dialogs
+- [Toast](./toast.md) - Toast notifications

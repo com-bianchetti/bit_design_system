@@ -1,0 +1,511 @@
+---
+sidebar_position: 2
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Input
+
+Text input components provide a comprehensive set of tools for capturing and validating user text input. From basic text fields to specialized inputs like email and password, the input system offers flexibility and consistency across your application.
+
+<FlutterPreview story="VitInput" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Three Input Variants**: Choose between `VitInput`, `VitRawInput`, and `VitInputCount` for different use cases
+- **20+ Specialized Fields**: Pre-configured inputs for email, password, phone, URL, currency, and more
+- **Flexible Label Modes**: Floating labels, fixed labels, or no labels
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust spacing with compact, standard, or comfortable modes
+- **Custom Formatters**: Built-in support for input formatters and masks
+- **Skeleton Loading**: Built-in loading state with shimmer effect
+- **Accessibility**: Full semantic label support for screen readers
+- **Auto-focus Management**: Intelligent focus handling in multi-page forms
+- **Multiline Support**: Easy configuration for text areas and expandable inputs
+
+## Input Variants
+
+### VitInput
+
+Standard text input field with full customization and border/background styling:
+
+```dart
+VitInput(
+  id: 'email',
+  label: 'Email',
+  hintText: 'Enter your email',
+  keyboardType: TextInputType.emailAddress,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    if (!value.contains('@')) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  },
+)
+```
+
+### VitRawInput
+
+Minimal text input without border or background, perfect for inline editing or custom layouts:
+
+```dart
+VitRawInput(
+  id: 'notes',
+  placeholder: 'Enter your notes...',
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+  maxLines: 5,
+)
+```
+
+### VitInputCount
+
+Numeric input with increment/decrement buttons for quantity selection or numeric values:
+
+```dart
+VitInputCount(
+  id: 'quantity',
+  label: 'Quantity',
+  value: 1,
+  minValue: 0,
+  maxValue: 100,
+  onChanged: (value) {
+    print('New value: $value');
+  },
+)
+```
+
+## Basic Usage
+
+### Simple Input
+
+```dart
+VitInput(
+  id: 'username',
+  label: 'Username',
+  hintText: 'Enter username',
+)
+```
+
+### Input with Controller
+
+```dart
+final TextEditingController controller = TextEditingController();
+
+VitInput(
+  id: 'name',
+  label: 'Name',
+  controller: controller,
+)
+```
+
+### Input with Icon
+
+```dart
+VitInput(
+  id: 'search',
+  label: 'Search',
+  leading: Icon(Icons.search),
+  trailing: IconButton(
+    icon: Icon(Icons.clear),
+    onPressed: () => controller.clear(),
+  ),
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `id` | `String` | required | Unique identifier |
+| `label` | `String?` | `null` | Field label text |
+| `hintText` | `String?` | `null` | Placeholder text |
+| `controller` | `TextEditingController?` | `null` | Text controller |
+| `validator` | `FormFieldValidator?` | `null` | Validation function |
+| `onChanged` | `ValueChanged?` | `null` | Called on text change |
+| `leading` | `Widget?` | `null` | Leading icon/widget |
+| `trailing` | `Widget?` | `null` | Trailing icon/widget |
+| `obscureText` | `bool` | `false` | Hide text (password) |
+| `enabled` | `bool` | `true` | Enable/disable input |
+| `maxLines` | `int?` | `1` | Number of lines |
+| `maxLength` | `int?` | `null` | Maximum characters |
+| `keyboardType` | `TextInputType?` | `null` | Keyboard type |
+| `textInputAction` | `TextInputAction?` | `null` | Input action button |
+| `inputFormatters` | `List<TextInputFormatter>?` | `null` | Input formatters |
+| `visualDensity` | `VisualDensity?` | theme | Control padding |
+
+## Advanced Usage
+
+### Password Input
+
+```dart
+class PasswordInput extends StatefulWidget {
+  @override
+  _PasswordInputState createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<PasswordInput> {
+  bool _obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return VitInput(
+      id: 'password',
+      label: 'Password',
+      obscureText: _obscureText,
+      trailing: IconButton(
+        icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+        onPressed: () {
+          setState(() => _obscureText = !_obscureText);
+        },
+      ),
+    );
+  }
+}
+```
+
+### Multiline Input
+
+```dart
+VitInput(
+  id: 'description',
+  label: 'Description',
+  hintText: 'Enter description...',
+  maxLines: 5,
+  maxLength: 500,
+)
+```
+
+### Input with Validation
+
+```dart
+VitInput(
+  id: 'email',
+  label: 'Email',
+  keyboardType: TextInputType.emailAddress,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    if (!value.contains('@')) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  },
+)
+```
+
+### Custom Formatting
+
+```dart
+import 'package:flutter/services.dart';
+
+VitInput(
+  id: 'phone',
+  label: 'Phone',
+  keyboardType: TextInputType.phone,
+  inputFormatters: [
+    FilteringTextInputFormatter.digitsOnly,
+    LengthLimitingTextInputFormatter(10),
+  ],
+)
+```
+
+## Specialized Fields
+
+Vit Design System provides pre-configured field components with built-in validation:
+
+### VitEmailField
+
+```dart
+VitEmailField(
+  id: 'email',
+)
+```
+
+### VitPasswordField
+
+```dart
+VitPasswordField(
+  id: 'password',
+)
+```
+
+### VitPhoneField
+
+```dart
+VitPhoneField(
+  id: 'phone',
+)
+```
+
+### VitUrlField
+
+```dart
+VitUrlField(
+  id: 'website',
+)
+```
+
+### VitNumberField
+
+```dart
+VitNumberField(
+  id: 'age',
+)
+```
+
+### VitCurrencyField
+
+```dart
+VitCurrencyField(
+  id: 'amount',
+)
+```
+
+### VitPercentageField
+
+```dart
+VitPercentageField(
+  id: 'discount',
+)
+```
+
+### VitSearchField
+
+```dart
+VitSearchField(
+  id: 'search',
+  onChanged: (value) {
+    performSearch(value);
+  },
+)
+```
+
+### VitTextAreaField
+
+```dart
+VitTextAreaField(
+  id: 'comments',
+)
+```
+
+### VitUsernameField
+
+```dart
+VitUsernameField(
+  id: 'username',
+)
+```
+
+### VitNameField
+
+```dart
+VitNameField(
+  id: 'fullName',
+)
+```
+
+### VitDecimalField
+
+```dart
+VitDecimalField(
+  id: 'price',
+)
+```
+
+### VitBirthdayField
+
+```dart
+VitBirthdayField(
+  id: 'birthday',
+)
+```
+
+### VitGenderField
+
+```dart
+VitGenderField(
+  id: 'gender',
+)
+```
+
+### VitCountryField
+
+```dart
+VitCountryField(
+  id: 'country',
+)
+```
+
+### VitLanguageField
+
+```dart
+VitLanguageField(
+  id: 'language',
+)
+```
+
+### VitDateRangeField
+
+```dart
+VitDateRangeField(
+  id: 'dateRange',
+)
+```
+
+### VitTermsField
+
+```dart
+VitTermsField(
+  id: 'terms',
+)
+```
+
+### VitNewsletterField
+
+```dart
+VitNewsletterField(
+  id: 'newsletter',
+)
+```
+
+### VitConfirmPasswordField
+
+```dart
+VitConfirmPasswordField(
+  id: 'confirmPassword',
+  passwordFieldId: 'password',
+)
+```
+
+## Form Integration
+
+All input fields work seamlessly with `VitForm` for automatic data collection, validation, and focus management. The form system automatically handles focus progression, validation timing, and data aggregation.
+
+The form integration provides:
+- **Automatic Data Collection**: Input values are automatically saved to form data using their `id`
+- **Focus Management**: Auto-focus on first input and smart focus progression
+- **Validation Coordination**: Validates inputs at appropriate times (on change, on page change, on submit)
+- **Error Display**: Validation errors appear below inputs with consistent styling
+- **Multi-page Support**: Seamlessly use inputs across multiple form pages
+- **Controller Registration**: Automatic registration of input controllers for programmatic access
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      title: 'Registration',
+      children: [
+        VitEmailField(
+          id: 'email',
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Email is required';
+            }
+            return null;
+          },
+        ),
+        VitPasswordField(
+          id: 'password',
+          validator: (value) {
+            if (value == null || value.length < 8) {
+              return 'Password must be at least 8 characters';
+            }
+            return null;
+          },
+        ),
+        VitConfirmPasswordField(
+          id: 'confirmPassword',
+          passwordFieldId: 'password',
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Email: ${data['email']}');
+    print('Password: ${data['password']}');
+  },
+)
+```
+
+## Loading States
+
+```dart
+VitLoadingScope(
+  loading: isLoading,
+  child: Column(
+    children: [
+      VitInput(id: 'field1', label: 'Field 1'),
+      VitInput(id: 'field2', label: 'Field 2'),
+    ],
+  ),
+)
+```
+
+## Best Practices
+
+### Do's
+
+- Use appropriate keyboard types for input context
+- Provide clear labels and hints
+- Implement validation for user input
+- Show error messages near the input
+- Use specialized fields when available
+
+### Don'ts
+
+- Don't use generic labels like "Input"
+- Don't forget to handle validation errors
+- Don't use maxLines > 1 without proper height constraints
+- Don't forget to dispose controllers
+
+## Examples
+
+### Login Form
+
+```dart
+Column(
+  children: [
+    VitEmailField(id: 'email'),
+    SizedBox(height: 16),
+    VitPasswordField(id: 'password'),
+    SizedBox(height: 24),
+    VitButton(
+      text: 'Log In',
+      onPressed: () {},
+    ),
+  ],
+)
+```
+
+### Profile Form
+
+```dart
+Column(
+  children: [
+    VitNameField(id: 'name'),
+    VitEmailField(id: 'email'),
+    VitPhoneField(id: 'phone'),
+    VitBirthdayField(id: 'birthday'),
+    VitGenderField(id: 'gender'),
+    VitCountryField(id: 'country'),
+  ],
+)
+```
+
+## Related Components
+
+- [Form](./form.md) - Form management
+- [Button](./button.md) - Submit buttons
+- [Select](./select.md) - Dropdown selection
+- [Date](./date.md) - Date picker

@@ -1,0 +1,352 @@
+---
+sidebar_position: 14
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Popover
+
+Centered floating modal container with margins for contextual dialogs, alerts, and focused interactions.
+
+VitPopover displays content in a floating container with margins on all sides, creating a dialog-like appearance that floats above the main content. Unlike VitSheet which adapts between bottom sheets and side panels, VitPopover maintains consistent centered positioning across all screen sizes. It's built on top of Flutter's bottom sheet with custom styling and implements draggable behavior with smooth transitions.
+
+**Key Features:**
+- Centered presentation with transparent margins creating a floating effect
+- Responsive width (narrow on mobile with 15-20px margins, wider on desktop with 20% margins)
+- Draggable with smooth height transitions
+- Customizable border radius (default 25 for popover style)
+- Optional pinned header with title and action buttons
+- Optional pinned footer for persistent actions
+- Fully scrollable content area between header and footer
+- Dismissible via tap outside or drag down gesture
+- Auto-calculated initial height based on content
+- Integrates with VitSheet for drag behavior
+
+**Best For:**
+- Confirmation dialogs
+- Alert messages
+- Quick forms and data entry
+- Information displays
+- Selection menus
+- Contextual actions
+
+<FlutterPreview story="VitPopover" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Basic Usage
+
+### Simple Popover
+
+Display a quick message or confirmation in a centered floating container. The popover automatically sizes to fit content.
+
+```dart
+VitPopover.show(
+  context,
+  title: VitTitle('Quick Info'),
+  content: VitText('This is important information you should know.'),
+)
+```
+
+### Popover with Actions
+
+Include footer actions for user decisions. The popover remains floating above the content with buttons at the bottom.
+
+```dart
+await VitPopover.show(
+  context,
+  title: VitTitle('Delete Item'),
+  content: VitText('Are you sure you want to delete this item? This action cannot be undone.'),
+  footer: Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      VitOutlinedButton(
+        text: 'Cancel',
+        onPressed: () => Navigator.pop(context, false),
+      ),
+      const SizedBox(width: 8),
+      VitButton(
+        text: 'Delete',
+        backgroundColor: Colors.red,
+        onPressed: () {
+          deleteItem();
+          Navigator.pop(context, true);
+        },
+      ),
+    ],
+  ),
+  footerPadding: EdgeInsets.all(16),
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `Widget?` | `null` | Title displayed in header |
+| `content` | `Widget` | required | Main content of popover |
+| `header` | `Widget?` | `null` | Custom header replacing default |
+| `footer` | `Widget?` | `null` | Footer for actions/controls |
+| `showCloseButton` | `bool` | `true` | Show X button in header |
+| `centerTitle` | `bool` | `true` | Center title in header |
+| `actions` | `List<Widget>?` | `null` | Custom action buttons in header |
+| `isExpanded` | `bool` | `false` | Start at 95% height |
+| `maxSize` | `double?` | auto | Maximum height ratio (0.0-1.0) |
+| `minSize` | `double?` | `0.1` | Minimum height ratio (0.0-1.0) |
+| `initialSize` | `double?` | auto | Initial height ratio (0.0-1.0) |
+| `closeOnDragDown` | `bool` | `true` | Dismiss when dragged to minimum |
+| `isDismissible` | `bool` | `true` | Allow tap outside to dismiss |
+| `contentPadding` | `EdgeInsets` | `16h, 20v` | Padding around content |
+| `footerPadding` | `EdgeInsets` | `16h, 10v` | Padding around footer |
+| `fixedHeader` | `bool` | `true` | Pin header while scrolling |
+| `fixedFooter` | `bool` | `true` | Pin footer at bottom |
+| `borderRadius` | `double?` | `25` | Corner radius of container |
+| `scrollController` | `ScrollController?` | `null` | External scroll controller |
+
+## Drag Behavior
+
+VitPopover supports intuitive drag gestures for resizing and dismissing:
+
+- **Drag to resize**: Users can drag the popover up or down to adjust its height
+- **Size constraints**: Height constrained between `minSize` and `maxSize` (fractions of screen height)
+- **Drag to dismiss**: When `closeOnDragDown` is true, dragging to `minSize` closes the popover
+- **Smooth animations**: All size transitions animate smoothly for polished feel
+- **Auto-sizing**: When `initialSize` is null, automatically calculates appropriate starting height
+
+## Examples
+
+### Success Alert
+
+Show a success message with an icon and confirmation button.
+
+```dart
+VitPopover.show(
+  context,
+  showCloseButton: false,
+  content: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(
+        Icons.check_circle,
+        size: 64,
+        color: Colors.green,
+      ),
+      const SizedBox(height: 16),
+      VitTitle('Success!'),
+      const SizedBox(height: 8),
+      VitText(
+        'Your changes have been saved successfully.',
+        textAlign: TextAlign.center,
+      ),
+    ],
+  ),
+  footer: VitButton(
+    text: 'Got it',
+    onPressed: () => Navigator.pop(context),
+  ),
+  borderRadius: 16,
+)
+```
+
+### Quick Form Entry
+
+Collect input in a floating popover for lightweight data entry.
+
+```dart
+final controller = TextEditingController();
+
+await VitPopover.show(
+  context,
+  title: VitTitle('Add Note'),
+  content: VitInput(
+    id: 'note',
+    label: 'Note',
+    controller: controller,
+    maxLines: 4,
+    hintText: 'Enter your note here...',
+  ),
+  footer: Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      VitOutlinedButton(
+        text: 'Cancel',
+        onPressed: () => Navigator.pop(context),
+      ),
+      const SizedBox(width: 8),
+      VitButton(
+        text: 'Save',
+        onPressed: () {
+          if (controller.text.isNotEmpty) {
+            saveNote(controller.text);
+            Navigator.pop(context);
+          }
+        },
+      ),
+    ],
+  ),
+)
+```
+
+### Selection Menu
+
+Present options in a floating popover for user selection.
+
+```dart
+await VitPopover.show(
+  context,
+  title: VitTitle('Choose Action'),
+  content: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      VitListCard(
+        leading: Icon(Icons.edit),
+        title: 'Edit',
+        onTap: () {
+          Navigator.pop(context, 'edit');
+          editItem();
+        },
+      ),
+      VitListCard(
+        leading: Icon(Icons.share),
+        title: 'Share',
+        onTap: () {
+          Navigator.pop(context, 'share');
+          shareItem();
+        },
+      ),
+      VitListCard(
+        leading: Icon(Icons.delete, color: Colors.red),
+        title: 'Delete',
+        titleColor: Colors.red,
+        onTap: () {
+          Navigator.pop(context, 'delete');
+          deleteItem();
+        },
+      ),
+    ],
+  ),
+)
+```
+
+### Scrollable Content
+
+For longer content, the popover automatically becomes scrollable while keeping header and footer pinned.
+
+```dart
+VitPopover.show(
+  context,
+  title: VitTitle('Terms and Conditions'),
+  maxSize: 0.8,
+  content: SingleChildScrollView(
+    child: VitText(
+      'Very long terms and conditions text that requires scrolling...\n\n'
+      'More content...\n\n'
+      'Even more content...',
+      style: TextStyle(fontSize: 14),
+    ),
+  ),
+  footer: VitCheckbox(
+    id: 'agree',
+    label: 'I agree to the terms',
+    value: agreed,
+    onChanged: (value) => setState(() => agreed = value ?? false),
+  ),
+)
+```
+
+### Custom Styling
+
+Customize appearance with custom border radius and margins for unique designs.
+
+```dart
+VitPopover.show(
+  context,
+  borderRadius: 12,
+  content: Container(
+    padding: EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.blue, Colors.purple],
+      ),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.star, size: 48, color: Colors.white),
+        const SizedBox(height: 16),
+        VitTitle(
+          'Premium Feature',
+          style: TextStyle(color: Colors.white),
+        ),
+        const SizedBox(height: 8),
+        VitText(
+          'Upgrade to unlock this feature',
+          style: TextStyle(color: Colors.white70),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  ),
+)
+```
+
+### Non-Dismissible Popover
+
+Prevent dismissal for critical user decisions.
+
+```dart
+VitPopover.show(
+  context,
+  title: VitTitle('Warning'),
+  isDismissible: false,
+  closeOnDragDown: false,
+  content: VitText(
+    'You have unsaved changes. What would you like to do?',
+  ),
+  footer: Row(
+    children: [
+      Expanded(
+        child: VitOutlinedButton(
+          text: 'Discard',
+          onPressed: () {
+            discardChanges();
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: VitButton(
+          text: 'Save',
+          onPressed: () {
+            saveChanges();
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+## Best Practices
+
+- **Use for quick interactions** - Popovers are ideal for brief messages and simple choices
+- **Keep content focused** - Limit content to essential information; use modals for complex content
+- **Provide clear actions** - Always include obvious ways to dismiss or act on the popover
+- **Test drag behavior** - Ensure drag gestures feel natural and responsive
+- **Consider tap-outside dismissal** - Enable `isDismissible` for non-critical popovers
+- **Use appropriate borders** - The default 25px border radius provides a floating effect; adjust for your design
+- **Avoid nested popovers** - Don't open popovers from within popovers
+- **Pin important elements** - Use `fixedHeader` and `fixedFooter` to keep key elements visible while scrolling
+
+## Related Components
+
+- [Dialog](./dialog.md) - Smaller centered dialogs without margins
+- [Modal](./modal.md) - Full-screen or large overlay modals with device adaptation
+- [Sheet](./sheet.md) - Bottom/side sheets for mobile-optimized interactions
+- [Toast](./toast.md) - Brief notification messages

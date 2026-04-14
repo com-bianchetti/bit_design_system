@@ -1,0 +1,246 @@
+---
+sidebar_position: 17
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Slider
+
+Sliders enable users to select values from a continuous or discrete range through an intuitive drag interface. They're perfect for adjusting settings like volume, brightness, or any numeric value with visual feedback.
+
+<FlutterPreview story="VitSlider" />
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Key Features
+
+- **Continuous or Discrete**: Support both smooth continuous values and snapped discrete steps
+- **List Item Styling**: Render as styled list items with title, subtitle, and value display
+- **Value Formatting**: Customize how values are displayed with custom formatters
+- **Flexible Positioning**: Control value display placement (left or right)
+- **Range Configuration**: Set minimum and maximum values with any range
+- **Form Integration**: Seamless integration with `VitForm` for data collection and validation
+- **Visual Density Control**: Adjust spacing with compact, standard, or comfortable modes
+- **Controlled & Uncontrolled**: Support both state management approaches
+- **Accessibility**: Full semantic label and value announcement support
+- **Customizable Colors**: Control active/inactive track and thumb colors
+
+## Basic Usage
+
+### Simple Slider
+
+A basic slider for continuous value selection within a range.
+
+```dart
+double volume = 50;
+
+VitSlider(
+  id: 'volume',
+  value: volume,
+  min: 0,
+  max: 100,
+  onChanged: (value) {
+    setState(() => volume = value);
+  },
+)
+```
+
+### Slider in List Item
+
+Render slider as a styled list item with title and subtitle for better context.
+
+```dart
+VitSlider(
+  id: 'brightness',
+  title: 'Brightness',
+  subtitle: 'Adjust screen brightness',
+  value: brightness,
+  min: 0,
+  max: 100,
+  onChanged: (value) {
+    setState(() => brightness = value);
+  },
+)
+```
+
+### Slider with Divisions
+
+Create discrete steps for scenarios requiring specific intervals or limited options.
+
+```dart
+VitSlider(
+  id: 'rating',
+  title: 'Rating',
+  value: rating,
+  min: 0,
+  max: 5,
+  divisions: 5,
+  showValue: true,
+  onChanged: (value) {
+    setState(() => rating = value);
+  },
+)
+```
+
+## Advanced Features
+
+### With Value Display
+
+Show the current value alongside the slider for clear feedback.
+
+```dart
+VitSlider(
+  id: 'temperature',
+  title: 'Temperature',
+  value: temperature,
+  min: 16,
+  max: 30,
+  divisions: 14,
+  showValue: true,
+  valueFormatter: (value) => '${value.round()}°C',
+  onChanged: (value) => setState(() => temperature = value),
+)
+```
+
+### Custom Range
+
+Configure sliders with any numeric range to match your requirements.
+
+```dart
+VitSlider(
+  id: 'price',
+  title: 'Price Range',
+  value: price,
+  min: 0,
+  max: 1000,
+  divisions: 20,
+  showValue: true,
+  valueFormatter: (value) => '\$${value.round()}',
+  onChanged: (value) => setState(() => price = value),
+)
+```
+
+### With Icons
+
+Add icons to provide visual context for the slider's purpose.
+
+```dart
+VitSlider(
+  id: 'volume',
+  title: 'Volume',
+  icon: Icon(Icons.volume_up),
+  value: volume,
+  min: 0,
+  max: 100,
+  showValue: true,
+  onChanged: (value) => setState(() => volume = value),
+)
+```
+
+### Value Position Control
+
+Place the value display on left or right side of the slider.
+
+```dart
+VitSlider(
+  id: 'left_value',
+  title: 'Setting',
+  value: setting,
+  min: 0,
+  max: 100,
+  showValue: true,
+  valuePosition: VitSliderPosition.left,
+  onChanged: (value) => setState(() => setting = value),
+)
+```
+
+### Visual Density
+
+Adjust spacing to match your design requirements.
+
+```dart
+VitSlider(
+  id: 'compact',
+  title: 'Compact Slider',
+  visualDensity: VisualDensity.compact,
+  value: value,
+  min: 0,
+  max: 100,
+  onChanged: (value) => setState(() => this.value = value),
+)
+```
+
+### Change Callbacks
+
+React to slider interaction with start, change, and end callbacks.
+
+```dart
+VitSlider(
+  id: 'interactive',
+  title: 'Interactive Slider',
+  value: value,
+  min: 0,
+  max: 100,
+  onChangeStart: (value) => print('Started at: $value'),
+  onChanged: (value) => print('Changed to: $value'),
+  onChangeEnd: (value) => print('Ended at: $value'),
+)
+```
+
+## Form Integration
+
+Sliders integrate seamlessly with `VitForm` to collect numeric values. The current slider value is automatically included in the form data.
+
+The form integration provides:
+- **Automatic Data Collection**: Slider values are automatically saved to form data
+- **Validation Support**: Add validators to ensure values meet specific criteria
+- **Error Display**: Validation errors appear below the slider
+- **Type-Safe Data**: Values are stored as `double` in form data
+
+```dart
+VitForm(
+  pages: [
+    VitFormPage(
+      children: [
+        VitSlider(
+          id: 'age',
+          title: 'Age',
+          value: 25,
+          min: 18,
+          max: 100,
+          divisions: 82,
+          showValue: true,
+          validator: (value) {
+            if (value < 18) {
+              return 'Must be 18 or older';
+            }
+            return null;
+          },
+        ),
+        VitSlider(
+          id: 'experience',
+          title: 'Years of Experience',
+          value: 5,
+          min: 0,
+          max: 50,
+          divisions: 50,
+          showValue: true,
+        ),
+      ],
+    ),
+  ],
+  onComplete: (data) {
+    print('Age: ${data['age']}');
+    print('Experience: ${data['experience']}');
+  },
+)
+```
+
+## Related Components
+
+- [Input](./input.md) - Text input
+- [Switch](./switch.md) - Binary toggle

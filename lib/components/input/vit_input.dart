@@ -269,7 +269,7 @@ class VitInput extends StatefulWidget {
   /// loading even if [isLoading] is false.
   ///
   /// Defaults to false.
-  final bool isLoading;
+  final bool? isLoading;
 
   /// Creates a [VitInput].
   ///
@@ -326,7 +326,7 @@ class VitInput extends StatefulWidget {
     this.inputLabelStyle,
     this.visualDensity,
     this.enableInteractiveSelection = true,
-    this.isLoading = false,
+    this.isLoading,
   });
 
   @override
@@ -378,7 +378,7 @@ class _VitInputState extends State<VitInput> {
     final theme = context.theme;
     final configuration = theme.configuration;
     final effectiveLoading =
-        widget.isLoading || VitLoadingScope.isLoading(context);
+        widget.isLoading ?? VitLoadingScope.isLoading(context);
 
     if (effectiveLoading) {
       final effectiveBorderRadius = widget.borderRadius ?? theme.borderRadius;

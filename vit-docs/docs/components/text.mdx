@@ -1,0 +1,382 @@
+---
+sidebar_position: 24
+---
+
+import FlutterPreview from '@site/src/components/FlutterPreview';
+
+# Text
+
+Enhanced text component with rich formatting support.
+
+<FlutterPreview story="VitText" />
+
+## Overview
+
+VitText provides a comprehensive set of text components with built-in styling, accessibility features, and advanced formatting capabilities. It offers a semantic text hierarchy and supports HTML-like rich text formatting without the complexity of Flutter's RichText widget.
+
+**Key Features:**
+- **Semantic Hierarchy**: Multiple text variants for different purposes (titles, body, labels)
+- **Rich Text Formatting**: Parse HTML-like tags for inline styling
+- **Loading States**: Built-in skeleton loading support
+- **Accessibility**: Proper semantic headers for screen readers
+- **Theme Integration**: Automatically uses theme colors and fonts
+- **Custom Styling**: Full control over appearance while maintaining consistency
+
+## Import
+
+```dart
+import 'package:vit_design_system/vit_design_system.dart';
+```
+
+## Text Variants
+
+VitText provides multiple variants to establish a clear visual hierarchy in your application. Each variant has a predefined font size optimized for its purpose.
+
+### Title Variants
+
+Titles are semantic headings that are automatically marked for screen readers, improving accessibility.
+
+#### VitTitleBig (24px)
+
+The largest title variant, ideal for main page headings or hero sections.
+
+```dart
+VitTitleBig('Welcome to Our App')
+```
+
+#### VitTitle (20px)
+
+Standard title size, perfect for page titles and major section headers.
+
+```dart
+VitTitle('Account Settings')
+```
+
+#### VitTitleSmall (18px)
+
+Smaller title for subsections and card headers.
+
+```dart
+VitTitleSmall('Personal Information')
+```
+
+### Body Text Variants
+
+Body text variants are used for content and descriptions. They are optimized for readability.
+
+#### VitTextBig (18px)
+
+Larger body text, useful for emphasis or lead paragraphs.
+
+```dart
+VitTextBig('This is important introductory text.')
+```
+
+#### VitText (16px)
+
+Standard body text for regular content.
+
+```dart
+VitText('This is the main content of your application.')
+```
+
+#### VitTextSmall (14px)
+
+Smaller body text for secondary information or captions.
+
+```dart
+VitTextSmall('Last updated 2 hours ago')
+```
+
+### Label Variants
+
+Labels are designed for small text like badges, tags, and metadata.
+
+#### VitLabelBig (10px)
+
+Larger label text for badges and tags.
+
+```dart
+VitLabelBig('NEW')
+```
+
+#### VitLabel (8px)
+
+Standard label size for metadata.
+
+```dart
+VitLabel('VERSION 1.0')
+```
+
+#### VitLabelSmall (6px)
+
+Smallest label variant for very compact information.
+
+```dart
+VitLabelSmall('BETA')
+```
+
+## Rich Text Formatting
+
+Rich text formatting allows you to apply inline styles without creating multiple text widgets or dealing with complex TextSpan hierarchies. Use the `.rich()` constructor with any text variant to enable HTML-like tag parsing.
+
+### Basic Rich Text
+
+```dart
+VitText.rich(
+  'Text with <b>bold</b>, <i>italic</i>, and <u>underline</u>',
+)
+```
+
+### Supported Tags
+
+All VitText variants support these formatting tags:
+
+| Tag | Purpose | Example |
+|-----|---------|---------|
+| `<b>text</b>` | Bold text | `<b>Important</b>` |
+| `<i>text</i>` | Italic text | `<i>Emphasis</i>` |
+| `<u>text</u>` | Underlined text | `<u>Underline</u>` |
+| `<color=#RRGGBB>text</color>` | Custom color | `<color=#FF0000>Red text</color>` |
+| `<size=value>text</size>` | Custom font size | `<size=20>Bigger</size>` |
+
+### Rich Text Examples
+
+#### Multiple Formatting Styles
+
+```dart
+VitText.rich(
+  'Welcome! <b>New features</b> are now <color=#4CAF50>available</color>. '
+  '<i>Click here</i> to learn more.',
+)
+```
+
+#### Colored and Sized Text
+
+```dart
+VitTitle.rich(
+  'Sale: <color=#FF0000><b><size=28>50% OFF</size></b></color>',
+)
+```
+
+#### Dynamic Content with Rich Text
+
+```dart
+VitText.rich(
+  'You have <b><color=#2196F3>${unreadCount}</color></b> unread messages',
+)
+```
+
+### Interactive Rich Text
+
+You can make parts of rich text interactive by providing tap actions.
+
+```dart
+VitText.rich(
+  'Read our <link>privacy policy</link> to learn more.',
+  onTapActions: {
+    'link': () {
+      
+    },
+  },
+)
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `text` | `String` | required | Text content to display |
+| `style` | `TextStyle?` | null | Custom text styling (merged with base style) |
+| `textAlign` | `TextAlign?` | start | Horizontal alignment of the text |
+| `bold` | `bool?` | null | Force bold weight (overrides style) |
+| `textDirection` | `TextDirection?` | ltr | Text direction for RTL support |
+| `isLoading` | `bool` | false | Show skeleton loading state |
+| `overflow` | `TextOverflow?` | null | How to handle text overflow |
+| `onTapActions` | `Map<String, VoidCallback>?` | null | Callbacks for interactive rich text tags |
+
+## Advanced Usage
+
+### Custom Styling
+
+You can apply custom styles while preserving the base text variant sizing and theme integration.
+
+```dart
+VitText(
+  'Custom Styled Text',
+  style: TextStyle(
+    color: Colors.blue,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.2,
+    decoration: TextDecoration.underline,
+  ),
+)
+```
+
+### Bold Shorthand
+
+Instead of creating a custom style, use the `bold` parameter for quick bold text.
+
+```dart
+VitText(
+  'Important Message',
+  bold: true,
+)
+```
+
+### Text Alignment
+
+Control the horizontal alignment of your text.
+
+```dart
+Column(
+  children: [
+    VitText(
+      'Left aligned',
+      textAlign: TextAlign.left,
+    ),
+    VitText(
+      'Centered text',
+      textAlign: TextAlign.center,
+    ),
+    VitText(
+      'Right aligned',
+      textAlign: TextAlign.right,
+    ),
+  ],
+)
+```
+
+### Loading State
+
+VitText includes built-in skeleton loading that maintains the text's dimensions while showing a shimmer effect.
+
+```dart
+VitText(
+  'Loading content...',
+  isLoading: isDataLoading,
+)
+```
+
+The loading state also works with `VitLoadingScope` for coordinated loading states:
+
+```dart
+VitLoadingScope(
+  isLoading: isLoading,
+  child: Column(
+    children: [
+      VitTitle('Profile'),
+      VitText('User name will appear here'),
+      VitTextSmall('Last active: 2 hours ago'),
+    ],
+  ),
+)
+```
+
+### Text Overflow Handling
+
+Control how text behaves when it doesn't fit in its container.
+
+```dart
+VitText(
+  'This is a very long text that might overflow the container width',
+  overflow: TextOverflow.ellipsis,
+)
+```
+
+### Right-to-Left (RTL) Text
+
+Support for RTL languages like Arabic and Hebrew.
+
+```dart
+VitText(
+  'مرحبا بك',
+  textDirection: TextDirection.rtl,
+)
+```
+
+### Combining Multiple Features
+
+```dart
+VitTitle.rich(
+  '<b>Welcome</b>, <color=#2196F3>${userName}</color>!',
+  textAlign: TextAlign.center,
+  isLoading: isLoadingUser,
+)
+```
+
+## Best Practices
+
+### Establish Clear Hierarchy
+
+Use text variants consistently to create visual hierarchy in your UI.
+
+```dart
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    VitTitleBig('Main Page Title'),
+    SizedBox(height: 8),
+    VitText('Introduction paragraph with main content.'),
+    SizedBox(height: 24),
+    VitTitle('Section Heading'),
+    VitText('Section content goes here.'),
+    SizedBox(height: 16),
+    VitTitleSmall('Subsection'),
+    VitTextSmall('Additional details or metadata.'),
+  ],
+)
+```
+
+### Use Rich Text for Dynamic Content
+
+Rich text is ideal when you need inline formatting based on data or user input.
+
+```dart
+VitText.rich(
+  '<b>${itemCount}</b> items in your cart',
+)
+```
+
+### Accessibility Considerations
+
+Title variants automatically set proper semantic headers for screen readers. Always use title variants for headings rather than bold body text.
+
+```dart
+
+VitTitle('Settings')
+
+VitText('Settings', bold: true)
+```
+
+### Performance with Long Lists
+
+When displaying many text widgets in lists, consider text overflow to prevent layout issues.
+
+```dart
+ListView.builder(
+  itemBuilder: (context, index) => ListTile(
+    title: VitText(
+      items[index].title,
+      overflow: TextOverflow.ellipsis,
+    ),
+  ),
+)
+```
+
+### Theme Consistency
+
+VitText automatically uses theme colors and fonts. Avoid hardcoding colors unless necessary for specific emphasis.
+
+```dart
+
+VitText('Themed text')
+
+VitText('Text', style: TextStyle(color: Colors.black))
+```
+
+## Related Components
+
+- [Button](./button.md) - Buttons with text
+- [Input](./input.md) - Text input
+- [Card](./card.md) - Cards with text content

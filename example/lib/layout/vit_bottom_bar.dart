@@ -120,6 +120,18 @@ final VitBottomBarStory = Story(
                 ),
                 const SizedBox(height: 16),
                 VitButton(
+                  text: 'Dot Variant',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const _DotVariantExample(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                VitButton(
                   text: 'With Custom Item Builder',
                   onPressed: () {
                     Navigator.push(
@@ -188,6 +200,18 @@ final VitBottomBarStory = Story(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const _RightSidebarExample(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                VitButton(
+                  text: 'Notched / Floating Button',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const _NotchedVariantExample(),
                       ),
                     );
                   },
@@ -556,6 +580,34 @@ class _PrimaryVariantExample extends StatelessWidget {
       variant: VitBottomBarVariant.primary,
       selectedColor: Colors.white,
       unselectedColor: Colors.white54,
+      items: const [
+        VitBottomBarItem(icon: Icons.home, label: 'Home'),
+        VitBottomBarItem(icon: Icons.search, label: 'Search'),
+        VitBottomBarItem(icon: Icons.settings, label: 'Settings'),
+      ],
+      pages: const [
+        Center(child: VitText('Home Page')),
+        Center(child: VitText('Search Page')),
+        Center(child: VitText('Settings Page')),
+      ],
+    );
+  }
+}
+
+class _DotVariantExample extends StatelessWidget {
+  const _DotVariantExample();
+
+  @override
+  Widget build(BuildContext context) {
+    return VitNavigationScaffold(
+      appBar: AppBar(
+        title: const Text('Dot Variant'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      variant: VitBottomBarVariant.dot,
       items: const [
         VitBottomBarItem(icon: Icons.home, label: 'Home'),
         VitBottomBarItem(icon: Icons.search, label: 'Search'),
@@ -1001,6 +1053,51 @@ class _RightSidebarExample extends StatelessWidget {
         Center(child: VitText('Search Page')),
         Center(child: VitText('Settings Page')),
       ],
+    );
+  }
+}
+
+class _NotchedVariantExample extends StatefulWidget {
+  const _NotchedVariantExample();
+
+  @override
+  State<_NotchedVariantExample> createState() => _NotchedVariantExampleState();
+}
+
+class _NotchedVariantExampleState extends State<_NotchedVariantExample> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return VitNavigationScaffold(
+      appBar: AppBar(
+        title: const Text('Notched / Floating Button'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      hasNotch: true,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: context.theme.successColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      items: const [
+        VitBottomBarItem(icon: Icons.home, label: 'Home'),
+        VitBottomBarItem(icon: Icons.search, label: 'Search'),
+        VitBottomBarItem(icon: Icons.person, label: 'Profile'),
+        VitBottomBarItem(icon: Icons.settings, label: 'Settings'),
+      ],
+      pages: const [
+        Center(child: VitText('Home Page')),
+        Center(child: VitText('Search Page')),
+        Center(child: VitText('Profile Page')),
+        Center(child: VitText('Settings Page')),
+      ],
+      initialIndex: _currentIndex,
+      onIndexChanged: (index) => setState(() => _currentIndex = index),
     );
   }
 }
